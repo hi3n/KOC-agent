@@ -1,0 +1,33 @@
+[project]
+name = "koc"
+version = "0.1.0"
+description = "AI KOC Discovery — evidence-based TikTok KOC recommendation funnel (DETOLA founding engineer test)"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "openai>=1.60",
+    "pydantic>=2.9",
+    "typer>=0.12",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "faster-whisper>=1.1",
+    # KHÔNG pin av: bản mới (19) bỏ keyword faster-whisper cần, bản cũ không có wheel.
+    # video.py bypass PyAV: ffmpeg → WAV → numpy array → transcribe(ndarray).
+    "imageio-ffmpeg>=0.5",
+]
+
+[project.scripts]
+koc = "koc.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/koc"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

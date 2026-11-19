@@ -1,0 +1,52 @@
+{
+ "endpoint": "creator/detail",
+ "params": {
+  "category_ids": [
+   "601602"
+  ],
+  "creator_id": "6943429382447039490",
+  "currency": "VND",
+  "date_range": "2026-10-20~2026-11-18",
+  "language": "vi-VN",
+  "region": "VN"
+ },
+ "envelope": {
+  "success": true,
+  "data": {
+   "creator_id": "6943429382447039490",
+   "creator_nickname": "Anessa Official Store",
+   "creator_handle": "@anessa.vietnam",
+   "creator_region": "vn",
+   "creator_status": "BELONGED_TO_SELLER",
+   "creator_belonged_shop_id": "7494603369230534825",
+   "creator_bio": "https://bit.ly/3U47eEK",
+   "creator_contact_email": "",
+   "creator_contact_tiktok": "",
+   "creator_contact_whatsapp": "",
+   "creator_contact_line": "",
+   "creator_contact_facebook": "",
+   "creator_contact_ins": "",
+   "creator_contact_zalo": "",
+   "revenue": 3430250643.56,
+   "sales_volumn": 5152,
+   "unit_price": 665809.52,
+   "video_revenue": 1287662543.8,
+   "live_revenue": 1899095180.2,
+   "video_views": 6319333,
+   "live_views": 365495,
+   "live_gpm": 5195953.93,
+   "video_gpm": 203765.58,
+   "new_followers": 1600,
+   "video_number": 0,
+   "live_number": 44,
+   "shop_number": 1,
+   "product_number": 46,
+   "creator_followers": "261800",
+   "revenue_trend": null,
+   "top3_product_ids": null
+  },
+  "message": null,
+  "cached": null,
+  "code": null
+ }
+}

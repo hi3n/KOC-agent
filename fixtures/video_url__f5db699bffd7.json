@@ -1,0 +1,17 @@
+{
+ "endpoint": "video/url",
+ "params": {
+  "video_id": "7706890805792771335"
+ },
+ "envelope": {
+  "success": true,
+  "data": {
+   "video_id": "7706890805792771335",
+   "video_url": "https://openapi-video.kalodata.com/video/7706890805792771335.mp4?Expires=1795060036&Signature=MQtNoygB9QPD9PDpZrqHpHycADZCpzzb4gOr5aNsvCYaLJQUkh5kMhaVmRT7o7DVNIPjSIXugKaGeKQL8u9hrVr7IpYtmiS5qmhVefP-GQSBz14UVqpytOndzwnwcFXJteAjJzd1x8b7NV3Wdr6tqBNEwVxjnaZ5lMrO645MP9vsLhxYOolfX8sUQAZ3MbwYsL~vkZf5rPrJJXynPX-OY5XUI-V82S-x7PWtgHu8zfmTmenAXohR382iwue1PPzw93DpQeXXN3EJPv9OUz7VYypX~xgV8wxx0dJxbxm4n-BZg42Wnu82VKSbqBrzL3uN3CMC~x-mrZNFHkpzbAERAA__&Key-Pair-Id=K2MMR6JXDFQH98",
+   "expires_at": 1795060036.3855183
+  },
+  "message": null,
+  "cached": null,
+  "code": null
+ }
+}

@@ -1,0 +1,257 @@
+{
+ "generated_at": "2026-11-19 08:14 UTC",
+ "run_id": "demo_sunscreen",
+ "source": "usage_ledger/tasks/evidence (SQLite, đo thật)",
+ "status": "full_pipeline_done",
+ "kalodata": {
+  "cold_rollup": [
+   {
+    "stage": "s0",
+    "provider": "kalodata",
+    "n": 1,
+    "hits": 0,
+    "credits": 0.1,
+    "tin": 0,
+    "tout": 0,
+    "cost": null,
+    "avg_ms": 200.0,
+    "total_ms": 200
+   },
+   {
+    "stage": "s1",
+    "provider": "kalodata",
+    "n": 4,
+    "hits": 0,
+    "credits": 0.4,
+    "tin": 0,
+    "tout": 0,
+    "cost": null,
+    "avg_ms": 2740.0,
+    "total_ms": 10960
+   },
+   {
+    "stage": "s2a",
+    "provider": "kalodata",
+    "n": 30,
+    "hits": 0,
+    "credits": 3.0,
+    "tin": 0,
+    "tout": 0,
+    "cost": null,
+    "avg_ms": 2274.733333333333,
+    "total_ms": 68242
+   },
+   {
+    "stage": "s2b",
+    "provider": "kalodata",
+    "n": 18,
+    "hits": 0,
+    "credits": 1.8,
+    "tin": 0,
+    "tout": 0,
+    "cost": null,
+    "avg_ms": 812.6111111111111,
+    "total_ms": 14627
+   },
+   {
+    "stage": "s4",
+    "provider": "kalodata",
+    "n": 15,
+    "hits": 0,
+    "credits": 7.5,
+    "tin": 0,
+    "tout": 0,
+    "cost": null,
+    "avg_ms": 238.66666666666666,
+    "total_ms": 3580
+   }
+  ],
+  "warm_cache_hits": [
+   {
+    "stage": "s1",
+    "provider": "kalodata",
+    "n": 4
+   },
+   {
+    "stage": "s2a",
+    "provider": "kalodata",
+    "n": 30
+   },
+   {
+    "stage": "s2b",
+    "provider": "kalodata",
+    "n": 18
+   },
+   {
+    "stage": "s4",
+    "provider": "llm",
+    "n": 14
+   }
+  ],
+  "totals": {
+   "credits": 12.8,
+   "n": 68,
+   "ms": 97609
+  },
+  "balance_trace_measured": [
+   {
+    "event": "spike run 1 (creator/rank keyword)",
+    "before": 15.0,
+    "after": 14.9
+   },
+   {
+    "event": "spike run 2 (6 calls: category+rank+detail+video/rank+video/detail+url)",
+    "before": 14.9,
+    "after": 13.9
+   },
+   {
+    "event": "probe creator/detail need_extra",
+    "before": 13.9,
+    "after": 13.8
+   },
+   {
+    "event": "smoke S1+S2 lần 1 (10/30 creator, 20 fail traffic 2017)",
+    "before": 13.8,
+    "after": 11.8
+   },
+   {
+    "event": "smoke S1+S2 lần 2 (retry 20 fail + 12 detail mới)",
+    "before": 11.8,
+    "after": 8.6
+   }
+  ],
+  "credit_calibration": "6 call thành công = 1.0cr khớp bảng ước tính; call lỗi (501/2017) KHÔNG mất credit"
+ },
+ "funnel": {
+  "pool": 30,
+  "kept_s2": 12,
+  "kept_s3": 7,
+  "videos_judged_s4": 14,
+  "selected_s5": 5,
+  "backups_s5": 2,
+  "excluded": 18,
+  "excluded_breakdown": {
+   "low_er_hard": 10,
+   "over_budget_cap": 3,
+   "other_hard": 0,
+   "score_cut": 5
+  }
+ },
+ "tasks": [
+  {
+   "stage": "s1",
+   "status": "done",
+   "n": 5
+  },
+  {
+   "stage": "s2",
+   "status": "done",
+   "n": 1
+  },
+  {
+   "stage": "s2a",
+   "status": "done",
+   "n": 30
+  },
+  {
+   "stage": "s2a_cut",
+   "status": "done",
+   "n": 1
+  },
+  {
+   "stage": "s2b",
+   "status": "done",
+   "n": 18
+  },
+  {
+   "stage": "s3",
+   "status": "done",
+   "n": 4
+  },
+  {
+   "stage": "s4",
+   "status": "done",
+   "n": 1
+  },
+  {
+   "stage": "s4_judge",
+   "status": "done",
+   "n": 14
+  },
+  {
+   "stage": "s4_media",
+   "status": "done",
+   "n": 14
+  },
+  {
+   "stage": "s5",
+   "status": "done",
+   "n": 1
+  }
+ ],
+ "evidence": [
+  {
+   "stage": "s0",
+   "kind": "brief_analysis",
+   "n": 1
+  },
+  {
+   "stage": "s2a",
+   "kind": "metric",
+   "n": 60
+  },
+  {
+   "stage": "s2a",
+   "kind": "niche_signal",
+   "n": 75
+  },
+  {
+   "stage": "s2b",
+   "kind": "metric",
+   "n": 33
+  },
+  {
+   "stage": "s3",
+   "kind": "niche_signal",
+   "n": 36
+  },
+  {
+   "stage": "s4",
+   "kind": "frame_obs",
+   "n": 14
+  },
+  {
+   "stage": "s4",
+   "kind": "metric",
+   "n": 14
+  },
+  {
+   "stage": "s4",
+   "kind": "transcript_quote",
+   "n": 40
+  }
+ ],
+ "unit_tests": {
+  "summary": "26 passed in 2.80s",
+  "passed": true
+ },
+ "ai_calls": {
+  "calls": 31,
+  "tokens_in": 303908,
+  "tokens_out": 87469,
+  "tokens_cached": 0,
+  "cost_usd": 1.869,
+  "asr_videos": 28,
+  "asr_total_ms": 2826788,
+  "validator_passed": "7/7",
+  "numeric_claim_audit": {
+   "total_numbers": 57,
+   "in_cited_evidence": 54,
+   "in_creator_other_evidence": 3,
+   "verified_total": 57,
+   "unmatched": [],
+   "cited_match_rate": 0.9474,
+   "verified_rate": 1.0
+  }
+ }
+}

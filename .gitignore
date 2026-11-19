@@ -1,0 +1,22 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+runs/
+fixtures/*.mp4
+fixtures/*.jpg
+fixtures/*.json.tmp
+dist/
+*.egg-info/
+
+# TẠM THỜI: docs chưa nộp đợt này — user sẽ add docs hoàn chỉnh sau (git add -f docs/ khi sẵn sàng)
+docs/
+
+# Claude Code local settings (máy này có global ignore, repo vẫn tự chứa cho portable)
+.claude/settings.local.json
+
+# Windows junk
+Thumbs.db
+desktop.ini
+*.stackdump

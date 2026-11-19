@@ -1,0 +1,1024 @@
+{
+ "endpoint": "category/rank",
+ "params": {
+  "category_level": 3,
+  "currency": "VND",
+  "date_range": "last30Day",
+  "language": "vi-VN",
+  "page_number": 1,
+  "page_size": 100,
+  "region": "VN",
+  "sort_field": {
+   "field": "revenue",
+   "type": "DESC"
+  }
+ },
+ "envelope": {
+  "success": true,
+  "data": [
+   {
+    "category_id": "601302",
+    "category_name": "Áo thun",
+    "rank": 1,
+    "revenue": 493707070342.52,
+    "sale": 5400283,
+    "revenue_growth_rate": 17.69,
+    "top3_shop_revenue_ratio": 7.94,
+    "average_revenue": 72529318.4
+   },
+   {
+    "category_id": "929672",
+    "category_name": "Tã lót",
+    "rank": 2,
+    "revenue": 432428159968.99,
+    "sale": 1103772,
+    "revenue_growth_rate": 56.68,
+    "top3_shop_revenue_ratio": 16.51,
+    "average_revenue": 274557561.89
+   },
+   {
+    "category_id": "600812",
+    "category_name": "Đồ vệ sinh nhà cửa",
+    "rank": 3,
+    "revenue": 394250386435.38,
+    "sale": 3331320,
+    "revenue_growth_rate": 30.05,
+    "top3_shop_revenue_ratio": 28.16,
+    "average_revenue": 71010516.29
+   },
+   {
+    "category_id": "601619",
+    "category_name": "Serum & Tinh chất",
+    "rank": 4,
+    "revenue": 388140362989.04,
+    "sale": 1077742,
+    "revenue_growth_rate": 51.14,
+    "top3_shop_revenue_ratio": 15.14,
+    "average_revenue": 95085831.21
+   },
+   {
+    "category_id": "601281",
+    "category_name": "Váy thường mặc",
+    "rank": 5,
+    "revenue": 382897275924.86,
+    "sale": 1580834,
+    "revenue_growth_rate": 10.0,
+    "top3_shop_revenue_ratio": 5.04,
+    "average_revenue": 67625799.35
+   },
+   {
+    "category_id": "601291",
+    "category_name": "Bộ",
+    "rank": 6,
+    "revenue": 380852727024.24,
+    "sale": 1836387,
+    "revenue_growth_rate": 31.93,
+    "top3_shop_revenue_ratio": 11.98,
+    "average_revenue": 83999278.13
+   },
+   {
+    "category_id": "933768",
+    "category_name": "Sữa công thức tăng trưởng",
+    "rank": 7,
+    "revenue": 365890523739.07,
+    "sale": 453850,
+    "revenue_growth_rate": 67.86,
+    "top3_shop_revenue_ratio": 15.69,
+    "average_revenue": 578940702.12
+   },
+   {
+    "category_id": "845832",
+    "category_name": "Bộ ngủ",
+    "rank": 8,
+    "revenue": 346533188651.55,
+    "sale": 2321080,
+    "revenue_growth_rate": 22.22,
+    "top3_shop_revenue_ratio": 5.37,
+    "average_revenue": 92261232.34
+   },
+   {
+    "category_id": "601267",
+    "category_name": "Áo khoác & Áo choàng",
+    "rank": 9,
+    "revenue": 340665857535.83,
+    "sale": 1689926,
+    "revenue_growth_rate": 119.0,
+    "top3_shop_revenue_ratio": 8.96,
+    "average_revenue": 83907846.68
+   },
+   {
+    "category_id": "601276",
+    "category_name": "Quần jean",
+    "rank": 10,
+    "revenue": 337669162697.69,
+    "sale": 1738221,
+    "revenue_growth_rate": 30.77,
+    "top3_shop_revenue_ratio": 10.67,
+    "average_revenue": 145735503.97
+   },
+   {
+    "category_id": "700650",
+    "category_name": "Thực phẩm bổ sung sức khỏe",
+    "rank": 11,
+    "revenue": 335224700477.06,
+    "sale": 1366468,
+    "revenue_growth_rate": 27.69,
+    "top3_shop_revenue_ratio": 10.12,
+    "average_revenue": 69635376.09
+   },
+   {
+    "category_id": "601226",
+    "category_name": "Áo thun",
+    "rank": 12,
+    "revenue": 314100708700.38,
+    "sale": 2431920,
+    "revenue_growth_rate": 27.43,
+    "top3_shop_revenue_ratio": 8.16,
+    "average_revenue": 56340934.3
+   },
+   {
+    "category_id": "601197",
+    "category_name": "Áo khoác & Áo choàng",
+    "rank": 13,
+    "revenue": 306202237314.33,
+    "sale": 1224529,
+    "revenue_growth_rate": 230.37,
+    "top3_shop_revenue_ratio": 8.82,
+    "average_revenue": 90192117.03
+   },
+   {
+    "category_id": "601277",
+    "category_name": "Quần dài",
+    "rank": 14,
+    "revenue": 305727562291.59,
+    "sale": 2415529,
+    "revenue_growth_rate": 27.15,
+    "top3_shop_revenue_ratio": 7.8,
+    "average_revenue": 73228158.63
+   },
+   {
+    "category_id": "601615",
+    "category_name": "Kem dưỡng ẩm & Xịt thơm",
+    "rank": 15,
+    "revenue": 294109764216.46,
+    "sale": 1336660,
+    "revenue_growth_rate": 40.69,
+    "top3_shop_revenue_ratio": 17.03,
+    "average_revenue": 55231880.6
+   },
+   {
+    "category_id": "601265",
+    "category_name": "Áo cánh & Áo sơ mi",
+    "rank": 16,
+    "revenue": 292702326549.33,
+    "sale": 1891256,
+    "revenue_growth_rate": 3.38,
+    "top3_shop_revenue_ratio": 7.35,
+    "average_revenue": 53189592.32
+   },
+   {
+    "category_id": "601469",
+    "category_name": "Dầu gội & Dầu xả",
+    "rank": 17,
+    "revenue": 279751157328.97,
+    "sale": 1559825,
+    "revenue_growth_rate": 22.14,
+    "top3_shop_revenue_ratio": 14.88,
+    "average_revenue": 67393677.99
+   },
+   {
+    "category_id": "993544",
+    "category_name": "Khăn giấy & khăn ăn & khăn lau",
+    "rank": 18,
+    "revenue": 273839498186.51,
+    "sale": 2702946,
+    "revenue_growth_rate": 31.1,
+    "top3_shop_revenue_ratio": 66.31,
+    "average_revenue": 223360112.71
+   },
+   {
+    "category_id": "601925",
+    "category_name": "Ốp, miếng bảo vệ màn hình & miếng dán",
+    "rank": 19,
+    "revenue": 262246350760.95,
+    "sale": 5540443,
+    "revenue_growth_rate": -3.71,
+    "top3_shop_revenue_ratio": 15.03,
+    "average_revenue": 38183801.8
+   },
+   {
+    "category_id": "601493",
+    "category_name": "Sữa tắm & Xà phòng",
+    "rank": 20,
+    "revenue": 256574931127.26,
+    "sale": 1423823,
+    "revenue_growth_rate": -43.21,
+    "top3_shop_revenue_ratio": 60.45,
+    "average_revenue": 74090364.17
+   },
+   {
+    "category_id": "601492",
+    "category_name": "Kem & Sữa dưỡng thể",
+    "rank": 21,
+    "revenue": 251600073620.96,
+    "sale": 1688798,
+    "revenue_growth_rate": 33.57,
+    "top3_shop_revenue_ratio": 16.47,
+    "average_revenue": 58950345.27
+   },
+   {
+    "category_id": "601218",
+    "category_name": "Quần dài",
+    "rank": 22,
+    "revenue": 233251040482.86,
+    "sale": 1346063,
+    "revenue_growth_rate": 62.6,
+    "top3_shop_revenue_ratio": 11.75,
+    "average_revenue": 76275683.61
+   },
+   {
+    "category_id": "918280",
+    "category_name": "Thực phẩm đóng hộp, lọ & đóng gói",
+    "rank": 23,
+    "revenue": 232950312462.58,
+    "sale": 2750480,
+    "revenue_growth_rate": 7.68,
+    "top3_shop_revenue_ratio": 7.42,
+    "average_revenue": 46293782.29
+   },
+   {
+    "category_id": "922504",
+    "category_name": "Đồ ăn nhẹ khô",
+    "rank": 24,
+    "revenue": 229484088426.11,
+    "sale": 3463870,
+    "revenue_growth_rate": 7.97,
+    "top3_shop_revenue_ratio": 8.9,
+    "average_revenue": 46900488.13
+   },
+   {
+    "category_id": "602097",
+    "category_name": "Điện thoại di động",
+    "rank": 25,
+    "revenue": 222673859935.29,
+    "sale": 278073,
+    "revenue_growth_rate": 612.18,
+    "top3_shop_revenue_ratio": 66.78,
+    "average_revenue": 347385116.9
+   },
+   {
+    "category_id": "601202",
+    "category_name": "Quần jean",
+    "rank": 26,
+    "revenue": 217714193457.48,
+    "sale": 974688,
+    "revenue_growth_rate": 55.03,
+    "top3_shop_revenue_ratio": 8.3,
+    "average_revenue": 124408110.55
+   },
+   {
+    "category_id": "601534",
+    "category_name": "Son môi & Son bóng",
+    "rank": 27,
+    "revenue": 214672072427.88,
+    "sale": 1417823,
+    "revenue_growth_rate": 43.96,
+    "top3_shop_revenue_ratio": 25.19,
+    "average_revenue": 88088663.29
+   },
+   {
+    "category_id": "601439",
+    "category_name": "Túi đeo chéo & Túi đeo vai",
+    "rank": 28,
+    "revenue": 198129194638.32,
+    "sale": 908175,
+    "revenue_growth_rate": 24.38,
+    "top3_shop_revenue_ratio": 22.5,
+    "average_revenue": 83775557.99
+   },
+   {
+    "category_id": "960776",
+    "category_name": "Áo Polo",
+    "rank": 29,
+    "revenue": 183179231050.68,
+    "sale": 1050258,
+    "revenue_growth_rate": 27.12,
+    "top3_shop_revenue_ratio": 20.38,
+    "average_revenue": 82849041.63
+   },
+   {
+    "category_id": "601609",
+    "category_name": "Sữa rửa mặt",
+    "rank": 30,
+    "revenue": 177219060468.55,
+    "sale": 1187557,
+    "revenue_growth_rate": 35.25,
+    "top3_shop_revenue_ratio": 28.68,
+    "average_revenue": 46210967.53
+   },
+   {
+    "category_id": "601990",
+    "category_name": "Tai nghe trong & Tai nghe",
+    "rank": 31,
+    "revenue": 173753595115.8,
+    "sale": 1020227,
+    "revenue_growth_rate": 25.24,
+    "top3_shop_revenue_ratio": 17.53,
+    "average_revenue": 72700249.0
+   },
+   {
+    "category_id": "601611",
+    "category_name": "Bộ dụng cụ chăm sóc da",
+    "rank": 32,
+    "revenue": 171811201650.43,
+    "sale": 583555,
+    "revenue_growth_rate": 16.03,
+    "top3_shop_revenue_ratio": 19.96,
+    "average_revenue": 59822841.8
+   },
+   {
+    "category_id": "601616",
+    "category_name": "Mặt nạ",
+    "rank": 33,
+    "revenue": 171727263565.31,
+    "sale": 1190088,
+    "revenue_growth_rate": 28.32,
+    "top3_shop_revenue_ratio": 21.27,
+    "average_revenue": 63958012.5
+   },
+   {
+    "category_id": "605251",
+    "category_name": "Đồng hồ nam",
+    "rank": 34,
+    "revenue": 169124168435.6,
+    "sale": 195335,
+    "revenue_growth_rate": 96.45,
+    "top3_shop_revenue_ratio": 42.85,
+    "average_revenue": 173996058.06
+   },
+   {
+    "category_id": "603818",
+    "category_name": "Câu cá",
+    "rank": 35,
+    "revenue": 167545410662.72,
+    "sale": 1766360,
+    "revenue_growth_rate": 24.45,
+    "top3_shop_revenue_ratio": 14.17,
+    "average_revenue": 47706552.01
+   },
+   {
+    "category_id": "601271",
+    "category_name": "Váy dự tiệc",
+    "rank": 36,
+    "revenue": 166470736702.18,
+    "sale": 485442,
+    "revenue_growth_rate": 9.78,
+    "top3_shop_revenue_ratio": 14.34,
+    "average_revenue": 80111037.87
+   },
+   {
+    "category_id": "916488",
+    "category_name": "Trà",
+    "rank": 37,
+    "revenue": 161017819646.02,
+    "sale": 1561403,
+    "revenue_growth_rate": 13.02,
+    "top3_shop_revenue_ratio": 8.75,
+    "average_revenue": 38374122.89
+   },
+   {
+    "category_id": "946184",
+    "category_name": "Phụ kiện xe máy",
+    "rank": 38,
+    "revenue": 153359675854.16,
+    "sale": 1225242,
+    "revenue_growth_rate": 18.36,
+    "top3_shop_revenue_ratio": 5.95,
+    "average_revenue": 33521240.62
+   },
+   {
+    "category_id": "947592",
+    "category_name": "Vitamin & Thực phẩm bổ sung cho trẻ",
+    "rank": 39,
+    "revenue": 153069864041.45,
+    "sale": 386548,
+    "revenue_growth_rate": 53.14,
+    "top3_shop_revenue_ratio": 35.66,
+    "average_revenue": 385566408.16
+   },
+   {
+    "category_id": "601602",
+    "category_name": "Kem chống nắng cho da mặt",
+    "rank": 40,
+    "revenue": 150208145172.62,
+    "sale": 606779,
+    "revenue_growth_rate": 32.28,
+    "top3_shop_revenue_ratio": 17.66,
+    "average_revenue": 43677855.53
+   },
+   {
+    "category_id": "601102",
+    "category_name": "Máy hút bụi & Robot quét nhà",
+    "rank": 41,
+    "revenue": 149801283664.83,
+    "sale": 261850,
+    "revenue_growth_rate": 43.74,
+    "top3_shop_revenue_ratio": 44.49,
+    "average_revenue": 213392141.97
+   },
+   {
+    "category_id": "601357",
+    "category_name": "Giày thể thao đơn giản",
+    "rank": 42,
+    "revenue": 149563385480.78,
+    "sale": 390348,
+    "revenue_growth_rate": 109.02,
+    "top3_shop_revenue_ratio": 34.19,
+    "average_revenue": 90044181.51
+   },
+   {
+    "category_id": "601937",
+    "category_name": "Cáp, Bộ sạc & Bộ điều hợp",
+    "rank": 43,
+    "revenue": 149514090752.17,
+    "sale": 1754849,
+    "revenue_growth_rate": 7.28,
+    "top3_shop_revenue_ratio": 22.22,
+    "average_revenue": 40839686.08
+   },
+   {
+    "category_id": "601264",
+    "category_name": "Chân váy",
+    "rank": 44,
+    "revenue": 143198687674.08,
+    "sale": 941693,
+    "revenue_growth_rate": 16.44,
+    "top3_shop_revenue_ratio": 12.2,
+    "average_revenue": 43249377.13
+   },
+   {
+    "category_id": "601284",
+    "category_name": "Hàng dệt kim",
+    "rank": 45,
+    "revenue": 141911701506.41,
+    "sale": 749608,
+    "revenue_growth_rate": 50.32,
+    "top3_shop_revenue_ratio": 12.12,
+    "average_revenue": 65882869.78
+   },
+   {
+    "category_id": "605274",
+    "category_name": "Vòng tay & Lắc tay",
+    "rank": 46,
+    "revenue": 139794813325.49,
+    "sale": 1172240,
+    "revenue_growth_rate": -14.35,
+    "top3_shop_revenue_ratio": 15.76,
+    "average_revenue": 32329975.33
+   },
+   {
+    "category_id": "601554",
+    "category_name": "Kem che khuyết điểm & Phấn nền",
+    "rank": 47,
+    "revenue": 137351395431.84,
+    "sale": 674485,
+    "revenue_growth_rate": 51.12,
+    "top3_shop_revenue_ratio": 13.27,
+    "average_revenue": 79531786.58
+   },
+   {
+    "category_id": "601195",
+    "category_name": "Áo sơ mi",
+    "rank": 48,
+    "revenue": 137128874250.71,
+    "sale": 832859,
+    "revenue_growth_rate": 23.27,
+    "top3_shop_revenue_ratio": 8.79,
+    "average_revenue": 56594665.39
+   },
+   {
+    "category_id": "999304",
+    "category_name": "Sữa tươi",
+    "rank": 49,
+    "revenue": 134236227327.11,
+    "sale": 196415,
+    "revenue_growth_rate": 56.42,
+    "top3_shop_revenue_ratio": 30.97,
+    "average_revenue": 222983766.32
+   },
+   {
+    "category_id": "820624",
+    "category_name": "Sữa bột",
+    "rank": 50,
+    "revenue": 132122346197.13,
+    "sale": 114951,
+    "revenue_growth_rate": 132.3,
+    "top3_shop_revenue_ratio": 46.56,
+    "average_revenue": 269637441.22
+   },
+   {
+    "category_id": "602029",
+    "category_name": "Loa",
+    "rank": 51,
+    "revenue": 131620650162.81,
+    "sale": 249634,
+    "revenue_growth_rate": 50.37,
+    "top3_shop_revenue_ratio": 16.28,
+    "average_revenue": 79866899.37
+   },
+   {
+    "category_id": "873480",
+    "category_name": "Sản phẩm đặc trị mụn",
+    "rank": 52,
+    "revenue": 130688687004.76,
+    "sale": 1074343,
+    "revenue_growth_rate": 22.41,
+    "top3_shop_revenue_ratio": 14.46,
+    "average_revenue": 35992477.83
+   },
+   {
+    "category_id": "855952",
+    "category_name": "Nước hoa nữ",
+    "rank": 53,
+    "revenue": 123362026143.52,
+    "sale": 562935,
+    "revenue_growth_rate": 35.55,
+    "top3_shop_revenue_ratio": 21.55,
+    "average_revenue": 94313475.64
+   },
+   {
+    "category_id": "700612",
+    "category_name": "Cà phê",
+    "rank": 54,
+    "revenue": 121471494415.64,
+    "sale": 673016,
+    "revenue_growth_rate": 37.64,
+    "top3_shop_revenue_ratio": 24.28,
+    "average_revenue": 75777601.01
+   },
+   {
+    "category_id": "843912",
+    "category_name": "Trang phục truyền thống",
+    "rank": 55,
+    "revenue": 120766082564.94,
+    "sale": 423379,
+    "revenue_growth_rate": 25.39,
+    "top3_shop_revenue_ratio": 9.67,
+    "average_revenue": 77265567.86
+   },
+   {
+    "category_id": "963336",
+    "category_name": "Thực phẩm khô",
+    "rank": 56,
+    "revenue": 120763675699.54,
+    "sale": 1115575,
+    "revenue_growth_rate": 18.83,
+    "top3_shop_revenue_ratio": 14.79,
+    "average_revenue": 42004756.77
+   },
+   {
+    "category_id": "601196",
+    "category_name": "Quần short",
+    "rank": 57,
+    "revenue": 119419605464.73,
+    "sale": 1022376,
+    "revenue_growth_rate": 4.85,
+    "top3_shop_revenue_ratio": 7.38,
+    "average_revenue": 40757544.53
+   },
+   {
+    "category_id": "601262",
+    "category_name": "Áo lót",
+    "rank": 58,
+    "revenue": 118403069118.77,
+    "sale": 1202841,
+    "revenue_growth_rate": 10.05,
+    "top3_shop_revenue_ratio": 15.51,
+    "average_revenue": 63520959.83
+   },
+   {
+    "category_id": "600477",
+    "category_name": "Nước hoa để phòng",
+    "rank": 59,
+    "revenue": 114362836773.91,
+    "sale": 978605,
+    "revenue_growth_rate": -21.65,
+    "top3_shop_revenue_ratio": 26.69,
+    "average_revenue": 35102159.84
+   },
+   {
+    "category_id": "601374",
+    "category_name": "Dép lê",
+    "rank": 60,
+    "revenue": 110531987756.83,
+    "sale": 1004428,
+    "revenue_growth_rate": 24.24,
+    "top3_shop_revenue_ratio": 16.79,
+    "average_revenue": 37178603.35
+   },
+   {
+    "category_id": "980232",
+    "category_name": "Đất trồng và Phân bón",
+    "rank": 61,
+    "revenue": 106025149226.35,
+    "sale": 1155023,
+    "revenue_growth_rate": 21.02,
+    "top3_shop_revenue_ratio": 8.86,
+    "average_revenue": 42157116.99
+   },
+   {
+    "category_id": "843400",
+    "category_name": "Áo vest, Tank Top & Áo quây",
+    "rank": 62,
+    "revenue": 105636662298.03,
+    "sale": 1050231,
+    "revenue_growth_rate": 13.5,
+    "top3_shop_revenue_ratio": 11.02,
+    "average_revenue": 32624046.42
+   },
+   {
+    "category_id": "601213",
+    "category_name": "Áo hoodie & Áo len",
+    "rank": 63,
+    "revenue": 103688129894.82,
+    "sale": 501210,
+    "revenue_growth_rate": 218.24,
+    "top3_shop_revenue_ratio": 13.58,
+    "average_revenue": 54429464.51
+   },
+   {
+    "category_id": "984840",
+    "category_name": "Bảng viết điện tử",
+    "rank": 64,
+    "revenue": 99360294596.66,
+    "sale": 725785,
+    "revenue_growth_rate": -14.14,
+    "top3_shop_revenue_ratio": 21.04,
+    "average_revenue": 157714753.33
+   },
+   {
+    "category_id": "601266",
+    "category_name": "Quần short",
+    "rank": 65,
+    "revenue": 98888451362.68,
+    "sale": 1020385,
+    "revenue_growth_rate": 3.73,
+    "top3_shop_revenue_ratio": 10.15,
+    "average_revenue": 31899500.44
+   },
+   {
+    "category_id": "804616",
+    "category_name": "Bộ vét & Bộ",
+    "rank": 66,
+    "revenue": 97495600588.37,
+    "sale": 870349,
+    "revenue_growth_rate": 70.25,
+    "top3_shop_revenue_ratio": 6.74,
+    "average_revenue": 44175623.28
+   },
+   {
+    "category_id": "603705",
+    "category_name": "Bộ quần áo thể thao",
+    "rank": 67,
+    "revenue": 97440592639.47,
+    "sale": 550745,
+    "revenue_growth_rate": 65.92,
+    "top3_shop_revenue_ratio": 8.62,
+    "average_revenue": 54043589.93
+   },
+   {
+    "category_id": "601498",
+    "category_name": "Khử mùi",
+    "rank": 68,
+    "revenue": 97169459641.6,
+    "sale": 813892,
+    "revenue_growth_rate": 16.62,
+    "top3_shop_revenue_ratio": 20.85,
+    "average_revenue": 40436728.94
+   },
+   {
+    "category_id": "803336",
+    "category_name": "Bộ vét & Bộ",
+    "rank": 69,
+    "revenue": 96638924252.69,
+    "sale": 886109,
+    "revenue_growth_rate": 106.0,
+    "top3_shop_revenue_ratio": 8.84,
+    "average_revenue": 43142376.9
+   },
+   {
+    "category_id": "911752",
+    "category_name": "Hệ thống & Camera an ninh",
+    "rank": 70,
+    "revenue": 96467210582.29,
+    "sale": 149352,
+    "revenue_growth_rate": 61.38,
+    "top3_shop_revenue_ratio": 25.29,
+    "average_revenue": 180989138.05
+   },
+   {
+    "category_id": "601295",
+    "category_name": "Áo hoodie & Áo len",
+    "rank": 71,
+    "revenue": 96074627932.24,
+    "sale": 601273,
+    "revenue_growth_rate": 131.31,
+    "top3_shop_revenue_ratio": 11.3,
+    "average_revenue": 48868071.18
+   },
+   {
+    "category_id": "901128",
+    "category_name": "Dép xăng đan & Dép tông",
+    "rank": 72,
+    "revenue": 95142057007.94,
+    "sale": 902411,
+    "revenue_growth_rate": 18.21,
+    "top3_shop_revenue_ratio": 17.64,
+    "average_revenue": 35133699.04
+   },
+   {
+    "category_id": "601104",
+    "category_name": "Quạt",
+    "rank": 73,
+    "revenue": 94815997135.66,
+    "sale": 211936,
+    "revenue_growth_rate": 46.54,
+    "top3_shop_revenue_ratio": 19.36,
+    "average_revenue": 45193516.27
+   },
+   {
+    "category_id": "601618",
+    "category_name": "Tẩy trang",
+    "rank": 74,
+    "revenue": 93862703601.5,
+    "sale": 618523,
+    "revenue_growth_rate": 74.38,
+    "top3_shop_revenue_ratio": 32.09,
+    "average_revenue": 55343575.24
+   },
+   {
+    "category_id": "601396",
+    "category_name": "Cao gót",
+    "rank": 75,
+    "revenue": 92637020199.83,
+    "sale": 483460,
+    "revenue_growth_rate": 15.98,
+    "top3_shop_revenue_ratio": 10.08,
+    "average_revenue": 65283312.33
+   },
+   {
+    "category_id": "700644",
+    "category_name": "Mì gói",
+    "rank": 76,
+    "revenue": 92487133012.93,
+    "sale": 768441,
+    "revenue_growth_rate": 39.54,
+    "top3_shop_revenue_ratio": 34.11,
+    "average_revenue": 58168008.18
+   },
+   {
+    "category_id": "601247",
+    "category_name": "Quần lót",
+    "rank": 77,
+    "revenue": 92032534193.65,
+    "sale": 1000137,
+    "revenue_growth_rate": 41.33,
+    "top3_shop_revenue_ratio": 26.93,
+    "average_revenue": 42845686.31
+   },
+   {
+    "category_id": "601445",
+    "category_name": "Túi xách",
+    "rank": 78,
+    "revenue": 91393948851.36,
+    "sale": 308121,
+    "revenue_growth_rate": 24.34,
+    "top3_shop_revenue_ratio": 38.13,
+    "average_revenue": 57336228.89
+   },
+   {
+    "category_id": "700648",
+    "category_name": "Thực phẩm chăm sóc sắc đẹp",
+    "rank": 79,
+    "revenue": 89392588851.09,
+    "sale": 210916,
+    "revenue_growth_rate": 23.47,
+    "top3_shop_revenue_ratio": 20.06,
+    "average_revenue": 57119865.08
+   },
+   {
+    "category_id": "601364",
+    "category_name": "Dép xăng đan & Dép tông",
+    "rank": 80,
+    "revenue": 87666640661.36,
+    "sale": 614975,
+    "revenue_growth_rate": 32.78,
+    "top3_shop_revenue_ratio": 19.95,
+    "average_revenue": 39830368.32
+   },
+   {
+    "category_id": "847752",
+    "category_name": "Nồi cơm & Nồi áp suất",
+    "rank": 81,
+    "revenue": 85333705057.28,
+    "sale": 156864,
+    "revenue_growth_rate": 116.63,
+    "top3_shop_revenue_ratio": 23.91,
+    "average_revenue": 151300895.49
+   },
+   {
+    "category_id": "910728",
+    "category_name": "Pin ѕạc dự phòng",
+    "rank": 82,
+    "revenue": 84572981859.3,
+    "sale": 410457,
+    "revenue_growth_rate": 48.2,
+    "top3_shop_revenue_ratio": 29.18,
+    "average_revenue": 53324704.83
+   },
+   {
+    "category_id": "601783",
+    "category_name": "Màn hình",
+    "rank": 83,
+    "revenue": 84407024187.85,
+    "sale": 260296,
+    "revenue_growth_rate": 89.92,
+    "top3_shop_revenue_ratio": 15.44,
+    "average_revenue": 174035101.42
+   },
+   {
+    "category_id": "601520",
+    "category_name": "Đồ tắm & Chăm sóc cơ thể",
+    "rank": 84,
+    "revenue": 83989256496.98,
+    "sale": 441739,
+    "revenue_growth_rate": 135.35,
+    "top3_shop_revenue_ratio": 34.2,
+    "average_revenue": 79761877.02
+   },
+   {
+    "category_id": "843656",
+    "category_name": "Trang phục & Phụ kiện",
+    "rank": 85,
+    "revenue": 83988328133.42,
+    "sale": 507358,
+    "revenue_growth_rate": 35.92,
+    "top3_shop_revenue_ratio": 27.96,
+    "average_revenue": 51685125.01
+   },
+   {
+    "category_id": "815632",
+    "category_name": "Mũ bảo hiểm",
+    "rank": 86,
+    "revenue": 80146302775.37,
+    "sale": 564172,
+    "revenue_growth_rate": 27.06,
+    "top3_shop_revenue_ratio": 27.44,
+    "average_revenue": 75325472.53
+   },
+   {
+    "category_id": "601405",
+    "category_name": "Dép lê",
+    "rank": 87,
+    "revenue": 79330841529.63,
+    "sale": 946742,
+    "revenue_growth_rate": 6.34,
+    "top3_shop_revenue_ratio": 8.12,
+    "average_revenue": 29414475.91
+   },
+   {
+    "category_id": "601696",
+    "category_name": "Kem đánh răng",
+    "rank": 88,
+    "revenue": 78447191828.32,
+    "sale": 786785,
+    "revenue_growth_rate": 15.29,
+    "top3_shop_revenue_ratio": 45.37,
+    "average_revenue": 53040697.65
+   },
+   {
+    "category_id": "601476",
+    "category_name": "Dung dịch vệ sinh phụ nữ",
+    "rank": 89,
+    "revenue": 78401689178.82,
+    "sale": 683559,
+    "revenue_growth_rate": 17.16,
+    "top3_shop_revenue_ratio": 18.66,
+    "average_revenue": 37765746.23
+   },
+   {
+    "category_id": "808584",
+    "category_name": "Bộ chăn ga gối đệm",
+    "rank": 90,
+    "revenue": 77947968854.47,
+    "sale": 339976,
+    "revenue_growth_rate": 41.72,
+    "top3_shop_revenue_ratio": 19.46,
+    "average_revenue": 90954456.07
+   },
+   {
+    "category_id": "981512",
+    "category_name": "Điều trị tóc / điều trị da đầu",
+    "rank": 91,
+    "revenue": 75379989248.59,
+    "sale": 387251,
+    "revenue_growth_rate": 28.41,
+    "top3_shop_revenue_ratio": 32.24,
+    "average_revenue": 45879482.2
+   },
+   {
+    "category_id": "901000",
+    "category_name": "Đế bằng",
+    "rank": 92,
+    "revenue": 74680633939.43,
+    "sale": 564447,
+    "revenue_growth_rate": 47.61,
+    "top3_shop_revenue_ratio": 39.7,
+    "average_revenue": 61975629.83
+   },
+   {
+    "category_id": "601462",
+    "category_name": "Kính áp tròng",
+    "rank": 93,
+    "revenue": 73503856291.49,
+    "sale": 712044,
+    "revenue_growth_rate": 42.21,
+    "top3_shop_revenue_ratio": 37.76,
+    "average_revenue": 474218427.69
+   },
+   {
+    "category_id": "855696",
+    "category_name": "Nước hoa nam",
+    "rank": 94,
+    "revenue": 73475575073.79,
+    "sale": 296545,
+    "revenue_growth_rate": 23.3,
+    "top3_shop_revenue_ratio": 18.98,
+    "average_revenue": 76696842.46
+   },
+   {
+    "category_id": "832136",
+    "category_name": "Quà tặng & Giấy gói",
+    "rank": 95,
+    "revenue": 72986164470.88,
+    "sale": 928020,
+    "revenue_growth_rate": 46.91,
+    "top3_shop_revenue_ratio": 7.43,
+    "average_revenue": 21223077.78
+   },
+   {
+    "category_id": "900872",
+    "category_name": "Giày thể thao đơn giản",
+    "rank": 96,
+    "revenue": 72324459600.02,
+    "sale": 337833,
+    "revenue_growth_rate": 61.54,
+    "top3_shop_revenue_ratio": 21.64,
+    "average_revenue": 71255625.22
+   },
+   {
+    "category_id": "605280",
+    "category_name": "Dây chuyền",
+    "rank": 97,
+    "revenue": 71514837623.26,
+    "sale": 451094,
+    "revenue_growth_rate": -9.01,
+    "top3_shop_revenue_ratio": 25.73,
+    "average_revenue": 22011338.14
+   },
+   {
+    "category_id": "602083",
+    "category_name": "Đồng hồ thông minh",
+    "rank": 98,
+    "revenue": 69035107034.95,
+    "sale": 111482,
+    "revenue_growth_rate": 20.72,
+    "top3_shop_revenue_ratio": 19.95,
+    "average_revenue": 145031737.47
+   },
+   {
+    "category_id": "924680",
+    "category_name": "Khẩu trang y tế",
+    "rank": 99,
+    "revenue": 67162578926.34,
+    "sale": 743579,
+    "revenue_growth_rate": 9.82,
+    "top3_shop_revenue_ratio": 42.63,
+    "average_revenue": 99944313.88
+   },
+   {
+    "category_id": "700553",
+    "category_name": "Bánh quy, Bánh cookies & Bánh xốp",
+    "rank": 100,
+    "revenue": 66474160168.27,
+    "sale": 943495,
+    "revenue_growth_rate": 17.73,
+    "top3_shop_revenue_ratio": 29.11,
+    "average_revenue": 34676139.89
+   }
+  ],
+  "message": null,
+  "cached": null,
+  "code": null
+ }
+}

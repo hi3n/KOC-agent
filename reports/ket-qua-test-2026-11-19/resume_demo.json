@@ -1,0 +1,14 @@
+{
+ "killed_at": {
+  "s2a_done": 5,
+  "elapsed_s": 2.7
+ },
+ "stale_running_reset": 3,
+ "cold_credits_at_kill": null,
+ "cold_credits_after_resume": null,
+ "extra_credits_for_done_work": 0,
+ "extra_ai_cost_for_done_work": 0,
+ "results_csv_identical_to_baseline": true,
+ "compare_note": "bỏ cột contact_* (fixtures public đã scrub vì privacy); so từng giá trị còn lại",
+ "verdict": "PASS"
+}
