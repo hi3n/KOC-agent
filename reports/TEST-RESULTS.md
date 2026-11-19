@@ -1,8 +1,8 @@
 # Kết quả test — AI KOC Discovery
 
-*Xuất 2026-11-19 08:14 UTC từ run `demo_sunscreen` · mọi số truy được về `usage_ledger`/`tasks`/`evidence` trong SQLite · báo cáo 5 KOC chi tiết: `report.md`, `results.csv` · benchmark: `benchmark.md`, `resume_demo.json` · máy đọc: `measurements.json` · bảng S2: `kept.csv`, `excluded.csv`*
+*Xuất 2026-11-19 13:05 UTC từ run `demo_sunscreen` · mọi số truy được về `usage_ledger`/`tasks`/`evidence` trong SQLite · báo cáo 5 KOC chi tiết: `report.md`, `results.csv` · benchmark: `benchmark.md`, `resume_demo.json` · máy đọc: `measurements.json` · bảng S2: `kept.csv`, `excluded.csv`*
 
-**Trạng thái:** ✅ FULL PIPELINE hoàn tất (S0→S5). Unit tests: **26 passed in 2.80s**.
+**Trạng thái:** ✅ FULL PIPELINE hoàn tất (S0→S5). Unit tests: **30 passed in 2.90s**.
 
 
 ---
@@ -85,7 +85,7 @@
 
 ## 4. Reliability — lưu tiến độ, phục hồi đo được
 
-**Unit tests: 26 passed in 2.80s** — gồm: runner idempotent (item done không chạy lại), retry 3 lần rồi fail không chặn item khác, waiting backoff, stale-running reset, cache pays-once, judgement cache hit không cần key, strict schema, selector constraints.
+**Unit tests: 30 passed in 2.90s** — gồm: runner idempotent (item done không chạy lại), retry 3 lần rồi fail không chặn item khác, waiting backoff, stale-running reset, cache pays-once, judgement cache hit không cần key, strict schema, selector constraints.
 
 **Sự cố thật đã phục hồi (không diễn tập):** smoke lần 1 dính rate limit 2017 → 20/30 task S2a fail. `reset_retryable_failed` + resume → 20 task chạy lại thành công. Bằng chứng không trả tiền hai lần: S2a lạnh = **30 call / 3.0 credit cho đúng 30 creator** (mỗi creator trả đúng 1 lần 0,1cr; các attempt fail không bị tính tiền).
 

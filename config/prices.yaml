@@ -1,37 +1,22 @@
-# USD per 1M tokens — THAM KHẢO để ước tính cost trong ledger.
-# Nguồn đối chiếu 19/11/2026:
-#   - Anthropic: bảng giá official (skill claude-api, cache 03/11/2026) — khớp 100%
-#     với Nadir blog edition 02/11/2026 (getnadir.com, re-read rate cards 02/11).
-#   - Google: Nadir blog 02/11/2026 dẫn ai.google.dev/gemini-api/docs/pricing.
-# Model lạ không có ở đây → ledger vẫn ghi token, cost=null.
-# LƯU Ý: chạy qua proxy local thì billing thật theo proxy; đây là giá list tham khảo.
-# Cache WRITE Anthropic = 1.25x input (5min) — _cost() hiện chỉ model cache_read;
-# chưa ảnh hưởng số đo vì proxy chưa trả cached_tokens. Sửa _cost khi bật caching thật.
+# Bảng giá tham khảo (USD / 1M tokens) phục vụ ước tính chi phí trong usage_ledger.
+# Model không có trong bảng này → ledger vẫn ghi nhận đầy đủ số token (in/out/cached), cost_usd=null.
+# Có thể tùy chỉnh đơn giá theo hợp đồng hoặc nhà cung cấp thực tế.
 
-# --- Anthropic (verified 03/11/2026) ---
+# --- Anthropic ---
 claude-opus-5-5: {in: 4.00, out: 20.00, cache_read: 0.20}
 claude-sonnet-5-5: {in: 2.00, out: 10.00, cache_read: 0.10}
-claude-haiku-5-5: {in: 0.10, out: 0.50, cache_read: 0.01}   # prompt >100K: 5x ($0.50/$2.50, cache 0.05) — call S3/S4 của ta <<100K
+claude-haiku-5-5: {in: 0.10, out: 0.50, cache_read: 0.01}
 claude-fable-5-2: {in: 8.00, out: 40.00, cache_read: 0.20}
 claude-opus-5: {in: 5.00, out: 25.00, cache_read: 0.50}
-claude-sonnet-4-6: {in: 3.00, out: 15.00, cache_read: 0.30}
-claude-haiku-4-5: {in: 1.00, out: 5.00, cache_read: 0.10}
-# Fast mode Opus 5.5 = 2x ($8/$40) — đòn bẩy latency, KHÔNG dùng (cost-first)
-# Batch API Anthropic = -50% (hướng mở rộng đã ghi README)
 
-# --- Alias qua proxy local (ag/...) — giả định route tới model current gen ---
+# --- Alias ngắn gọn (khi dùng qua OpenAI-compatible gateway) ---
 claude-sonnet: {in: 2.00, out: 10.00, cache_read: 0.10}
 claude-haiku: {in: 0.10, out: 0.50, cache_read: 0.01}
 claude-opus: {in: 4.00, out: 20.00, cache_read: 0.20}
 
-# --- Google Gemini (Nadir 02/11/2026, nguồn ai.google.dev) ---
-# CẢNH BÁO TĂNG GIÁ CÓ NGÀY HẸN (ảnh hưởng chọn fallback tương lai):
-#   gemini-4-argon: $2/$10 → $4/$20 từ 01/12/2026 (cache 0.10 → 0.20)
-#   gemini-3.8-flash + gemini-3.6-flash: gấp đôi 01/01/2027 ($1.50/$7.50)
-gemini-2.5-pro: {in: 1.25, out: 10.00, cache_read: 0.125}   # >200K token: $2.50/$15; cache_read 0.125 là giá tham khảo cũ
-gemini-2.5-flash: {in: 0.30, out: 2.50, cache_read: 0.03}   # giá cũ, chưa re-verify 11/2026 — kiểm tra lại trước khi dùng
-gemini-3.1-pro: {in: 2.00, out: 12.00}                      # >200K: $4/$18; cache rate chưa verify → _cost fallback giá input
-gemini-3.1-flash-lite: {in: 0.25, out: 1.50}                # cache rate chưa verify → fallback giá input
-gemini-3.6-flash: {in: 0.75, out: 3.75, cache_read: 0.075}  # đến 31/12/2026; Batch/Flex nửa giá
-gemini-3.8-flash: {in: 0.75, out: 3.75, cache_read: 0.075}  # đến 31/12/2026; Batch/Flex nửa giá
-gemini-4-argon: {in: 2.00, out: 10.00, cache_read: 0.10}    # đến 30/11/2026 — TỪ 01/12: in 4.00, out 20.00, cache_read 0.20
+# --- Google Gemini (endpoint: https://generativelanguage.googleapis.com/v1beta/openai/) ---
+gemini-4-argon: {in: 2.00, out: 10.00, cache_read: 0.10}
+gemini-3.8-flash: {in: 0.75, out: 3.75, cache_read: 0.075}
+gemini-3.6-flash: {in: 0.75, out: 3.75, cache_read: 0.075}
+gemini-3.1-pro: {in: 2.00, out: 12.00}
+gemini-3.1-flash-lite: {in: 0.25, out: 1.50}

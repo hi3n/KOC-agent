@@ -78,13 +78,15 @@ class RunConfig(BaseModel):
             if v not in (None, "", {}) and k != "fallbacks":
                 merged[k] = v
         # chain = role.fallbacks + global llm.fallback. OPT-IN tường minh:
-        # entry không khai báo model = bỏ (không kế thừa model default — smoke
-        # 19/11 lộ bug: fallback rỗng tự thành bản sao provider chính, retry thừa).
+        # entry không khai báo model = bỏ (không kế thừa model default).
+        # Fallback kế thừa timeout_s/max_tokens của role hiện tại và base_url/api_key
+        # từ role/default trừ khi entry fallback chỉ định base_url/api_key riêng.
         fbs = []
+        base_for_fb = {k: v for k, v in merged.items() if k != "fallbacks"}
         for f in list(role.get("fallbacks", [])) + ([llm["fallback"]] if llm.get("fallback") else []):
             if not f.get("model"):
                 continue
-            fm = dict(llm["default"])
+            fm = dict(base_for_fb)
             fm.update({k: v for k, v in f.items() if v not in (None, "", {})})
             fbs.append(LLMRole(**fm))
         merged["fallbacks"] = fbs

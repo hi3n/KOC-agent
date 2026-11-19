@@ -20,13 +20,17 @@ from .runner import StageRunner
 
 class Ctx:
     def __init__(self, cfg: RunConfig, db: Database, ledger: Ledger,
-                 kd: KalodataClient, mode: str = "rw"):
+                 kd: KalodataClient, mode: str = "rw",
+                 run_dir: str | Path | None = None,
+                 report_dir: str | Path | None = None):
         self.cfg, self.db, self.ledger, self.kd = cfg, db, ledger, kd
         self.mode = mode
         self.runner = StageRunner(db, ledger, cfg.run_id)
         self.prices = load_prices()
-        self.run_dir = Path("runs") / cfg.run_id
+        self.run_dir = Path(run_dir) if run_dir else (Path("runs") / cfg.run_id)
         self.run_dir.mkdir(parents=True, exist_ok=True)
+        self.report_dir = Path(report_dir) if report_dir else Path("reports")
+        self.report_dir.mkdir(parents=True, exist_ok=True)
         self._llm: dict[str, LLMClient] = {}
 
     def llm(self, role: str, stage: str) -> LLMClient:
@@ -55,10 +59,11 @@ class Ctx:
 
 def create_ctx(brief_path: str | Path | None = None, mode: str = "rw",
                run_id: str | None = None, overrides: dict | None = None,
-               db_path: str | Path | None = None) -> Ctx:
+               db_path: str | Path | None = None,
+               report_dir: str | Path | None = None) -> Ctx:
     brief_text = Path(brief_path).read_text(encoding="utf-8") if brief_path else ""
     cfg = build_config(brief_text=brief_text, overrides=overrides)
-    cfg.run_id = run_id or "run_" + cfg.config_hash()[:10]
+    cfg.run_id = run_id or "demo_sunscreen"
     db = Database(db_path or Path("runs") / cfg.run_id / "koc.db")
     row = db.one("SELECT config_json FROM runs WHERE run_id=?", (cfg.run_id,))
     if row:
@@ -92,7 +97,8 @@ def create_ctx(brief_path: str | Path | None = None, mode: str = "rw",
     ledger = Ledger(db, cfg.run_id)
     kd = KalodataClient(db, ledger, cfg.kalodata, os.environ.get("KALO_API_KEY", ""),
                         mode=mode, fixtures_dir="fixtures", date_range=cfg.date_range)
-    return Ctx(cfg, db, ledger, kd, mode)
+    rdir = Path(db_path).parent if db_path else None
+    return Ctx(cfg, db, ledger, kd, mode, run_dir=rdir, report_dir=report_dir or rdir)
 
 
 def save_brief_analysis(ctx: Ctx, analysis: BriefAnalysis):

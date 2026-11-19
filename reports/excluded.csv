@@ -1,0 +1,24 @@
+﻿creator_id,name,stage,hard,reason,measured,measured_max
+6549820979589070849,Lucie nguyen,s2a,True,median ER 0.0041 < 0.005,18.9,41.0
+6550177838299938818,Long Chun🎭,s2a,True,"followers 7,700,000 > trần giả định 1,000,000 — ngoài tầm ngân sách (giả định giá theo tier, xem README)",17.58,41.0
+6581259449637175298,Huỳnh Ngọc Tuyết Nhi ˚ ☁️ ₊,s2a,True,"followers 1,300,000 > trần giả định 1,000,000 — ngoài tầm ngân sách (giả định giá theo tier, xem README)",19.21,41.0
+6697094145805550593,Kim Khánh,s2a,False,"dưới ngưỡng cắt (điểm nội bộ 0.382, giữ 12/30)",16.58,41.0
+6798739018520839169,Nguyễn Thị Kim Xuyến's,s2a,True,median ER 0.0039 < 0.005,13.53,41.0
+6812660834554512386,Trang Roll Royce,s2a,True,median ER 0.0030 < 0.005,16.63,41.0
+6837007224910513154,NorinPham,s2a,True,median ER 0.0030 < 0.005,20.5,41.0
+6849316533602419713,THEANH28 TRENDING,s2a,True,"followers 9,200,000 > trần giả định 1,000,000 — ngoài tầm ngân sách (giả định giá theo tier, xem README)",21.14,41.0
+6975363969834238977,Thuan❤️ha.shop 🥰,s2a,True,median ER 0.0034 < 0.005,16.77,41.0
+7210377689432540187,Góc của Linh,s2a,True,median ER 0.0018 < 0.005,17.95,41.0
+7265257466710475778,Maika,s2a,False,"dưới ngưỡng cắt (điểm nội bộ 0.385, giữ 12/30)",16.7,41.0
+7290869378952922120,Minh Bảo Official,s2a,False,"dưới ngưỡng cắt (điểm nội bộ 0.283, giữ 12/30)",12.29,41.0
+7350235704578638866,Uyên Ni ୨ৎ,s2a,True,median ER 0.0040 < 0.005,20.5,41.0
+7408092230227969041,𝐀𝐧𝐝𝐲 𝐁𝐞𝐚𝐮𝐭𝐲 🎀,s2a,True,median ER 0.0000 < 0.005,23.7,41.0
+7444779060469875728,minchimoah,s2a,False,"dưới ngưỡng cắt (điểm nội bộ 0.406, giữ 12/30)",17.64,41.0
+7483010236904850439,Bà Ngoại Coffee 1953,s2a,False,"dưới ngưỡng cắt (điểm nội bộ 0.317, giữ 12/30)",13.74,41.0
+7532528032739214343,Kim Tiền,s2a,True,median ER 0.0041 < 0.005,20.5,41.0
+7549097228750406663,hannahteam.review,s2a,True,median ER 0.0013 < 0.005,14.81,41.0
+6875773744855204865,Tô Tuyết Trâm,s3,False,dưới ngưỡng S3 (điểm 0.461 < 0.478),22.17,46.0
+7039923617978975234,Mần đẹp 💅,s3,False,dưới ngưỡng S3 (điểm 0.427 < 0.478),20.55,46.0
+7526390629719737362,Vàng Thị Solai,s3,False,dưới ngưỡng S3 (điểm 0.420 < 0.478),20.23,46.0
+7640144815790982165,anastasia nguyễn,s3,False,dưới ngưỡng S3 (điểm 0.400 < 0.478),19.24,46.0
+6874902128822715394,THANH TRÚC CHERRY BAMBO,s3,False,dưới ngưỡng S3 (điểm 0.393 < 0.478),18.9,46.0

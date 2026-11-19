@@ -2,7 +2,7 @@
 
 `run_id=demo_sunscreen` · as_of=2026-11-18 · date_range=2026-10-20~2026-11-18 · seed=42
 
-Models (cấu hình được, không fix cứng): `{"brief": "ag/claude-sonnet-5-5", "screen": "ag/claude-sonnet-5-5", "video": "ag/claude-opus-5-5", "reason": "ag/claude-sonnet-5-5"}`
+Models (cấu hình được, không fix cứng): `{"brief": "claude-sonnet-5-5", "screen": "claude-sonnet-5-5", "video": "claude-opus-5-5", "reason": "claude-sonnet-5-5"}`
 
 
 ## 1. Brief và phân tích của AI (S0)
@@ -211,7 +211,7 @@ Hoán đổi 1 người (phương án 1): Công chúa cam thường → Kiều O
 ## 6. Chi phí & hiệu năng
 Xem `benchmark.md` (ledger đo thật, lạnh/ấm tách riêng).
 
-- Tổng: 12.8 credit Kalodata · 303,908 token in / 87,469 out (cache 0) · AI $1.8690 · 193 lời gọi ghi ledger.
+- Tổng: 12.8 credit Kalodata · 303,908 token in / 87,469 out (cache 0) · AI $1.8690 · 194 lời gọi ghi ledger.
 
 ## 7. Giới hạn & hướng mở rộng
 

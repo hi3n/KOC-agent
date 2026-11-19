@@ -39,10 +39,12 @@ llm:
       model: ${LLM_MODEL_REASON:-claude-sonnet-5-5}
       base_url: ${LLM_REASON_BASE_URL:-}
       api_key: ${LLM_REASON_API_KEY:-}
-      timeout_s: 300        # S5 prompt lớn + thinking: 180s từng timeout qua proxy (19/11)
-      max_tokens: 8192      # 7 lý do đầy đủ strengths/concerns/verify
-      fallbacks:            # opt-in qua env (tránh hardcode model prefix của proxy cá nhân)
+      timeout_s: 300        # S5 tổng hợp 7 KOC + bằng chứng cần timeout và max_tokens lớn hơn
+      max_tokens: 8192
+      fallbacks:            # opt-in qua env (cùng hoặc khác provider)
         - model: ${LLM_REASON_FALLBACK_MODEL:-}
+          base_url: ${LLM_REASON_FALLBACK_BASE_URL:-}
+          api_key: ${LLM_REASON_FALLBACK_API_KEY:-}
 
 run:
   as_of: "2026-11-18"     # ghim date_range tuyệt đối → cache bất biến

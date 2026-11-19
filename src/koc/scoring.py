@@ -7,7 +7,7 @@ Design reasons (ARCHITECTURE.md D2/D9):
   LOW/MEDIUM/HIGH buckets, which use a different definition.
 - Performance sub-scores are pool-relative percentiles, not absolute thresholds:
   thresholds don't transfer across niches; percentiles are transparent and need
-  no magic constants. Red flags stay absolute (from tieu-chi-chon-koc.md).
+  no magic constants. Red flags stay absolute (from KOC-SELECTION-CRITERIA.md).
 - Scores carry coverage: audience (25) + collaboration (10) are NOT auto-scored;
   measurable max = 65. Display "measured X/65", never a fake /100.
 """
@@ -92,7 +92,7 @@ def performance_metrics(videos: list[VideoStats], followers: int, period_days: i
 
 
 def red_flags(m: dict, cfg_flags: dict, competitor_hits: list[str]) -> list[dict]:
-    """Absolute thresholds from tieu-chi-chon-koc.md. Each flag carries its numbers."""
+    """Absolute thresholds from KOC-SELECTION-CRITERIA.md. Each flag carries its numbers."""
     flags = []
     if m.get("n_videos", 0) == 0:
         flags.append({"flag": "no_video_data", "detail": "không có video trong kỳ"})

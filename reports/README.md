@@ -6,7 +6,8 @@ Thư mục này chứa toàn bộ kết quả chạy test THẬT (`S0 → S5`) v
 
 | File | Nội dung | Đọc khi |
 |---|---|---|
-| **TEST-RESULTS.md** | Báo cáo tổng hợp theo 4 tiêu chí đề bài: chất lượng bằng chứng · token/chi phí · scalability · reliability · thời gian xử lý | Muốn hiểu kết quả tổng quan nhanh — **BẮT ĐẦU TỪ ĐÂY** |
+| **dashboard.html** | **Dashboard trực quan cho người kinh doanh** — mở bằng browser: thẻ 5 KOC + 2 dự phòng (lý do, bằng chứng, việc cần xác minh), biểu đồ phễu/điểm/độ nhạy ngân sách, chi phí, độ tin cậy. Ngôn ngữ phi kỹ thuật, kèm bảng dự phòng. **Tự sinh từ data run** (`src/koc/dashboard.py`, gọi trong `koc run/resume/report`) — không phải file tĩnh | Muốn xem trực quan, trình bày cho người không đọc code — **BẮT ĐẦU TỪ ĐÂY** |
+| **TEST-RESULTS.md** | Báo cáo tổng hợp theo 4 tiêu chí đề bài: chất lượng bằng chứng · token/chi phí · scalability · reliability · thời gian xử lý | Muốn hiểu kết quả tổng quan nhanh theo tiêu chí chấm |
 | **report.md** | **Báo cáo chi tiết 5 KOC chính thức + 2 dự phòng**: phân tích brief (S0), bảng phễu, điểm đã đo/chưa đo, lý do đề xuất kèm mã `evidence_id`, phương án thay thế, ngân sách & giá trần, recall audit | Muốn đọc đề xuất KOC và đối chiếu bằng chứng |
 | **results.csv** | Bảng 5 KOC + 2 dự phòng (mở bằng Excel/Google Sheets): điểm từng nhóm, giá giả định, giá trần, tóm tắt, cờ rủi ro (email/zalo đã redact khi commit public) | Muốn xem dạng bảng |
 | **benchmark.md** | Bảng đo thật từ `usage_ledger` (tách LẠNH / ẤM theo từng tầng S0–S5), ngoại suy chi phí $N=500$ (phễu vs ngây thơ), và kết quả `kill -9 / resume` | Muốn kiểm tra Token Efficiency & Scalability |
@@ -25,12 +26,13 @@ Thư mục này chứa toàn bộ kết quả chạy test THẬT (`S0 → S5`) v
   - `S5`: Duyệt tổ hợp chọn 5 KOC + 2 dự phòng trong ngân sách 30 triệu → LLM viết lý do từ kho bằng chứng → **7/7 KOC pass `validate_reason`**.
 - 💰 **Tổng chi phí chạy lạnh (đo từ `usage_ledger`):** **12.8 Kalodata credits** + **$1.869 AI** (391,377 tokens). Chạy ấm / resume phần đã xong = **0 credit, $0.0000**.
 - 🛡️ **Reliability:** Đã phục hồi tự động qua sự cố rate-limit thật (mã `2017`) không mất tiền 2 lần, và pass bài test `kill -9` giữa chừng (`verdict: PASS`).
-- 🧪 **Unit tests:** 24 passed (~3s).
+- 🧪 **Unit tests:** 30 passed (~3s).
 
 ## Tái lập / cập nhật
 
 ```bash
-uv run python scripts/export_test_report.py demo_sunscreen reports/ket-qua-test-2026-11-19
+uv run koc report --open                    # dựng lại báo cáo & mở dashboard.html
+uv run python scripts/export_test_report.py # xuất lại toàn bộ các file trong reports/
 ```
 
 Nguồn số liệu: `runs/demo_sunscreen/koc.db` (bảng `usage_ledger`, `tasks`, `evidence`) — không có số ước tính suông.

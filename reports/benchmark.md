@@ -28,6 +28,7 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
 | s2a | kalodata | 30 | 0.0 | 0 | 0 | 0 | 0.0000 | 0 |
 | s2b | kalodata | 18 | 0.0 | 0 | 0 | 0 | 0.0000 | 0 |
 | s4 | llm | 14 | 0.0 | 0 | 0 | 0 | 0.0000 | 0 |
+| s5 | llm | 1 | 0.0 | 0 | 0 | 0 | 0.0000 | 0 |
 
 **Tổng ẤM**: 0.0 credit · $0.0000 AI · 0 token · 0s tổng thời gian tác vụ (song song nên wall-clock nhỏ hơn).
 
@@ -45,10 +46,10 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
 ```
 {
  "killed_at": {
-  "s2a_done": 3,
+  "s2a_done": 5,
   "elapsed_s": 2.5
  },
- "stale_running_reset": 3,
+ "stale_running_reset": 2,
  "cold_credits_at_kill": null,
  "cold_credits_after_resume": null,
  "extra_credits_for_done_work": 0,

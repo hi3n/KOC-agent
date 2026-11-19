@@ -1,14 +1,16 @@
-"""Outputs: results.csv, excluded.csv, report.md, benchmark.md.
+"""Outputs: results.csv, excluded.csv, report.md, benchmark.md, dashboard.html.
 
 Every number comes from the ledger or stored stage results — nothing estimated
 in prose. Scores display measured/unmeasured split (never a fake /100). Reasons
 render with their evidence payloads so a human can audit the chain.
+dashboard.html = bản trực quan ngôn ngữ kinh doanh, tự sinh mỗi lần chạy.
 """
 from __future__ import annotations
 
 import csv
 import json
 
+from . import dashboard
 from .evidence import audit_numeric_claims
 from .scoring import ScoreCard
 
@@ -21,7 +23,7 @@ def _stage(ctx, name, default=None):
 
 
 def write_all(ctx):
-    out = ctx.run_dir
+    out = ctx.report_dir
     out.mkdir(parents=True, exist_ok=True)
     s1, s2, s3, s4, s5 = (_stage(ctx, k) for k in ("s1", "s2", "s3", "s4", "s5"))
     details = s2.get("details", {})
@@ -32,6 +34,7 @@ def write_all(ctx):
     _csv_excluded(out, s2, s3)
     _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details)
     write_benchmark(ctx)
+    dashboard.render(ctx)
 
 
 def _csv_results(out, sel, reasons, cards, details):
@@ -57,8 +60,8 @@ def _csv_results(out, sel, reasons, cards, details):
             "niche_cluster": m.get("niche_cluster", ""),
             "summary": r.get("summary", ""),
             "contact_tiktok": contacts.get("creator_contact_tiktok", ""),
-            "contact_email": contacts.get("creator_contact_email", ""),
-            "contact_zalo": contacts.get("creator_contact_zalo", ""),
+            "contact_email": "[redacted]" if contacts.get("creator_contact_email") else "",
+            "contact_zalo": "[redacted]" if contacts.get("creator_contact_zalo") else "",
             "flags": "; ".join(f["flag"] for f in (card.flags if card else [])),
         })
     if rows:
@@ -93,7 +96,7 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
     L = []
     L.append(f"# Báo cáo đề xuất KOC — {camp.get('product', 'kem chống nắng')}\n")
     L.append(f"`run_id={cfg.run_id}` · as_of={cfg.as_of} · date_range={cfg.date_range} · seed={cfg.seed}\n")
-    models = {r: cfg.llm_role(r).model for r in ("brief", "screen", "video", "reason")}
+    models = {r: cfg.llm_role(r).model.removeprefix("ag/") for r in ("brief", "screen", "video", "reason")}
     L.append(f"Models (cấu hình được, không fix cứng): `{json.dumps(models)}`\n")
 
     L.append("\n## 1. Brief và phân tích của AI (S0)\n")
@@ -164,7 +167,12 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
                 L.append(f"- ⚠️ Lý do CHƯA pass kiểm chứng: {'; '.join(issues)}")
             contacts = d.get("contacts", {})
             if contacts:
-                L.append("- Liên hệ: " + ", ".join(f"{k.replace('creator_contact_', '')}={v}" for k, v in contacts.items()))
+                c_items = []
+                for k, v in contacts.items():
+                    key = k.replace("creator_contact_", "")
+                    val = "[redacted]" if key in ("email", "zalo") and v else v
+                    c_items.append(f"{key}={val}")
+                L.append("- Liên hệ: " + ", ".join(c_items))
         if len(portfolios) > 1:
             L.append("\n**Phương án thay thế** (chênh lệch điểm so với phương án 1):")
             for i, p in enumerate(portfolios[1:], 2):
@@ -214,7 +222,7 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
 
 
 def write_benchmark(ctx):
-    out = ctx.run_dir
+    out = ctx.report_dir
     db = ctx.db
     rid = ctx.cfg.run_id
     L = [f"# Benchmark — run `{rid}`\n",

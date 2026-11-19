@@ -2,7 +2,7 @@
 
 Hệ thống tìm và đề xuất KOC TikTok dựa trên **bằng chứng**, cho bài test Founding Engineer (DETOLA).
 Brief ngôn ngữ tự nhiên → AI phân tích → phễu 5 tầng rẻ→đắt → bộ 5 KOC + 2 dự phòng trong ngân sách,
-kèm lý do trích bằng chứng kiểm chứng được, danh sách loại kèm lý do, và benchmark đo thật.
+kèm lý do trích bằng chứng kiểm chứng được, danh sách loại kèm lý do, **dashboard HTML trực quan** và benchmark đo thật.
 
 **Nguyên tắc:** chất lượng giải pháp, hiệu quả chi phí, tư duy kiến trúc > độ phức tạp.
 Code lo số liệu và lựa chọn; AI chỉ xuất hiện ở chỗ cần phán đoán. Mọi lời gọi tốn tiền đi qua
@@ -21,40 +21,43 @@ uv sync
 #    LLM_MODEL_SCREEN/VIDEO/REASON/BRIEF=...   (xem .env.example: Anthropic / Gemini / OpenRouter / local)
 
 # 3. Chạy demo (mặc định 30 ứng viên → 5 KOC + 2 dự phòng)
-uv run koc run --brief briefs/sunscreen.txt
+uv run koc run --brief briefs/sunscreen.txt --open
 
-# Kết quả: runs/<run_id>/report.md · results.csv · excluded.csv · benchmark.md
+# Kết quả xuất thống nhất tại 1 thư mục: reports/ (dashboard.html · report.md · results.csv · excluded.csv · benchmark.md)
 ```
 
-**Kết quả test đã chạy (đọc ngay trên GitHub, không cần chạy lại):** `reports/ket-qua-test-2026-11-19/` —
-- `TEST-RESULTS.md`: tổng hợp theo 4 tiêu chí đề bài (chất lượng bằng chứng, token/chi phí đo thật, scalability, reliability kèm sự cố rate-limit thật đã phục hồi).
-- `report.md` & `results.csv`: **báo cáo chi tiết 5 KOC chính thức + 2 dự phòng**, lý do đề xuất kèm mã `evidence_id`, phương án thay thế, ngân sách & giá trần (email/zalo cá nhân đã redact trong bản public).
-- `benchmark.md` & `resume_demo.json`: bảng chi phí LẠNH/ẤM từ `usage_ledger`, ngoại suy $N=500$, và bằng chứng `kill -9 → resume` (`extra_credits = 0`, `verdict: PASS`).
-- `kept.csv` / `excluded.csv` / `measurements.json`: bảng ứng viên qua S2, danh sách loại kèm lý do, và số đo thô từ SQLite.
-Mỗi ngày chạy lại = một thư mục snapshot mới, không ghi đè kết quả cũ.
-Xuất lại/cập nhật: `uv run python scripts/export_test_report.py`.
+**Kết quả test đã chạy (đọc ngay trên GitHub trong thư mục `reports/`, không cần chạy lại):**
+- `reports/dashboard.html`: **báo cáo trực quan cho người kinh doanh — TỰ SINH mỗi lần `koc run/resume/report`** (`src/koc/dashboard.py`): thẻ KOC kèm bằng chứng, biểu đồ phễu/điểm/độ nhạy ngân sách, chi phí, kiểm chứng. Ngôn ngữ phi kỹ thuật, không chứa contact cá nhân, mở thẳng bằng browser.
+- `reports/TEST-RESULTS.md`: tổng hợp theo 4 tiêu chí đề bài (chất lượng bằng chứng, token/chi phí đo thật, scalability, reliability kèm sự cố rate-limit thật đã phục hồi).
+- `reports/report.md` & `reports/results.csv`: **báo cáo chi tiết 5 KOC chính thức + 2 dự phòng**, lý do đề xuất kèm mã `evidence_id`, phương án thay thế, ngân sách & giá trần (email/zalo cá nhân đã redact trong bản public).
+- `reports/benchmark.md` & `reports/resume_demo.json`: bảng chi phí LẠNH/ẤM từ `usage_ledger`, ngoại suy $N=500$, và bằng chứng `kill -9 → resume` (`extra_credits = 0`, `verdict: PASS`).
+- `reports/kept.csv` / `reports/excluded.csv` / `reports/measurements.json`: bảng ứng viên qua S2, danh sách loại kèm lý do, và số đo thô từ SQLite.
+Xuất lại/cập nhật toàn bộ thư mục `reports/`: `uv run python scripts/export_test_report.py`.
 
 ### Đổi provider LLM — không sửa code
 
-Mọi vai trò (brief/screen/video/reason) cấu hình độc lập `base_url`, `api_key`, `model`, `extra`
-qua env hoặc `config/defaults.yaml`. Ví dụ Gemini:
+Mọi vai trò (`brief`, `screen`, `video`, `reason`) cấu hình độc lập `base_url`, `api_key`, `model`, `extra`
+qua `.env` hoặc `config/defaults.yaml`. Ví dụ chuyển sang **Google Gemini** (qua OpenAI-compatible endpoint chính thức của Google AI Studio):
 
 ```bash
 LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 LLM_API_KEY=...
-LLM_MODEL_SCREEN=gemini-2.5-flash
-LLM_MODEL_VIDEO=gemini-2.5-pro
+LLM_MODEL_BRIEF=gemini-3.8-flash
+LLM_MODEL_SCREEN=gemini-3.8-flash
+LLM_MODEL_VIDEO=gemini-4-argon
+LLM_MODEL_REASON=gemini-4-argon
 ```
 
-Giá token để tính chi phí: `config/prices.yaml` (sửa được; model lạ → ledger vẫn ghi token, cost=null).
+Giá token tham chiếu để tính chi phí: `config/prices.yaml` (hỗ trợ sẵn dòng `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5`, `gemini-4-argon`, `gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.1-pro`, `gemini-3.1-flash-lite`; model lạ → ledger vẫn ghi đủ token, `cost=null`).
 
 **Bảo mật:** chỉ điền key vào `.env` (gitignore). `.env.example` là template — KHÔNG điền key thật.
 
 ### Fallback khi LLM không gọi được (bounded, tường minh)
 
-- **Chain dự phòng opt-in**: đặt `LLM_FALLBACK_MODEL/BASE_URL/API_KEY` (provider khác cũng được)
-  → mọi role fail (auth/quota/404/schema-invalid sau retry) tự chuyển fallback, ledger ghi rõ
-  `UNAVAILABLE model → fallback model`. Không khai báo = không fallback.
+- **Chain dự phòng opt-in (cùng hoặc khác provider)**:
+  - Toàn cục cho mọi tầng: đặt `LLM_FALLBACK_MODEL` (ví dụ `gemini-4-argon`), `LLM_FALLBACK_BASE_URL` (ví dụ `https://generativelanguage.googleapis.com/v1beta/openai/`), `LLM_FALLBACK_API_KEY`.
+  - Hoặc riêng cho tầng tổng hợp lý do S5: `LLM_REASON_FALLBACK_MODEL` (ví dụ `claude-opus-5-5` hoặc `gemini-4-argon`).
+  - Khi role chính lỗi (auth/quota/404/timeout/schema-invalid sau retry), hệ thống tự động chuyển sang fallback và ghi rõ vào `usage_ledger`: `UNAVAILABLE <primary_model> → fallback <fallback_model>`. Không khai báo = không fallback.
 - **Không có router tự chọn model động** — lý do: phá cache judgement, phá determinism resume,
   phá attribution benchmark (xem `docs/ARCHITECTURE.md` D18). Phễu theo vai trò đã là routing chi phí.
 - **Degrade, don't stop**: mọi provider fail → S0 dùng `campaign_defaults` YAML + keyword match
@@ -62,28 +65,30 @@ Giá token để tính chi phí: `config/prices.yaml` (sửa được; model l�
   template từ evidence thật (vẫn pass validator, ghi rõ "cần người viết lại"). Pipeline luôn ra
   deliverable với phần thiếu đánh dấu trung thực.
 
-### Chạy lại OFFLINE không cần key/credit (cho người chấm)
+### Chạy lại OFFLINE & Dựng báo cáo (gồm Dashboard HTML) không cần key/credit
 
 Repo kèm `fixtures/` (response Kalodata ghi từ chạy thật) + `fixtures/judgements_bundle.json`
-(kết quả LLM đã cache). Chế độ replay đọc toàn bộ từ đó, không gọi mạng:
+(kết quả LLM đã cache). Chế độ replay đọc toàn bộ từ đó, không gọi mạng.
+Mọi lệnh `run`, `resume`, `report` đều **tự động sinh đủ bộ báo cáo** vào `reports/` (`dashboard.html`, `report.md`, `results.csv`, `excluded.csv`, `benchmark.md`); thêm cờ `--open` để mở ngay `reports/dashboard.html` trên trình duyệt:
 
 ```bash
-uv run koc run --offline --run-id replay_demo     # chạy lại từ đầu, 0 credit, 0 token
-uv run koc resume demo_sunscreen --offline        # tiếp tục run có sẵn
-uv run koc report demo_sunscreen                  # dựng lại report từ DB, không gọi gì
+uv run koc run --offline --open            # chạy lại toàn bộ pipeline từ fixtures, 0 credit, 0 token, mở dashboard.html
+uv run koc resume --offline --open         # tiếp tục run có sẵn ở chế độ offline
+uv run koc report --open                   # chỉ dựng lại toàn bộ report (.html/.md/.csv) từ SQLite DB, không gọi API/LLM
+uv run python scripts/export_test_report.py # xuất/cập nhật thêm TEST-RESULTS.md, kept.csv, measurements.json vào reports/
 ```
 
 ### Resume sau gián đoạn
 
 ```bash
-uv run koc resume <run_id>     # task đang dở chạy lại (cache hit, 0 đồng); task xong giữ nguyên
-uv run python scripts/demo_resume.py   # demo kill cứng giữa chừng → resume → so kết quả + chi phí thêm
+uv run koc resume                      # mặc định demo_sunscreen (hoặc truyền <run_id>): task dở chạy lại (cache hit, 0đ)
+uv run python scripts/demo_resume.py   # demo kill cứng giữa chừng → resume → đối chiếu kết quả + chi phí thêm (reports/resume_demo.json)
 ```
 
 ### Benchmark
 
 ```bash
-uv run koc bench <run_id>      # chạy ấm lại toàn pipeline (cache giữ nguyên) → benchmark.md tách LẠNH/ẤM
+uv run koc bench                       # chạy ấm lại toàn pipeline (cache giữ nguyên) → reports/benchmark.md tách LẠNH/ẤM
 ```
 
 ## Kiến trúc (tóm tắt — chi tiết + lý do từng quyết định: `docs/ARCHITECTURE.md`)
@@ -99,7 +104,7 @@ brief.txt → [S0] AI phân tích brief (grounded trên cây danh mục Kalodata
                  → LLM đa phương thức chấm rubric → evidence từng quote/observation
           → [S5] duyệt tổ hợp C(K,5) code: ngân sách + slot + đa dạng
                  → LLM viết lý do TỪ evidence → validator từ chối lý do không nguồn
-          → report.md + results.csv + excluded.csv + benchmark.md
+          → reports/: dashboard.html + report.md + results.csv + excluded.csv + benchmark.md
 Ngang: SQLite WAL (runs·tasks·api_cache·judgements·evidence·videos·usage_ledger)
 ```
 
@@ -111,7 +116,7 @@ Ngang: SQLite WAL (runs·tasks·api_cache·judgements·evidence·videos·usage_l
   checklist xác minh, không đoán); mọi lý do trích `evidence_id` truy ngược về API gốc hoặc
   file video + timestamp; recall audit đo mức bỏ sót của phễu, báo cáo thẳng.
 
-## Chi phí demo (đo thật bằng ledger, xem `runs/*/benchmark.md`)
+## Chi phí demo (đo thật bằng ledger, xem `reports/benchmark.md`)
 
 Kalodata tính theo credit (1 credit ≈ 0,1 USD tham khảo). Demo 30 ứng viên ≈ 13 credit
 (video/url chiếm phần lớn) + AI ≈ 1–2 USD tùy provider. Hạn mức credit cấu hình ở
@@ -135,40 +140,47 @@ Kalodata tính theo credit (1 credit ≈ 0,1 USD tham khảo). Demo 30 ứng vi�
 6. Đối thủ do AI đề xuất khi brief không nêu — **giả định, cần thương hiệu xác nhận**.
 7. Chưa làm (có chủ đích, xem ARCHITECTURE.md D16): Jev/TypeSafe judge, Google Sheets,
    Batch API (−50%), human baseline, LLM-as-judge, vòng phản hồi sau chiến dịch,
-   đo chồng lấn khán giả thật. Không UI, không tự cào TikTok, không đoán tuổi/giới tính từ mặt,
+   đo chồng lấn khán giả thật. Chưa dựng Web Server / Admin Backend đa người dùng (hệ thống đã tự sinh `reports/dashboard.html` trực quan cho từng lần chạy; thiết kế mở rộng FastAPI + Admin Panel xem tại `docs/ARCHITECTURE.md` mục 6), không tự cào TikTok, không đoán tuổi/giới tính từ mặt,
    không kết luận pháp lý (chỉ gắn cờ cho người duyệt).
 
-## Hướng mở rộng
+## Hướng mở rộng (chi tiết thiết kế: `docs/EXPANSION-ROADMAP.md`)
 
-- **Scale 500:** đổi `funnel.candidates: 500`, `after_2a: 100`, `after_3: max(15, 5%N)`;
-  thêm credit Kalodata. Kiến trúc không đổi: mọi tầng parameterized, cache/resume/ledger giữ nguyên;
-  chi phí ngoại suy từ đơn giá đo được (benchmark.md).
-- **Batch API Anthropic (−50%)** cho S3/S4 khi không cần latency; adapter native cho cache_control tường minh.
-- **Jev judge** cho S3 closed-set questions (interface `Judge` đã tách; chỉ thêm khi có bộ mẫu
-  kiểm thử tiếng Việt 30–50 nhãn).
-- **Giá thật & Analytics thật (`koc reselect` hướng mở rộng):** ghi đè báo giá thật + điểm khán giả xác minh từ ảnh Analytics (gắn nhãn `human-verified` tách biệt với `system-measured /65`, lưu provenance) → chạy lại S5 và chỉ sinh lại lý do cho thành viên thay đổi.
+- **REST API & Web Admin Dashboard (Dual-Interface: CLI + FastAPI + Web UI):** bọc mỏng FastAPI (`src/koc/api.py`) trên cùng Core Engine và SQLite WAL; hỗ trợ chạy/tạm dừng (`cancel_event`)/resume trực tiếp trên trình duyệt, xem thanh tiến độ thời gian thực, mở drawer xem 6 frame ảnh + transcript từng KOC (xem chi tiết các endpoint trong `docs/EXPANSION-ROADMAP.md` Phần 1).
+- **Tầng S6 — Tự động hóa liên hệ KOC & khép vòng chấm điểm 100/100 (Automated Outreach & Auto-Reselect Loop):**
+  1. *Cá nhân hóa lời mời từ bằng chứng:* dùng `contacts` (S2b) + `verify_before_contract` (S5) + `evidence` video (S4) để sinh bản nháp Email/Zalo cá nhân hóa cho từng KOC.
+  2. *Human-in-the-loop & Anti-ban Guard:* quản lý trạng thái `outreach_tasks` (`drafted → approved → sent → replied | timeout`), gửi qua Email API / TikTok Creator Marketplace / Zalo OA sau khi marketer duyệt.
+  3. *Multimodal Inbox Parser (OCR ảnh Analytics):* AI đọc phản hồi báo giá và OCR ảnh chụp màn hình TikTok Analytics do KOC gửi để chấm tự động **25đ Khán giả + 10đ Hợp tác** (gắn nhãn `human-verified` tách biệt với `system-measured /65`).
+  4. *Auto-Fallback & Reselect (`koc reselect`):* nếu báo giá thật vượt `price_ceiling_vnd` hoặc KOC từ chối/quá hạn 48h, tự động chạy lại bộ chọn tổ hợp S5 (0 credit, vài mili-giây) để đôn KOC `[DỰ PHÒNG]` lên thay thế.
+- **Đối chiếu đa nguồn & Kiểm toán bình luận qua TikTok API (Tầng S3.5 — Multi-Source Cross-Verification, chỉ chạy cho Top-K cuối):**
+  - *TikTok Creator Marketplace (TTCM) / TikTok Shop Partner (TSP) API:* lấy dữ liệu nhân khẩu học khán giả chính chủ (`% Nữ`, `% 18–30`, `% VN`) để chấm tự động **25/100 điểm Khán giả** (`ttcm-verified`).
+  - *TikTok Public Feed API:* lấy thêm các video organic (không gắn giỏ hàng) để bù đắp thiên lệch thương mại của `video/rank` trên Kalodata và kiểm tra chéo các ca dị biệt số liệu (`er_anomaly`).
+  - *Comment Sentiment & Buying Intent Audit:* lấy Top 50 bình luận của các video đại diện đưa qua LLM nhỏ (< $0.01 cho 15 KOC) để đo tỷ lệ hỏi mua thật (Buying Intent) và phát hiện bot seeding hoặc phản hồi tiêu cực về sản phẩm.
+- **Scale 500+:** đổi `funnel.candidates: 500`, `after_2a: 100`, `after_3: max(15, 5%N)`; thêm credit Kalodata. Kiến trúc không đổi: mọi tầng parameterized, cache/resume/ledger giữ nguyên; chi phí ngoại suy từ đơn giá đo được (`reports/benchmark.md`).
+- **Batch API Anthropic (−50%)** cho S3/S4 khi không cần latency; adapter native cho `cache_control` tường minh.
+- **Jev judge** cho S3 closed-set questions (interface `Judge` đã tách; chỉ thêm khi có bộ mẫu kiểm thử tiếng Việt 30–50 nhãn).
 - **Autonomous Agent (2-tier Supervisor + Per-KOC Investigator):** khi cần tự động mở rộng vòng tìm kiếm (S1↔S2) hoặc gọi thêm tool chuyên sâu (`comment/insight`, `product/detail`) theo nghi vấn từng KOC mà không làm nổ context window.
 - **Vòng phản hồi:** nhập kết quả chiến dịch thật → hiệu chỉnh trọng số rubric.
-- Postgres khi cần nhiều process ghi; queue ngoài khi cần phân tán.
+- **Hạ tầng:** Postgres khi cần nhiều process ghi; queue ngoài khi cần phân tán.
 
 ## Cấu trúc repo
 
 ```
-src/koc/          # ~1.800 dòng: config, db, ledger, kalodata, llm, evidence, scoring,
-                  # select, video, runner, pipeline, report, cli, stages/s0..s5
+src/koc/          # config, db, ledger, kalodata, llm, prompts, evidence, scoring,
+                  # select, video, runner, pipeline, report, dashboard, cli, stages/s0..s5
 config/           # defaults.yaml (mọi tham số), prices.yaml
 briefs/           # brief ngôn ngữ tự nhiên
 fixtures/         # API responses + judgements bundle (offline replay)
 scripts/          # spike.py, demo_resume.py (kill/resume), export_test_report.py, scrub_fixtures.py
-tests/            # pytest: scoring, selector, runner idempotency, cache, schema, evidence
-docs/             # đề gốc, tiêu chí, ARCHITECTURE.md (chốt), REVIEW-AND-API-DASHBOARD.md (UNUSED/: lịch sử bản nháp)
-runs/             # per-run: koc.db, media/, frames/, transcripts/, report (gitignore)
+tests/            # pytest (30 tests): scoring, selector, runner, cache, schema, evidence, dashboard
+docs/             # đề bài gốc, bộ tiêu chí KOC, ARCHITECTURE.md (19 quyết định), EXPANSION-ROADMAP.md (API/Admin & S6 Outreach)
+reports/          # thư mục duy nhất chứa toàn bộ báo cáo & kết quả xuất ra (dashboard.html, report.md, results.csv, benchmark.md...)
+runs/             # lưu trữ ngầm dữ liệu vận hành (koc.db, media/, frames/, transcripts/ — gitignore)
 ```
 
 ## Kiểm thử
 
 ```bash
-uv run pytest -q     # 26 tests (~3s): ER/median/red flags, coverage, selector constraints,
+uv run pytest -q     # 30 tests (~3s): ER/median/red flags, coverage, selector constraints,
                      # runner idempotency + backoff, cache pays-once, strict schema,
-                     # judgement cache + offline replay, numeric claim audit, niche-first video planner
+                     # judgement cache + offline replay, numeric claim audit, niche-first video planner, dashboard
 ```

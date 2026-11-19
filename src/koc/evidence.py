@@ -65,9 +65,9 @@ def validate_reason(db: Database, run_id: str, reason: dict) -> list[str]:
 
 def _extract_nums(text: str) -> set[float]:
     out: set[float] = set()
-    for m in re.findall(r"\d+(?:\.\d+)?", str(text)):
+    for m in re.findall(r"\d+(?:[.,]\d+)?", str(text)):
         try:
-            out.add(float(m))
+            out.add(float(m.replace(",", ".")))
         except ValueError:
             pass
     return out

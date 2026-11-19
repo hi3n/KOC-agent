@@ -10,13 +10,15 @@ fixtures/*.json.tmp
 dist/
 *.egg-info/
 
-# TẠM THỜI: docs chưa nộp đợt này — user sẽ add docs hoàn chỉnh sau (git add -f docs/ khi sẵn sàng)
-docs/
+# Draft & archived internal notes
+docs/DRAFT/
+docs/UNUSED/
 
-# Claude Code local settings (máy này có global ignore, repo vẫn tự chứa cho portable)
-.claude/settings.local.json
+# Local IDE & tooling settings
+.claude/
+.impeccable/
 
-# Windows junk
+# OS metadata
 Thumbs.db
 desktop.ini
 *.stackdump

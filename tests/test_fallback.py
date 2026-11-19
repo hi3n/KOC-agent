@@ -121,14 +121,14 @@ def test_audit_numeric_claims_dry_run(db):
     reasons = [{
         "creator_id": "c1",
         "strengths": [
-            {"claim": "median_views 3153, ad_ratio 0.256, GPM 558148.92, bịa 99999",
+            {"claim": "median_views 3153, ad_ratio 0,256, GPM 558148,92, bịa 99999",
              "evidence_ids": [eid1]},
         ],
     }]
     res = audit_numeric_claims(db, "r", reasons)
     assert res["total_numbers"] == 4
-    assert res["in_cited_evidence"] == 2          # 3153, 0.256
-    assert res["in_creator_other_evidence"] == 1  # 558148.92 (in k2)
+    assert res["in_cited_evidence"] == 2          # 3153, 0,256 (hỗ trợ cả dấu phẩy thập phân tiếng Việt)
+    assert res["in_creator_other_evidence"] == 1  # 558148,92 (in k2)
     assert len(res["unmatched"]) == 1 and res["unmatched"][0]["number"] == 99999.0
 
 

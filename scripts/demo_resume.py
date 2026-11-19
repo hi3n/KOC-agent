@@ -47,18 +47,16 @@ def totals(run_id):
 
 def main():
     baseline = sys.argv[1] if len(sys.argv) > 1 else "demo_sunscreen"
-    base_csv = ROOT / "runs" / baseline / "results.csv"
+    base_csv = ROOT / "reports" / "results.csv"
     if not base_csv.exists():
         print(f"Chưa có baseline {base_csv} — chạy demo live + report trước.")
         return
-    # fresh kill run
+    # fresh kill run (dùng report_dir tạm trong runs/kill_demo để không ghi đè reports/ khi đang test)
     kill_dir = ROOT / "runs" / KILL_RUN
     if kill_dir.exists():
         shutil.rmtree(kill_dir)
-    # spawn python TRỰC TIẾP (không qua uv wrapper): proc.kill() phải giết đúng
-    # process chạy pipeline — uv spawn child python, kill uv để lại orphan chạy tiếp
-    # → race 2 process cùng DB, reset stale thấy 0 (bug 19/11)
-    cmd = [sys.executable, "-m", "koc.cli", "run", "--offline", "--run-id", KILL_RUN]
+    cmd = [sys.executable, "-m", "koc.cli", "run", "--offline", "--run-id", KILL_RUN,
+           "--report-dir", str(kill_dir)]
     print("spawn:", " ".join(cmd))
     proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             text=True, encoding="utf-8", errors="replace")
@@ -82,7 +80,8 @@ def main():
     print(f"ledger lúc kill (cold): {at_kill} | tasks kẹt 'running': {stale[0]['n'] if stale else '?'}")
 
     print("resume...")
-    r = subprocess.run([sys.executable, "-m", "koc.cli", "resume", KILL_RUN, "--offline"],
+    r = subprocess.run([sys.executable, "-m", "koc.cli", "resume", KILL_RUN, "--offline",
+                        "--report-dir", str(kill_dir)],
                        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
                        errors="replace", timeout=600)
     print(r.stdout[-800:])
@@ -93,11 +92,9 @@ def main():
     extra_credits = (after["c"] or 0) - (at_kill["c"] or 0)
     extra_cost = (after["cost"] or 0) - (at_kill["cost"] or 0)
     kill_csv = kill_dir / "results.csv"
-    # so sánh bỏ cột contact: fixtures public đã scrub contact (privacy) —
-    # bản live giữ contact trong DB local, bản replay không có; pipeline determinism
-    # chứng minh trên phần dữ liệu public
     def _strip_contacts(p):
-        rows = list(csv.DictReader(open(p, encoding="utf-8-sig")))
+        with open(p, encoding="utf-8-sig") as f:
+            rows = list(csv.DictReader(f))
         return [{k: v for k, v in r.items() if not k.startswith("contact_")} for r in rows]
     identical = kill_csv.exists() and _strip_contacts(kill_csv) == _strip_contacts(base_csv)
     verdict = {
@@ -111,12 +108,10 @@ def main():
         "compare_note": "bỏ cột contact_* (fixtures public đã scrub vì privacy); so từng giá trị còn lại",
         "verdict": "PASS" if identical and abs(extra_credits) < 1e-9 and abs(extra_cost) < 1e-9 else "CHECK",
     }
-    out = kill_dir / "resume_demo.json"
+    out = ROOT / "reports" / "resume_demo.json"
     out.write_text(json.dumps(verdict, ensure_ascii=False, indent=1), encoding="utf-8")
-    # đưa vào benchmark của baseline run
-    bdir = ROOT / "runs" / baseline
-    if bdir.exists():
-        shutil.copy(out, bdir / "resume_demo.json")
+    # dọn sạch thư mục tạm runs/kill_demo sau khi đo xong
+    shutil.rmtree(kill_dir, ignore_errors=True)
     print(json.dumps(verdict, ensure_ascii=False, indent=1))
 
 

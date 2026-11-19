@@ -4,8 +4,7 @@ Mọi số lấy từ usage_ledger / tasks / evidence trong SQLite (không ướ
 Chạy lại được sau mỗi giai đoạn; báo cáo tự cập nhật khi demo full hoàn tất.
 
 Usage: uv run python scripts/export_test_report.py [run_id] [thư_mục_đích]
-Output: reports/ket-qua-test-<YYYY-MM-DD>/ (TEST-RESULTS.md · measurements.json · kept.csv · excluded.csv)
-Mỗi ngày chạy = một thư mục snapshot riêng, không ghi đè kết quả cũ.
+Output: reports/ (TEST-RESULTS.md · measurements.json · kept.csv · excluded.csv · report.md · results.csv · benchmark.md · dashboard.html)
 """
 from __future__ import annotations
 
@@ -14,13 +13,13 @@ import json
 import sqlite3
 import subprocess
 import sys
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 RUN = sys.argv[1] if len(sys.argv) > 1 else "demo_sunscreen"
-OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "reports" / f"ket-qua-test-{date.today().isoformat()}"
+OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "reports"
 OUT.mkdir(parents=True, exist_ok=True)
 
 
@@ -146,35 +145,12 @@ def main():
     }
     (OUT / "measurements.json").write_text(json.dumps(measurements, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    # ---- Copy & scrub full deliverables from runs/<RUN> into reports/ ----
-    import re
-    import shutil
-    run_dir = ROOT / "runs" / RUN
-    for fname in ("benchmark.md", "resume_demo.json"):
-        src = run_dir / fname
-        if src.exists():
-            shutil.copy(src, OUT / fname)
-    rep_src = run_dir / "report.md"
-    if rep_src.exists():
-        txt = rep_src.read_text(encoding="utf-8")
-        # Redact email/zalo in public git report (giữ tiktok handle công khai)
-        txt = re.sub(r"email=[^,\n]+,?\s*", "email=[redacted], ", txt)
-        txt = re.sub(r",?\s*zalo=[^,\n]+", ", zalo=[redacted]", txt)
-        (OUT / "report.md").write_text(txt, encoding="utf-8")
-    res_src = run_dir / "results.csv"
-    if res_src.exists():
-        with open(res_src, encoding="utf-8-sig") as f:
-            rrows = list(csv.DictReader(f))
-        if rrows:
-            for r in rrows:
-                if r.get("contact_email"):
-                    r["contact_email"] = "[redacted]"
-                if r.get("contact_zalo"):
-                    r["contact_zalo"] = "[redacted]"
-            with open(OUT / "results.csv", "w", newline="", encoding="utf-8-sig") as f:
-                w = csv.DictWriter(f, fieldnames=list(rrows[0].keys()))
-                w.writeheader()
-                w.writerows(rrows)
+    # ---- Render core deliverables into OUT (reports/) ----
+    from koc.pipeline import create_ctx
+    from koc import report as report_mod
+    ctx = create_ctx(None, mode="replay", run_id=RUN, report_dir=OUT)
+    report_mod.write_all(ctx)
+    ctx.db.close()
 
     # ---- Markdown report ----
     L = []

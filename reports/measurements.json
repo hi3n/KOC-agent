@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-19 08:14 UTC",
+ "generated_at": "2026-11-19 13:05 UTC",
  "run_id": "demo_sunscreen",
  "source": "usage_ledger/tasks/evidence (SQLite, đo thật)",
  "status": "full_pipeline_done",
@@ -232,7 +232,7 @@
   }
  ],
  "unit_tests": {
-  "summary": "26 passed in 2.80s",
+  "summary": "30 passed in 2.90s",
   "passed": true
  },
  "ai_calls": {

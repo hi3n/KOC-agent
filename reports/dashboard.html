@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Báo cáo KOC — Kem chống nắng (mỹ phẩm Việt Nam)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --base:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --accent:#2a78d6; --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b; --good-ink:#006300; --crit-ink:#d03b3b;
+  --f1:#86b6ef; --f2:#5598e7; --f3:#2a78d6; --f4:#1c5cab;
+  --wash:rgba(42,120,214,.07); --warn-wash:rgba(250,178,25,.12);
+  --font:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --base:#383835; --ring:rgba(255,255,255,.10);
+  --accent:#3987e5; --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good-ink:#0ca30c; --crit-ink:#e66767; --f1:#6da7ec; --f2:#3987e5; --f3:#256abf; --f4:#184f95;
+  --wash:rgba(57,135,229,.12); --warn-wash:rgba(250,178,25,.14); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --base:#383835; --ring:rgba(255,255,255,.10);
+  --accent:#3987e5; --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good-ink:#0ca30c; --crit-ink:#e66767; --f1:#6da7ec; --f2:#3987e5; --f3:#256abf; --f4:#184f95;
+  --wash:rgba(57,135,229,.12); --warn-wash:rgba(250,178,25,.14); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;
+  padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));margin:0}
+.wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:28px;min-width:0}
+h1{font-size:clamp(22px,3.4vw,30px);font-weight:700;line-height:1.25;margin:0;text-wrap:balance}
+h2{font-size:19px;font-weight:700;margin:0 0 4px;text-wrap:balance}
+h3{font-size:16px;font-weight:600;margin:0}
+p{margin:0}
+.sub{color:var(--ink2);font-size:14px}
+.muted{color:var(--ink2);font-size:12.5px}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--page);
+  padding-block:10px;border-bottom:1px solid var(--grid);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--page)}
+.toprow{max-width:1060px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.brand{font-weight:700;font-size:14px;letter-spacing:.02em}
+nav.chips{display:flex;flex-wrap:wrap;gap:6px}
+nav.chips a{font-size:12.5px;font-weight:500;text-decoration:none;color:var(--ink2);border:1px solid var(--grid);
+  border-radius:999px;padding:8px 14px;background:var(--surface)}
+nav.chips a:hover{color:var(--accent);border-color:var(--accent)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .v{font-size:24px;font-weight:700;line-height:1.2}
+.tile .l{font-size:12.5px;color:var(--ink2);font-weight:500}
+.tile .n{font-size:12px;color:var(--ink2)}
+.tile.hero .v{color:var(--accent)}
+section{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:18px;min-width:0}
+.callout{border-radius:10px;padding:12px 14px;font-size:13.5px;background:var(--wash);border:1px solid var(--ring)}
+.callout.warn{background:var(--warn-wash)}
+.callout b{font-weight:600}
+.funnel{display:flex;flex-direction:column;gap:12px}
+.fstage{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:10px;align-items:center}
+.fstage .fl{font-size:13px;font-weight:600;text-align:right;color:var(--ink2)}
+.ftrack{position:relative;height:32px;background:var(--grid);border-radius:4px;display:flex;align-items:center;overflow:hidden;min-width:0}
+.ffill{position:absolute;top:0;bottom:0;left:0;border-radius:4px 0 0 4px}
+.fval{position:relative;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.fval.in{padding-left:12px;padding-right:12px;color:#0b0b0b}
+.fdesc{grid-column:2;font-size:12.5px;color:var(--ink2);margin-top:0}
+.exc{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;border-radius:999px;padding:8px 12px;border:1px solid var(--grid);background:var(--surface);color:var(--ink2)}
+.pill .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.koc{display:flex;flex-direction:column;gap:10px}
+.koc.backup{border-style:dashed}
+.khead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;justify-content:space-between}
+.kname{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;min-width:0}
+.kname h3{font-size:17px}
+.handle{font-size:13px;color:var(--ink2);text-decoration:none}
+.handle:hover{color:var(--accent)}
+.role{font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--accent);
+  background:var(--wash);border-radius:999px;padding:8px 12px;white-space:nowrap}
+.role.bk{color:var(--ink2);background:transparent;border:1px solid var(--base)}
+.kstats{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink2)}
+.kstats b{color:var(--ink);font-weight:600}
+.scoreline{display:flex;align-items:center;gap:10px}
+.scoretrack{flex:1;height:12px;background:var(--grid);border-radius:6px;overflow:hidden;display:flex;min-width:60px}
+.scoretrack i{display:block;height:100%}
+.scoretrack i+i{border-left:2px solid var(--surface)}
+.scoreval{font-size:13px;font-weight:700;white-space:nowrap}
+.pricerow{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px}
+.pricerow b{font-weight:600}
+details{border-top:1px solid var(--grid);padding-top:8px}
+summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--accent);list-style:none;display:flex;gap:6px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+.dbody{display:flex;flex-direction:column;gap:10px;padding-top:10px}
+.strength{display:flex;flex-direction:column;gap:3px}
+.strength .claim{font-size:13.5px}
+.ev{font-size:12.5px;color:var(--ink2);border-left:3px solid var(--base);padding:8px 12px}
+.ev::before{content:"Bằng chứng: ";font-weight:600;color:var(--ink2)}
+ul.tight{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.flags{display:flex;flex-wrap:wrap;gap:6px}
+.flag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;border-radius:6px;
+  padding:8px 12px;background:var(--warn-wash);color:var(--ink2);border:1px solid var(--ring)}
+.flag .ic{width:13px;height:13px;border-radius:50%;background:var(--warn);color:#0b0b0b;font-size:10px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;flex:none}
+.chartbox{position:relative;height:320px;min-width:0}
+.chartbox.tall{height:360px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:var(--ink2)}
+.legend .li{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.tblwrap{overflow-x:auto;border:1px solid var(--grid);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--grid);white-space:nowrap}
+td.wrapok{white-space:normal;min-width:180px}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);font-weight:600;background:var(--surface)}
+tr:last-child td{border-bottom:none}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:var(--good-ink);font-weight:600}
+.bad{color:var(--crit-ink);font-weight:600}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.check{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px}
+.check .badge{width:26px;height:26px;border-radius:50%;background:var(--good);color:#fff;font-weight:700;font-size:14px;
+  display:flex;align-items:center;justify-content:center;flex:none}
+.check .badge.na{background:var(--base);color:var(--ink)}
+.check h3{font-size:14px;margin-bottom:2px}
+.check p{font-size:12.5px;color:var(--ink2)}
+footer{border-top:1px solid var(--grid);padding-top:14px;font-size:12.5px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+@media (max-width:560px){
+  .fstage{grid-template-columns:1fr}.fstage .fl{text-align:left}.fdesc{grid-column:1}
+  .chartbox{height:300px}.chartbox.tall{height:420px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top"><div class="toprow">
+  <span class="brand">KOC Discovery · 2026-11-19</span>
+  <nav class="chips">
+    <a href="#tong-quan">Tổng quan</a><a href="#phieu">Sàng lọc</a><a href="#koc">KOC</a>
+    <a href="#diem">Điểm</a><a href="#ngan-sach">Ngân sách</a><a href="#chi-phi">Chi phí</a>
+    <a href="#do-tin-cay">Độ tin cậy</a><a href="#can-xac-minh">Cần xác minh</a>
+  </nav>
+</div></header>
+
+<section id="tong-quan">
+  <h1>Đề xuất 5 KOC TikTok cho chiến dịch Kem chống nắng (mỹ phẩm Việt Nam)</h1>
+  <p class="sub">Khách hàng mục tiêu: female 18-30 (VN) · Ngân sách 30.000.000 VNĐ ·
+  Mục tiêu: bán hàng (conversion) · Dữ liệu TikTok Shop VN 2026-10-20 – 2026-11-18</p>
+  <div class="tiles">
+    <div class="tile hero"><span class="v num">5 + 2</span><span class="l">KOC đề xuất + dự phòng</span><span class="n">Chọn từ 30 ứng viên qua 5 vòng sàng lọc</span></div>
+    <div class="tile"><span class="v num">30.000.000</span><span class="l">Tổng giá giả định của bộ (VNĐ)</span><span class="n">Giá thật cần xin báo giá</span></div>
+    <div class="tile"><span class="v num">≈ 80.000đ</span><span class="l">Chi phí nghiên cứu (0,27% ngân sách)</span><span class="n">3,15 USD · chạy lại lần hai: 0đ</span></div>
+    <div class="tile"><span class="v num">100%</span><span class="l">Lý do có bằng chứng kiểm chứng</span><span class="n">7/7 lý do đạt</span></div>
+  </div>
+  <div class="callout"><b>Cách đọc báo cáo:</b> mỗi đề xuất kèm lý do, bằng chứng cụ thể (số liệu hoặc câu nói trong video kèm mốc thời gian) và việc cần xác minh trước khi chốt.
+  Điểm hiển thị là <b>phần đã đo được (tối đa 65/100)</b> — 35 điểm còn lại (khán giả 25, hợp tác 10) không có dữ liệu để chấm, cần ảnh Analytics và báo giá thật. Hệ thống không đoán.</div>
+</section>
+
+<section id="phieu">
+  <h2>Hành trình sàng lọc: 30 ứng viên → 5 lựa chọn</h2>
+  <p class="sub">Mỗi vòng loại đều có lý do lưu lại. Vòng đắt tiền (xem video bằng AI) chỉ dành cho nhóm cuối cùng.</p>
+  <div class="card"><div class="funnel"><div class="fstage"><span class="fl">1 · Tìm ứng viên</span><div class="ftrack"><div class="ffill" style="width:100.0%;background:var(--f1)"></div><span class="fval in num">30 kênh</span></div><span class="fdesc">Quét bảng xếp hạng theo nhiều góc: doanh thu, lượt xem, tăng trưởng, kênh nhỏ tiềm năng. Chỉ lấy kênh độc lập — không lấy kênh của chính hãng bán hàng.</span></div><div class="fstage"><span class="fl">2 · Chấm số liệu</span><div class="ftrack"><div class="ffill" style="width:40.0%;background:var(--f2)"></div><span class="fval num" style="margin-left:calc(40.0% + 12px)">12 kênh</span></div><span class="fdesc">Tính tương tác, lượt xem trung vị, độ đều, tần suất đăng từ tối đa 100 video/kênh. Loại có lý do từng kênh.</span></div><div class="fstage"><span class="fl">3 · Đọc nội dung</span><div class="ftrack"><div class="ffill" style="width:23.3%;background:var(--f3)"></div><span class="fval num" style="margin-left:calc(23.3% + 12px)">7 kênh</span></div><span class="fdesc">AI đọc tiểu sử + tiêu đề video: có đúng ngách, có nhắc đối thủ, dấu hiệu uy tín hay quảng cáo dày đặc.</span></div><div class="fstage"><span class="fl">4 · Xem video</span><div class="ftrack"><div class="ffill" style="width:23.3%;background:var(--f3)"></div><span class="fval num" style="margin-left:calc(23.3% + 12px)">7 kênh · 14 video</span></div><span class="fdesc">Mỗi kênh 2 video đại diện. AI xem khung hình + nghe lời nói (chép thành chữ kèm mốc thời gian), chấm: ánh sáng, demo thoa thật, 3 giây đầu, kiến thức ngành.</span></div><div class="fstage"><span class="fl">5 · Chọn bộ tối ưu</span><div class="ftrack"><div class="ffill" style="width:16.7%;background:var(--f4)"></div><span class="fval num" style="margin-left:calc(16.7% + 12px)">5 + 2 dự phòng</span></div><span class="fdesc">Duyệt mọi tổ hợp 5 người. Ràng buộc cứng: tổng giá trong ngân sách, đủ vai trò kênh, không trùng phong cách. Chọn phương án điểm cao nhất.</span></div></div></div>
+  <div class="exc"><span class="pill"><span class="dot" style="background:var(--crit)"></span>10 kênh: tương tác dưới ngưỡng 0,5%</span><span class="pill"><span class="dot" style="background:var(--warn)"></span>3 kênh: vượt tầm ngân sách (quá lớn)</span><span class="pill"><span class="dot" style="background:var(--base)"></span>5 kênh: điểm thấp hơn ngưỡng giữ</span><span class="pill"><span class="dot" style="background:var(--base)"></span>5 kênh: loại ở vòng đọc nội dung</span></div>
+  
+  <p class="muted">Toàn bộ 23 lượt loại kèm lý do trong file excluded.csv.</p>
+</section>
+
+<section id="koc">
+  <h2>Bộ 5 KOC đề xuất</h2>
+  <p class="sub">Giá thuê là giả định theo nhóm kênh (chưa có dữ liệu giá thật). "Giá trần" = ngưỡng báo giá: vượt trần thì chuyển người dự phòng. Bấm từng mục để xem lý do, bằng chứng và việc cần xác minh.</p>
+  
+  <div class="card koc">
+    <div class="khead"><div class="kname"><h3>1 · Công chúa cam thường</h3><a class="handle" href="https://www.tiktok.com/@vanhmakeupcute" target="_blank" rel="noopener">@vanhmakeupcute</a></div><span class="role">Chủ lực</span></div>
+    <div class="kstats num"><span><b>210.500</b> follower</span><span>View trung vị <b>3.153</b></span><span>Đã xem <b>2/43</b> video</span><span>Đăng <b>10,0</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:14.7%;background:var(--s1)"></i><i style="width:26.2%;background:var(--s2)"></i><i style="width:13.4%;background:var(--s3)"></i></div><span class="scoreval num">35,28 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>7.000.000đ</b></span><span>Giá trần: <b>7.000.000đ</b></span></div>
+    <p class="sub">Có tín hiệu bán hàng đo được (GPM, doanh thu shop) và đã có video demo da chỉ thoa kem chống nắng. Rủi ro: view/follower thấp, nhắc đối thủ, claim phóng đại về an toàn. Chỉ xem 2/43 video nên kết luận còn mỏng.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>View thấp so với follower</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Từng nhắc đối thủ</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag">+3 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">video_gpm 558148.92, doanh thu shop 95421697.39. Số đo được, liên quan trực tiếp mục tiêu conversion.</span><span class="ev">GPM video 558.149, follower mới/kỳ -0,002</span></div><div class="strength"><span class="claim">Theo transcript có cảnh &#x27;da mình chỉ có kem chống nắng&#x27; (70.5-72.4s) rồi đánh lớp nền lên (72.4-78.1s). Chưa xác minh bằng hình.</span><span class="ev">[70,5s] “đây là khi da mình chỉ có kem trồng nắng nha”</span><span class="ev">Input không kèm khung hình nào nên không đánh giá trực tiếp được ánh sáng, màu da hay bối cảnh. Điểm hình ảnh để mức trung tính.; Theo transcript, có đoạn cho x</span></div><div class="strength"><span class="claim">Mẫu 43 video: đăng 10.03 bài/tuần, ad_ratio 0.256. Kênh hoạt động đều, không bão hòa quảng cáo.</span><span class="ev">View trung vị 3.153, tương tác 0,1769, 43 video mẫu</span></div><div class="strength"><span class="claim">Một video chấm hook_strength 0.7, demo_quality 0.6 (AI chấm, confidence 0.45). Chỉ là tham khảo.</span><span class="ev">Điểm hình ảnh (AI chấm): ánh sáng 0,50, demo 0,60, mở đầu 0,70</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>view_follower_ratio 0.015 (cờ kênh nguội). median_views 3153 so với mean_views 32326.5: phân phối lệch, vài video kéo trung bình.</li><li>Nhắc đối thủ Anessa, Cocoon, Neutrogena. Tiêu đề có #HoptaccungAnessa, caption có #hoptaccungmaybelline. Cần kiểm tra ràng buộc hợp tác với đối thủ.</li><li>Claim tuyệt đối &#x27;an toàn cho da nhạy cảm... da em bé từ 6 tháng tuổi&#x27; (ev_d11ca4169153) và &#x27;chống nước, chống bụi mịn an toàn luôn&#x27; (ev_74eda293ce7a) không có dẫn chứng. Không nêu SPF/PA, lượng dùng, thoa lại. Cờ ad_no_disclosure cho người duyệt.</li><li>Ảnh Analytics khán giả: tỷ lệ nữ 18-30, VN. Chưa đo được.</li><li>Báo giá thật so với giá trần 7,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Hỏi có hợp đồng/độc quyền đang chạy với Anessa hoặc Maybelline không.</li><li>Yêu cầu kịch bản bỏ claim tuyệt đối về an toàn; gắn nhãn quảng cáo rõ.</li><li>Hỏi nguyên nhân view/follower thấp (kênh nguội hay follower ảo).</li></ul></div></details>
+  </div>
+  <div class="card koc">
+    <div class="khead"><div class="kname"><h3>2 · Phương Sena</h3><a class="handle" href="https://www.tiktok.com/@phuongsena" target="_blank" rel="noopener">@phuongsena</a></div><span class="role">Chủ lực</span></div>
+    <div class="kstats num"><span><b>261.900</b> follower</span><span>View trung vị <b>6.996</b></span><span>Đã xem <b>2/65</b> video</span><span>Đăng <b>15,2</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:18.3%;background:var(--s1)"></i><i style="width:33.7%;background:var(--s2)"></i><i style="width:8.6%;background:var(--s3)"></i></div><span class="scoreval num">39,43 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>7.000.000đ</b></span><span>Giá trần: <b>7.000.000đ</b></span></div>
+    <p class="sub">Có lịch sử bán hàng lớn và phong cách chốt đơn kiểu livestream, hợp mục tiêu conversion. Hai video xem được đều không về chống nắng và có claim thiếu căn cứ. Cần brief chặt và duyệt kịch bản.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Thiếu nhãn quảng cáo</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag">+2 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">Doanh thu shop 1579381679.89, new_follower_ratio 0.0332. Số đo được. Mẫu video_gpm 25522.85.</span><span class="ev">GPM video 25.523, follower mới/kỳ 0,033</span></div><div class="strength"><span class="claim">Mẫu 65 video: median_views 6996, đăng 15.17 bài/tuần, stability 0.535.</span><span class="ev">View trung vị 6.996, tương tác 0,0077, 65 video mẫu</span></div><div class="strength"><span class="claim">Một video là đoạn cắt livestream bán hàng, nói kiểu tư vấn chốt đơn. Phong cách gần mục tiêu conversion (theo transcript).</span><span class="ev">Input không kèm khung hình xem được. Không đánh giá được ánh sáng, màu da hay demo bằng mắt; visual_quality để trung tính.; Transcript không nhắc thao tác thoa </span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>Cả 2 video xem đều không về chống nắng; demo_quality 0.2. Chưa có bằng chứng về nội dung chống nắng.</li><li>Claim thiếu căn cứ: &#x27;hấp thụ gấp 300%&#x27; (ev_52281be14e81); tổng hoạt chất nói 77% nhưng 30%+12%+33% = 75% (ev_79a891631325); &#x27;không có chất hoạt động bề mặt&#x27; ở sản phẩm tẩy trang đáng ngờ (ev_4f0d0884d672). Lời khuyên bỏ bước rửa mặt cần duyệt.</li><li>ad_ratio 0.323, cờ ad_no_disclosure. Hai số doanh thu trong kho lệch nhau (1579381679.89 và total_revenue 72923449.64), chưa rõ cách tính. Chỉ xem 2/65 video.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật so với giá trần 7,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Hỏi nguồn và cách tính doanh thu; đối chiếu hai con số lệch nhau.</li><li>Duyệt kịch bản trước đăng; cấm claim số liệu không nguồn.</li><li>Xem thêm video thuộc nhóm chống nắng/trang điểm nếu có.</li></ul></div></details>
+  </div>
+  <div class="card koc">
+    <div class="khead"><div class="kname"><h3>3 · Chang Chăm Chỉ</h3><a class="handle" href="https://www.tiktok.com/@changaffiliate" target="_blank" rel="noopener">@changaffiliate</a></div><span class="role">Tầm trung</span></div>
+    <div class="kstats num"><span><b>85.500</b> follower</span><span>View trung vị <b>289.953</b></span><span>Đã xem <b>2/100</b> video</span><span>Đăng <b>23,3</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:27.8%;background:var(--s1)"></i><i style="width:11.5%;background:var(--s2)"></i><i style="width:12.3%;background:var(--s3)"></i></div><span class="scoreval num">33,52 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>6.000.000đ</b></span><span>Giá trần: <b>6.000.000đ</b></span></div>
+    <p class="sub">Kênh tầm trung có reach lớn so với số follower và GPM cao, thiên về chốt giá và kênh mua. Gần như toàn video quảng cáo nên cần kiểm soát cách lồng ghép. Chưa có video chống nắng trong mẫu xem.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Quảng cáo dày đặc</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Thiếu nhãn quảng cáo</span><span class="flag">+3 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">Mẫu 100 video: median_views 289953.0, view_follower_ratio 3.3913, stability 0.587. Reach vượt xa số follower 85500.</span><span class="ev">View trung vị 289.953, tương tác 0,0054, 100 video mẫu</span></div><div class="strength"><span class="claim">video_gpm 381977.67, doanh thu shop 924150661.77, new_follower_ratio 0.083. Số đo được.</span><span class="ev">GPM video 381.978, follower mới/kỳ 0,083</span></div><div class="strength"><span class="claim">Theo transcript, có thoa sáp lên mũi, massage 2-3 phút rồi lau/rửa. Có nêu kênh mua chính hãng trên sàn. Chưa xác minh bằng hình.</span><span class="ev">Input không có khung hình nhìn thấy được. Nhận định hình ảnh chỉ dựa vào transcript, độ tin cậy thấp.; Theo transcript, có thoa sáp lên mũi, massage bằng đầu si</span><span class="ev">[51,4s] “Nhưng mà do đó này là OBG có mở dan hàng chính hãng trên sàn rồi / Nên là các bạn mua trực tiếp online được”</span></div><div class="strength"><span class="claim">Video nêu giá trực tiếp (hơn 8 lít so với gần 4 lít) để chốt đơn. Phong cách thúc mua phù hợp conversion, nhưng so sánh giá chưa kiểm chứng.</span><span class="ev">[52,0s] “Cái thỏi này phải tầm hơn 8 lít ... mình xanh con này còn có gần 4 lít”</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>ad_ratio 0.99 (cờ bão hòa quảng cáo). Khán giả có thể đã quen nội dung bán hàng. Cờ ad_no_disclosure ở cả 2 video xem.</li><li>Không video nào về chống nắng (kem nền thỏi, sáp tẩy mụn đầu đen). Nói hãng Obagi &#x27;nổi tiếng bên Hàn&#x27;, cần duyệt thông tin thương hiệu (ev_bb848d2f26f2). Claim &#x27;thu hẹp lỗ chân lông&#x27;, &#x27;làm sạch sâu&#x27; không có căn cứ.</li><li>Chỉ xem 2/100 video. ER trung vị 0.00536 thấp.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật so với giá trần 6,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Cách gắn nhãn quảng cáo trong video; cam kết disclosure.</li><li>Xem thêm video review chống nắng/skincare trước khi chốt brief.</li><li>Thái độ hợp tác với tần suất đăng 23.33 bài/tuần: có nhận brief riêng không.</li></ul></div></details>
+  </div>
+  <div class="card koc">
+    <div class="khead"><div class="kname"><h3>4 · Cẩm Linh</h3><a class="handle" href="https://www.tiktok.com/@calinle" target="_blank" rel="noopener">@calinle</a></div><span class="role">Thử nghiệm</span></div>
+    <div class="kstats num"><span><b>49.700</b> follower</span><span>View trung vị <b>5.820</b></span><span>Đã xem <b>2/26</b> video</span><span>Đăng <b>6,1</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:20.6%;background:var(--s1)"></i><i style="width:20.7%;background:var(--s2)"></i><i style="width:9.4%;background:var(--s3)"></i></div><span class="scoreval num">32,93 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>5.000.000đ</b></span><span>Giá trần: <b>5.000.000đ</b></span></div>
+    <p class="sub">Kênh nhỏ, ad_ratio thấp, median views ổn so với 49700 follower. Hai video xem là try-on váy và nước xả vải, không liên quan skincare. Số liệu bán hàng thấp nên chỉ nên là vị trí thử nghiệm.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Thiếu nhãn quảng cáo</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">Mẫu 26 video: median_views 5819.5, ad_ratio 0.115, đăng 6.07 bài/tuần. Kênh ít bão hòa quảng cáo.</span><span class="ev">View trung vị 5.820, tương tác 0,0354, 26 video mẫu</span></div><div class="strength"><span class="claim">Video nước xả vải có ad_disclosure_ok true: gắn nhãn quảng cáo rõ ở 1 video đã xem.</span><span class="ev">Điểm hình ảnh (AI chấm): ánh sáng 0,50, demo 0,10, mở đầu 0,30</span></div><div class="strength"><span class="claim">Hook một video chấm 0.6, audio_clarity 0.6 (AI chấm, confidence 0.35). Chỉ tham khảo.</span><span class="ev">Điểm hình ảnh (AI chấm): ánh sáng 0,50, demo 0,10, mở đầu 0,60</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>Không có nội dung skincare hay chống nắng trong mẫu; demo_quality 0.1 ở cả 2 video. Chưa có bằng chứng bán hàng làm đẹp.</li><li>video_gpm 0.0, doanh thu shop 3275081.24: tín hiệu conversion yếu.</li><li>Có claim phóng đại ở video nước xả vải (&#x27;hương thơm không kém nước hoa nổi tiếng&#x27;). Cờ ad_no_disclosure ở video try-on. Chỉ xem 2/26 video.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật so với giá trần 5,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Xin thêm video skincare/làm đẹp trước đó nếu có.</li><li>Thái độ hợp tác; có sẵn sàng quay demo thoa kem lên da, texture, bệt trắng không.</li></ul></div></details>
+  </div>
+  <div class="card koc">
+    <div class="khead"><div class="kname"><h3>5 · Khoa Alpha 💪 🇻🇳</h3><a class="handle" href="https://www.tiktok.com/@khoaalpha99" target="_blank" rel="noopener">@khoaalpha99</a></div><span class="role">Thử nghiệm</span></div>
+    <div class="kstats num"><span><b>49.900</b> follower</span><span>View trung vị <b>3.974</b></span><span>Đã xem <b>2/22</b> video</span><span>Đăng <b>5,1</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:22.4%;background:var(--s1)"></i><i style="width:18.1%;background:var(--s2)"></i><i style="width:7.8%;background:var(--s3)"></i></div><span class="scoreval num">31,40 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>5.000.000đ</b></span><span>Giá trần: <b>5.000.000đ</b></span></div>
+    <p class="sub">Kênh nhỏ có video_gpm đáng chú ý và nhịp đăng ổn định. Nội dung là series đổi ngoại hình, serum niacinamide, chống nắng chỉ nhắc lướt. Dữ liệu video xem được yếu nên đây là vị trí thử nghiệm rủi ro cao.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Tương tác cao bất thường</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Thiếu nhãn quảng cáo</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag">+1 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">video_gpm 308586.78, new_follower_ratio 0.008. Số đo được; doanh thu shop 2517142.38 thấp.</span><span class="ev">GPM video 308.587, follower mới/kỳ 0,008</span></div><div class="strength"><span class="claim">Mẫu 22 video: median_views 3974.0, stability 0.602, đăng 5.13 bài/tuần.</span><span class="ev">View trung vị 3.974, tương tác 0,4902, 22 video mẫu</span></div><div class="strength"><span class="claim">Video skincare có lời khuyên &#x27;vẫn phải chống nắng, dưỡng ẩm&#x27; và nhắc test vùng da nhỏ. Có ý thức an toàn cơ bản, nhưng chống nắng chỉ nhắc lướt.</span><span class="ev">[76,9s] “mình vẫn phải chống nắng, dưỡng ẩm và duy trì skincare đều đặn mỗi ngày”</span><span class="ev">[69,3s] “những bạn nào mà lần đầu tiên sử dụng niacinamide thì nên test thử một vùng da nhỏ đã, đừng vội sử dụng quá nhiều ngay từ lần đầu nha”</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>niche_fit 0.12, brand_risk 0.25; niche_keyword_ratio 0.091. Nội dung chủ yếu thay đổi ngoại hình, nhiều sản phẩm không liên quan.</li><li>ER trung vị 0.49021 cao bất thường (cờ). Transcript một video có thể là ảo giác ASR (confidence 0.15), không đánh giá được demo. ad_ratio 0.455, cờ ad_no_disclosure.</li><li>Không có SPF/PA, lượng dùng, thoa lại trong video xem. Transcript &#x27;200% acetyl glucosamine&#x27; cần nghe lại. Chỉ xem 2/22 video.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật so với giá trần 5,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Xem lại video gốc trực tiếp vì dữ liệu transcript/khung hình kém.</li><li>Kiểm tra ER bất thường và cách gắn nhãn quảng cáo.</li><li>Thái độ hợp tác; có chịu quay riêng nội dung chống nắng không.</li></ul></div></details>
+  </div>
+  <h2 style="margin-top:8px">2 dự phòng</h2><div class="grid2">
+  <div class="card koc backup">
+    <div class="khead"><div class="kname"><h3>Kiều Oanh Mê Làm Đẹp</h3><a class="handle" href="https://www.tiktok.com/@kieu_oanh_cosmetic" target="_blank" rel="noopener">@kieu_oanh_cosmetic</a></div><span class="role bk">Dự phòng</span></div>
+    <div class="kstats num"><span><b>119.000</b> follower</span><span>View trung vị <b>2.211</b></span><span>Đã xem <b>2/10</b> video</span><span>Đăng <b>2,3</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:17.0%;background:var(--s1)"></i><i style="width:25.2%;background:var(--s2)"></i><i style="width:9.4%;background:var(--s3)"></i></div><span class="scoreval num">33,52 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>6.000.000đ</b></span><span>Trần: áp theo slot thay thế</span></div>
+    <p class="sub">Kênh tầm trung 119000 follower, GPM đo được và ad_ratio 0.0. Là creator duy nhất trong danh sách có video nói trực tiếp về kem chống nắng. View thấp và kiến thức chống nắng có lỗ hổng.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>View thấp so với follower</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Thiếu nhãn quảng cáo</span><span class="flag">+3 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">video_gpm 336493.24, doanh thu shop 813202301.55. Số đo được.</span><span class="ev">GPM video 336.493, follower mới/kỳ 0,008</span></div><div class="strength"><span class="claim">Có video nói trực tiếp về kem chống nắng (&#x27;một lớp kem chống nắng là sáng đủ ra ngoài&#x27;), thoa 2-3 lớp theo transcript; nhắc 6 màng lọc phổ rộng. Chưa xác minh bằng hình.</span><span class="ev">[0,0s] “Một lớp kem trống nắng là sáng đủ để ra ngoài tự tin rồi”</span><span class="ev">Input không kèm khung hình thực tế. Không đánh giá được ánh sáng, màu da hay bối cảnh. visual_quality để trung tính 0.5.; Theo transcript, có thoa lên mặt và ta</span></div><div class="strength"><span class="claim">Mẫu 10 video: ad_ratio 0.0, stability 1.044.</span><span class="ev">View trung vị 2.211, tương tác 0,0372, 10 video mẫu</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>median_views 2211.0, view_follower_ratio 0.0186 (cờ kênh nguội). Mẫu chỉ 10 video, kết luận yếu.</li><li>knowledge_accuracy 0.35: ngụ ý 1 lớp mỏng buổi sáng là đủ, không nêu SPF/PA, lượng dùng, thoa lại (ev_e777372fcc3a). Claim thấm &#x27;tầng hạ bì&#x27; thiếu căn cứ (ev_889f67048d3e).</li><li>Metadata ghi không quảng cáo nhưng có kêu gọi inbox tư vấn (ev_7f85f2b64ca8); cờ ad_no_disclosure. Chỉ xem 2/10 video. Chưa có giá trần trong block.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật; block chưa có giá trần, giá giả định 6,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Duyệt kịch bản: bỏ claim &#x27;một lớp là đủ&#x27;, phải nêu lượng dùng và thoa lại.</li><li>Cách gắn nhãn khi bán/tư vấn qua inbox.</li><li>Thái độ hợp tác.</li></ul></div></details>
+  </div>
+  <div class="card koc backup">
+    <div class="khead"><div class="kname"><h3>Mỏ hỗn là tao</h3><a class="handle" href="https://www.tiktok.com/@mykimmohon" target="_blank" rel="noopener">@mykimmohon</a></div><span class="role bk">Dự phòng</span></div>
+    <div class="kstats num"><span><b>350.900</b> follower</span><span>View trung vị <b>268.390</b></span><span>Đã xem <b>2/100</b> video</span><span>Đăng <b>23,3</b> bài/tuần</span></div>
+    <div class="scoreline"><div class="scoretrack"><i style="width:28.3%;background:var(--s1)"></i><i style="width:10.2%;background:var(--s2)"></i><i style="width:11.0%;background:var(--s3)"></i></div><span class="scoreval num">32,10 / 65 điểm đã đo</span></div>
+    <div class="pricerow num"><span>Giá giả định: <b>7.000.000đ</b></span><span>Trần: áp theo slot thay thế</span></div>
+    <p class="sub">Reach rất lớn: median views cao so với 350900 follower. Nội dung xem được là miếng dán mụn và tóc giả, không liên quan chống nắng. ad_ratio 0.91 và tín hiệu bán hàng shop gần như bằng 0.</p>
+    
+    <div class="flags"><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Quảng cáo dày đặc</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Claim phóng đại</span><span class="flag"><span class="ic"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="3.25" y=".8" width="1.5" height="4.2" rx=".75" fill="#0b0b0b"/><circle cx="4" cy="6.6" r=".95" fill="#0b0b0b"/></svg></span>Lỗ hổng kiến thức chống nắng</span><span class="flag">+2 cờ khác trong report.md</span></div>
+    <details><summary>Lý do đề xuất &amp; bằng chứng</summary><div class="dbody"><div class="strength"><span class="claim">Mẫu 100 video: median_views 268389.5, view_follower_ratio 0.7649, đăng 23.33 bài/tuần.</span><span class="ev">View trung vị 268.390, tương tác 0,0167, 100 video mẫu</span></div><div class="strength"><span class="claim">Theo transcript có demo gỡ miếng dán trên da, chỉ vào thứ lấy ra. Có kỹ năng demo cận cảnh, chưa xác minh bằng hình.</span><span class="ev">Không nhận được khung hình hiển thị trong input; không đánh giá được ánh sáng, màu da hay bối cảnh.; Theo transcript, video có demo gỡ miếng dán trên da và chỉ </span></div><div class="strength"><span class="claim">new_follower_ratio 0.0325. Số đo được.</span><span class="ev">GPM video 0, follower mới/kỳ 0,033</span></div></div></details>
+    <details><summary>Lưu ý &amp; việc cần xác minh trước khi chốt</summary><div class="dbody"><ul class="tight"><li>video_gpm 0.0, doanh thu shop 426499.66: tín hiệu conversion yếu so với reach. ad_ratio 0.91 (cờ bão hòa quảng cáo).</li><li>Lạc ngành: video xem là miếng dán mụn và tóc giả, demo_quality 0.1 ở video tóc giả (ev_bb6d789757ac). Không có nội dung chống nắng.</li><li>Claim phóng đại (&#x27;lấy hết trơn nhân mụn&#x27;, ev_06649218a931). Cờ ad_no_disclosure. Chỉ xem 2/100 video. Chưa có giá trần trong block.</li><li>Ảnh Analytics khán giả: nữ 18-30, VN.</li><li>Báo giá thật; block chưa có giá trần, giá giả định 7,000,000 VNĐ.</li><li>Quyền dùng nội dung và Spark Ads.</li><li>Hỏi lý do doanh thu shop thấp dù reach lớn.</li><li>Cách gắn nhãn quảng cáo; xem thêm video skincare/chống nắng.</li><li>Thái độ hợp tác.</li></ul></div></details>
+  </div></div>
+</section>
+
+
+<section id="diem">
+  <h2>So sánh điểm đã đo giữa 7 kênh</h2>
+  <p class="sub">Ba nhóm điểm đo được: hiệu suất (tối đa 25), nội dung (25), hình ảnh/video (15). Tổng tối đa 65 — phần khán giả và hợp tác chưa có dữ liệu, không chấm.</p>
+  <div class="card">
+    <div class="legend">
+      <span class="li"><span class="sw" style="background:var(--s1)"></span>Hiệu suất (25)</span>
+      <span class="li"><span class="sw" style="background:var(--s2)"></span>Nội dung (25)</span>
+      <span class="li"><span class="sw" style="background:var(--s3)"></span>Hình ảnh/video (15)</span>
+    </div>
+    <div class="chartbox tall"><canvas id="scoreChart" role="img" aria-label="Biểu đồ điểm đã đo của các KOC, xếp chồng theo 3 nhóm"></canvas></div>
+    <details><summary>Xem dạng bảng</summary><div class="dbody"><div class="tblwrap"><table class="num">
+      <thead><tr><th>KOC</th><th class="r">Hiệu suất /25</th><th class="r">Nội dung /25</th><th class="r">Hình ảnh /15</th><th class="r">Tổng đã đo /65</th></tr></thead>
+      <tbody><tr><td>Phương Sena</td><td class="r">11,91</td><td class="r">21,90</td><td class="r">5,62</td><td class="r"><b>39,43</b></td></tr><tr><td>Công chúa cam thường</td><td class="r">9,56</td><td class="r">17,00</td><td class="r">8,72</td><td class="r"><b>35,28</b></td></tr><tr><td>Chang Chăm Chỉ</td><td class="r">18,09</td><td class="r">7,46</td><td class="r">7,97</td><td class="r"><b>33,52</b></td></tr><tr><td>Kiều Oanh Mê Làm Đẹp (dự phòng)</td><td class="r">11,03</td><td class="r">16,40</td><td class="r">6,09</td><td class="r"><b>33,52</b></td></tr><tr><td>Cẩm Linh</td><td class="r">13,38</td><td class="r">13,46</td><td class="r">6,09</td><td class="r"><b>32,93</b></td></tr><tr><td>Mỏ hỗn là tao (dự phòng)</td><td class="r">18,38</td><td class="r">6,60</td><td class="r">7,12</td><td class="r"><b>32,10</b></td></tr><tr><td>Khoa Alpha 💪 🇻🇳</td><td class="r">14,56</td><td class="r">11,78</td><td class="r">5,06</td><td class="r"><b>31,40</b></td></tr></tbody></table></div></div></details>
+  </div>
+</section>
+
+<section id="ngan-sach">
+  <h2>Ngân sách 30 triệu: bộ nào khả thi khi giá thay đổi?</h2>
+  <div class="callout warn"><b>Giá thuê là GIẢ ĐỊNH</b> (không có dữ liệu giá thật): kênh chủ lực 7.000.000đ, tầm trung 6.000.000đ, kênh nhỏ 5.000.000đ.
+  Bộ hiện tại tổng 30.000.000đ — hệ số giá tối đa còn khả thi: <b>1,00</b> ( báo giá thật cao hơn mức này phải đổi phương án). Điểm chất lượng không dùng giá.</div>
+  <div class="card">
+    <div class="legend">
+      <span class="li"><span class="sw" style="background:var(--s1)"></span>Tổng giá bộ tối ưu (trong ngân sách)</span>
+      <span class="li"><span class="sw" style="background:var(--crit)"></span>Bộ rẻ nhất có thể — vẫn vượt ngân sách</span>
+      <span class="li"><span class="sw" style="background:var(--muted);height:3px;border-radius:2px"></span>Ngân sách 30 triệu</span>
+    </div>
+    <div class="chartbox"><canvas id="sensChart" role="img" aria-label="Tổng giá bộ 5 theo các kịch bản giá, so với ngân sách"></canvas></div>
+    <details><summary>Xem dạng bảng</summary><div class="dbody"><div class="tblwrap"><table class="num">
+      <thead><tr><th>Mặt bằng giá</th><th>Khả thi?</th><th class="r">Tổng giá (VNĐ)</th><th class="wrapok">Bộ 5 / ghi chú</th></tr></thead>
+      <tbody><tr><td>0,7×</td><td class="ok">✓</td><td class="r">21.000.000</td><td class="wrapok">Giữ nguyên bộ hiện tại, dư 9.000.000đ</td></tr><tr><td>0,85×</td><td class="ok">✓</td><td class="r">25.500.000</td><td class="wrapok">Giữ nguyên bộ hiện tại, dư 4.500.000đ</td></tr><tr><td>1×</td><td class="ok">✓</td><td class="r">30.000.000</td><td class="wrapok">Giữ nguyên bộ hiện tại</td></tr><tr><td>1,03×</td><td class="ok">✓</td><td class="r">29.870.000</td><td class="wrapok">Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳</td></tr><tr><td>1,15×</td><td class="bad">✗</td><td class="r">—</td><td class="wrapok">không bộ 5 nào &lt;= 30,000,000 VNĐ; rẻ nhất có thể: 33,350,000 VNĐ. Giảm slot hoặc tăng ngân sách — hệ thống không âm thầm vượt.</td></tr><tr><td>1,3×</td><td class="bad">✗</td><td class="r">—</td><td class="wrapok">không bộ 5 nào &lt;= 30,000,000 VNĐ; rẻ nhất có thể: 37,700,000 VNĐ. Giảm slot hoặc tăng ngân sách — hệ thống không âm thầm vượt.</td></tr><tr><td>1,5×</td><td class="bad">✗</td><td class="r">—</td><td class="wrapok">không bộ 5 nào &lt;= 30,000,000 VNĐ; rẻ nhất có thể: 43,500,000 VNĐ. Giảm slot hoặc tăng ngân sách — hệ thống không âm thầm vượt.</td></tr></tbody></table></div></div></details>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Phương án thay thế</h3>
+      <div class="tblwrap" style="margin-top:8px"><table class="num">
+        <thead><tr><th>Phương án</th><th class="wrapok">Thành viên</th><th class="r">Tổng giá</th></tr></thead>
+        <tbody><tr><td>PA2</td><td class="wrapok">Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 (điểm -0.0271)</td><td class="r">29.000.000</td></tr><tr><td>PA3</td><td class="wrapok">Mỏ hỗn là tao, Phương Sena, Kiều Oanh Mê Làm Đẹp, Cẩm Linh, Khoa Alpha 💪 🇻🇳 (điểm -0.0490)</td><td class="r">30.000.000</td></tr></tbody></table></div>
+      <p class="muted" style="margin-top:8px">Hoán đổi từng người: Công chúa cam thường → Kiều Oanh Mê Làm Đẹp (điểm -0.0271); Phương Sena → Kiều Oanh Mê Làm Đẹp (điểm -0.0909); Chang Chăm Chỉ → không có phương án tốt hơn; Cẩm Linh → không có phương án tốt hơn; Khoa Alpha 💪 🇻🇳 → không có phương án tốt hơn.</p>
+    </div>
+    <div class="card"><h3>Giá trần từng KOC (quy tắc đàm phán)</h3>
+      <div class="tblwrap" style="margin-top:8px"><table class="num">
+        <thead><tr><th>KOC</th><th class="r">Giá trần</th></tr></thead>
+        <tbody><tr><td>Công chúa cam thường</td><td class="r">7.000.000đ</td></tr><tr><td>Phương Sena</td><td class="r">7.000.000đ</td></tr><tr><td>Chang Chăm Chỉ</td><td class="r">6.000.000đ</td></tr><tr><td>Cẩm Linh</td><td class="r">5.000.000đ</td></tr><tr><td>Khoa Alpha 💪 🇻🇳</td><td class="r">5.000.000đ</td></tr></tbody></table></div>
+      <p class="muted" style="margin-top:8px">Báo giá vượt trần → chuyển dự phòng cùng vai trò. Có báo giá thật thì nhập lại để chọn bộ tối ưu mới (không tốn phí phân tích lại).</p>
+    </div>
+  </div>
+</section>
+
+<section id="chi-phi">
+  <h2>Chi phí nghiên cứu &amp; thời gian</h2>
+  <div class="tiles">
+    <div class="tile"><span class="v num">12,8 credit</span><span class="l">Dữ liệu Kalodata (≈ 1,28 USD)</span><span class="n">30 kênh × 100 video + 14 link video</span></div>
+    <div class="tile"><span class="v num">1,87 USD</span><span class="l">Phân tích AI (≈ 47.473đ)</span><span class="n">303.908 chữ vào / 87.469 chữ ra (token)</span></div>
+    <div class="tile hero"><span class="v num">≈ 80.000đ</span><span class="l">Tổng chi phí (3,15 USD)</span><span class="n">0,27% ngân sách chiến dịch · tỷ giá tham khảo 25.400đ/USD</span></div>
+    <div class="tile"><span class="v num">0đ</span><span class="l">Chạy lại lần hai (dữ liệu đã lưu)</span><span class="n">Đo thật: 0 credit, 0 token, 0 USD</span></div>
+  </div>
+  <div class="callout"><b>Vì sao rẻ:</b> chỉ xem video bằng AI ở nhóm cuối (14 video thay vì xem tất cả). Mở rộng lên 500 kênh: xem toàn bộ video mọi kênh tốn ≈ 273 USD; cách sàng lọc này ≈ 14 USD — <b>giảm 95%</b> (ngoại suy từ đơn giá đo được). Thời gian xử lý toàn trình ≈ 80 phút tổng thời gian tác vụ, chạy song song nên thực tế ngắn hơn; chạy lại từ dữ liệu đã lưu: gần như tức thì.</div>
+</section>
+
+<section id="do-tin-cay">
+  <h2>Độ tin cậy của kết quả — kiểm chứng tự động</h2>
+  <div class="grid2"><div class="check"><span class="badge"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><h3>Dừng giữa chừng, chạy tiếp không mất tiền</h3><p>Tắt đột ngột tiến trình khi đang xử lý rồi khởi động lại: phần đã xong không làm lại, chi phí thêm = 0 credit / 0 USD, kết quả giống hệt bản chạy liền. Kết quả: PASS.</p></div></div><div class="check"><span class="badge"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><h3>Mọi lý do đều có bằng chứng</h3><p>7/7 lý do vượt kiểm tra tự động: mỗi nhận định trích mã bằng chứng truy được về dữ liệu gốc hoặc câu nói trong video kèm mốc thời gian. Lý do không nguồn bị loại.</p></div></div><div class="check"><span class="badge"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><h3>Con số khớp dữ liệu gốc</h3><p>57/57 con số trong lý do truy nguyên được về dữ liệu (54 số khớp ngay bằng chứng được trích tại dòng đó). Số không khớp: 0.</p></div></div><div class="check"><span class="badge"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.8 9 10 3.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><h3>Không loại oan</h3><p>Chọn ngẫu nhiên 2 kênh bị loại sớm, chấm lại đầy đủ bằng AI: 0 kênh lẽ ra phải giữ. Danh sách 23 lượt loại đều kèm lý do.</p></div></div></div>
+</section>
+
+<section id="can-xac-minh">
+  <h2>Việc cần làm trước khi chốt hợp đồng</h2>
+  <div class="card">
+    <ul class="tight">
+      <li><b>Xin ảnh Analytics khán giả</b> của từng kênh (female 18-30 (VN)) — hệ thống không có dữ liệu này và không đoán. Đây là 25/100 điểm chưa chấm.</li>
+      <li><b>Xin báo giá thật</b> và so với giá trần từng người; vượt trần → chuyển dự phòng. Có báo giá thật, nhập lại để chọn bộ tối ưu mới.</li>
+      <li><b>Chốt quyền sử dụng nội dung</b> (đăng lại, Spark Ads) và thời hạn — 10/100 điểm hợp tác chưa chấm.</li>
+      <li><b>Duyệt kịch bản trước đăng</b>: bắt buộc nêu SPF/PA, lượng dùng, thoa lại; cấm claim tuyệt đối về an toàn và số liệu không nguồn; gắn nhãn quảng cáo rõ.</li>
+      <li><b>Xem thêm video đúng ngách</b> của các kênh mà mẫu xem lệch ngành — mỗi kênh mới chỉ xem 2 video.</li>
+      <li><b>Hỏi xung đột đối thủ</b> (danh sách hiện tại: Anessa, La Roche-Posay, Skin Aqua, Bioré, Neutrogena, Cetaphil, Sunplay, Innisfree, Cocoon, Skin1004 — AI đề xuất, thương hiệu cần xác nhận lại).</li>
+      <li>Việc riêng từng kênh nằm trong thẻ KOC ở trên.</li>
+    </ul>
+  </div>
+  <div class="callout warn"><b>Giới hạn nói thẳng:</b> doanh thu/lượt xem là ước tính của Kalodata, không kiểm chứng độc lập · nguồn video thiên về video có bán hàng · mẫu 2 video/kênh là chỉ báo, không phải kết luận toàn diện · bản chép lời tiếng Việt còn lỗi (đã gắn cờ chỗ nghi ngờ) · giá thuê là giả định minh họa · chưa đo chồng lấn khán giả giữa các kênh. Báo cáo này hỗ trợ quyết định, không thay thế bước xác minh của người làm chiến dịch.</div>
+</section>
+
+<footer>
+  <span>Nguồn dữ liệu: Kalodata (TikTok Shop VN, 2026-10-20 – 2026-11-18) + phân tích AI trên 14 video (khung hình + lời nói). Mọi con số chi phí/kiểm chứng đo từ nhật ký hệ thống, không ước tính suông.</span>
+  <span>Run demo_sunscreen · dữ liệu đến 2026-11-18 · xuất 2026-11-19 · file kèm: results.csv · excluded.csv · benchmark.md · report.md · resume_demo.json</span>
+  <span>Liên hệ KOC: email/Zalo không hiển thị trong bản công khai; xem bản đầy đủ khi cần liên hệ.</span>
+</footer>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+  if (typeof Chart === "undefined") return;
+  var D = {"names": ["Phương Sena", "Công chúa cam thường", "Chang Chăm Chỉ", "Kiều Oanh Mê Làm Đẹp (dự phòng)", "Cẩm Linh", "Mỏ hỗn là tao (dự phòng)", "Khoa Alpha 💪 🇻🇳"], "perf": [11.91, 9.56, 18.09, 11.03, 13.38, 18.38, 14.56], "cont": [21.9, 17.0, 7.46, 16.4, 13.46, 6.6, 11.78], "vis": [5.62, 8.72, 7.97, 6.09, 6.09, 7.12, 5.06], "scen": ["0,7×", "0,85×", "1×", "1,03×", "1,15×", "1,3×", "1,5×"], "feasible": [21.0, 25.5, 30.0, 29.87, null, null, null], "cheapest": [null, null, null, null, 33.35, 37.7, 43.5], "budget": 30.0};
+  var css = function(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); };
+  var charts = [];
+  function build(){
+    charts.forEach(function(c){ c.destroy(); }); charts = [];
+    var ink2 = css("--ink2"), grid = css("--grid"), surface = css("--surface");
+    Chart.defaults.font.family = css("--font") || "system-ui";
+    Chart.defaults.color = ink2;
+    function ds(label,data,color){ return {label:label,data:data,backgroundColor:color,borderColor:surface,borderWidth:2,borderRadius:4,borderSkipped:false,barPercentage:.72,categoryPercentage:.82}; }
+    var sc = document.getElementById("scoreChart");
+    if (sc && D.names.length) charts.push(new Chart(sc,{
+      type:"bar",
+      data:{labels:D.names,datasets:[ds("Hiệu suất",D.perf,css("--s1")),ds("Nội dung",D.cont,css("--s2")),ds("Hình ảnh/video",D.vis,css("--s3"))]},
+      options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+        scales:{x:{stacked:true,max:65,grid:{color:grid},ticks:{color:ink2,callback:function(v){return v+"đ";}}},
+                y:{stacked:true,grid:{display:false},ticks:{color:ink2,font:{size:12}}}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": "+c.parsed.x.toFixed(2)+" điểm";},
+          footer:function(items){var t=items.reduce(function(s,i){return s+i.parsed.x;},0);return "Tổng đã đo: "+t.toFixed(2)+" / 65";}}}}}
+    }));
+    var se = document.getElementById("sensChart");
+    if (se && D.scen.length) charts.push(new Chart(se,{
+      type:"bar",
+      data:{labels:D.scen,datasets:[
+        {label:"Tổng giá bộ tối ưu",data:D.feasible,backgroundColor:css("--s1"),borderColor:surface,borderWidth:2,borderRadius:4,borderSkipped:false,barPercentage:.62,categoryPercentage:.8},
+        {label:"Rẻ nhất có thể (vượt ngân sách)",data:D.cheapest,backgroundColor:css("--crit"),borderColor:surface,borderWidth:2,borderRadius:4,borderSkipped:false,barPercentage:.62,categoryPercentage:.8},
+        {label:"Ngân sách",data:D.scen.map(function(){return D.budget;}),type:"line",borderColor:css("--muted"),borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:{color:ink2}},
+                y:{grid:{color:grid},ticks:{color:ink2,callback:function(v){return v+" tr";}},title:{display:true,text:"Triệu VNĐ",color:ink2,font:{size:11}}}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
+          if(c.dataset.type==="line") return "Ngân sách: "+(D.budget*1000000).toLocaleString("vi-VN")+"đ";
+          if(c.parsed.y==null) return null;
+          return c.dataset.label+": "+(c.parsed.y*1000000).toLocaleString("vi-VN")+"đ";}}}}}
+    }));
+  }
+  build();
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", build);
+  new MutationObserver(function(){ build(); }).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
+</body>
+</html>
