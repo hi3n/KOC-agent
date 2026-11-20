@@ -45,8 +45,8 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
 ```
 {
  "killed_at": {
-  "s2a_done": 4,
-  "elapsed_s": 2.6
+  "s2a_done": 5,
+  "elapsed_s": 2.5
  },
  "stale_running_reset": 4,
  "cold_credits_at_kill": null,
