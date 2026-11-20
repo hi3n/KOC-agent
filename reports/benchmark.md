@@ -35,8 +35,8 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
 
 - Đơn giá phân tích 1 video (đo): LLM $0.0106 + video/url 0.5cr = **$0.0606**
 - Ngây thơ (500 KOC × 5 video, không phễu): ≈ **$161.38** + Kalodata
-- Phễu (500→100→20→5, 75 video, tỷ lệ theo plan): ≈ **$10.64**
-- **Giảm ≈ 93%** chi phí phân tích video. Giả định: tỷ lệ sống sót 500→100→20, 3 video/KOC top-20; đo lại khi chạy 500 thật.
+- Phễu (500→100→20→5, 75 video, tỷ lệ theo plan): ≈ **$10.64** (khoảng sai số theo tỷ lệ sống sót 60–100 video: **$9.73 – $12.16**)
+- **Giảm ≈ 93%** (khoảng **92%–94%**) chi phí phân tích video. Giả định: tỷ lệ sống sót 500→100→20..25, 3 video/KOC; đo lại khi chạy 500 thật.
 
 ## Phục hồi (resume)
 
@@ -46,7 +46,7 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
 {
  "killed_at": {
   "s2a_done": 4,
-  "elapsed_s": 2.4
+  "elapsed_s": 2.6
  },
  "stale_running_reset": 4,
  "cold_credits_at_kill": null,
@@ -66,3 +66,12 @@ Mọi số từ `usage_ledger` (đo thật). Credit→USD quy đổi tham khảo
   - Khớp trực tiếp trong `evidence_id` được trích tại dòng đó: **35/38** (92.1%)
   - Khớp trong bản ghi evidence/hồ sơ khác của cùng creator: **3/38**
   - Tổng số liệu truy nguyên được về dữ liệu gốc: **38/38** (100.0% · số không khớp: 0)
+
+## Nhật ký Governor & Quyết định Agent (decisions)
+
+| Stage | Actor | Action | Target | Kết quả | Lý do |
+|---|---|---|---|---|---|
+| s2 | planner | `proceed` | kept=12 | ✓ Cho phép | Đủ 12 ứng viên (>= 5), tiếp tục S2b/S3 |
+| s4 | planner | `inspect_extra_video` | 7230438795933451269:7698302706674404629 | ✗ Governor chặn | BLOCKED: credit_budget 13.0cr exceeded (used 12.8cr + est 0.5cr) |
+| s4 | planner | `inspect_extra_video` | 7440289356625576976:7661445881022942484 | ✗ Governor chặn | BLOCKED: credit_budget 13.0cr exceeded (used 12.8cr + est 0.5cr) |
+| s5 | planner | `select_portfolio` | PA1 | ✓ Cho phép | Chọn PA1 tối ưu toàn cục trong ngân sách (30,000,000 VNĐ) |

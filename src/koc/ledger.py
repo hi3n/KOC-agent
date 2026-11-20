@@ -60,3 +60,15 @@ class Ledger:
                         " WHERE run_id=? AND provider='kalodata' AND cache_hit=0)",
                         (self.run_id,))
         return float(r["c"] or 0) if r else 0.0
+
+    def ai_cost_usd(self) -> float:
+        r = self.db.one("SELECT COALESCE(SUM(cost_usd), 0) c FROM usage_ledger"
+                        " WHERE run_id=? AND provider='llm' AND cache_hit=0",
+                        (self.run_id,))
+        return float(r["c"] or 0) if r else 0.0
+
+    def tokens_used(self) -> int:
+        r = self.db.one("SELECT COALESCE(SUM(tokens_in + tokens_out), 0) t FROM usage_ledger"
+                        " WHERE run_id=? AND provider='llm' AND cache_hit=0",
+                        (self.run_id,))
+        return int(r["t"] or 0) if r else 0

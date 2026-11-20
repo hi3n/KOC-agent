@@ -78,9 +78,23 @@ CREATE TABLE IF NOT EXISTS usage_ledger (
   cost_usd REAL, latency_ms INTEGER DEFAULT 0, note TEXT
 );
 
+CREATE TABLE IF NOT EXISTS decisions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts TEXT DEFAULT (datetime('now')),
+  run_id TEXT NOT NULL,
+  stage TEXT NOT NULL,
+  actor TEXT NOT NULL,
+  action TEXT NOT NULL,
+  target TEXT,
+  allowed INTEGER NOT NULL DEFAULT 1,
+  reason TEXT,
+  payload_json TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(run_id, stage, status);
 CREATE INDEX IF NOT EXISTS idx_ledger_run ON usage_ledger(run_id, stage, provider);
 CREATE INDEX IF NOT EXISTS idx_evidence_creator ON evidence(run_id, creator_id);
+CREATE INDEX IF NOT EXISTS idx_decisions_run ON decisions(run_id, stage);
 """
 
 

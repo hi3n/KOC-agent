@@ -108,6 +108,10 @@ audit:
 
 limits:
   credit_budget: 13.0     # balance thật 13.8 (spike 19/11) — chừa lề retry
+  max_ai_usd: 5.0         # trần chi phí AI tối đa mỗi run (Governor)
+  max_tokens: 1500000     # trần tổng token in+out mỗi run (Governor)
+  max_wall_seconds: 1800  # trần thời gian chạy tối đa 30 phút (Governor)
+  max_replans: 3          # số lần Planner được phép kích hoạt replan tối đa (Governor)
   io_concurrency: 4
   llm_concurrency: 6
   asr_workers: 3

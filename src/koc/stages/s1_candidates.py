@@ -8,20 +8,15 @@ showed top-revenue rows are brand-owned stores, not KOCs.
 from __future__ import annotations
 
 
-def run(ctx) -> list[dict]:
+def _fetch_slices(ctx, stage_name: str, slice_meta: list[tuple[str, dict, int]]) -> dict[str, dict]:
     f = ctx.cfg.funnel
     camp = ctx.campaign
     cat_ids = camp.get("category_ids", [])
     kw = (camp.get("niche_keywords") or ["kem chống nắng"])[0]
-    items, slice_meta = [], []
-    for i, sl in enumerate(f["slices"]):
-        for p in range(1, int(sl.get("pages", 1)) + 1):
-            item = f"slice{i}_page{p}"
-            items.append(item)
-            slice_meta.append((item, sl, p))
+    by_item = {it: (sl, p) for it, sl, p in slice_meta}
 
     def worker(item: str):
-        sl, p = next((s, pp) for it, s, pp in slice_meta if it == item)
+        sl, p = by_item[item]
         params = ctx.kd.base_params(
             page_size=int(f.get("page_size", 100)), page_number=p,
             sort_field={"field": sl["sort"], "type": "DESC"},
@@ -35,14 +30,17 @@ def run(ctx) -> list[dict]:
         rows = data if isinstance(data, list) else data.get("list", [])
         return {"rows": rows, "sort": sl["sort"]}
 
-    ctx.runner.run("s1", items, worker, concurrency=int(ctx.cfg.raw["limits"]["io_concurrency"]))
-    results = ctx.runner.done_results("s1")
+    ctx.runner.run(stage_name, [it for it, _, _ in slice_meta], worker,
+                   concurrency=int(ctx.cfg.raw["limits"]["io_concurrency"]))
+    return ctx.runner.done_results(stage_name)
 
-    # round-robin interleave across slices -> dedupe -> cap (diversity before truncation)
-    lists = [results[it]["rows"] for it, _, _ in slice_meta if it in results]
-    seen, pool = set(), []
+
+def _round_robin_dedupe(lists: list[list[dict]], limit: int,
+                        existing_ids: set[str] | None = None) -> list[dict]:
+    seen = set(existing_ids or ())
+    pool: list[dict] = []
     idx = 0
-    while len(pool) < int(f["candidates"]) and any(lists):
+    while len(pool) < limit and any(lists):
         alive = []
         for lst in lists:
             if idx < len(lst):
@@ -52,14 +50,39 @@ def run(ctx) -> list[dict]:
                 if cid and cid not in seen:
                     seen.add(cid)
                     pool.append(row)
-                    if len(pool) >= int(f["candidates"]):
+                    if len(pool) >= limit:
                         break
         lists = alive
         idx += 1
         if not alive:
             break
-    ctx.put_stage_result("s1", {"pool": pool, "n_slices": len(slice_meta)})
     return pool
+
+
+def run(ctx) -> list[dict]:
+    f = ctx.cfg.funnel
+    items_meta = [
+        (f"slice{i}_page{p}", sl, p)
+        for i, sl in enumerate(f["slices"])
+        for p in range(1, int(sl.get("pages", 1)) + 1)
+    ]
+    results = _fetch_slices(ctx, "s1", items_meta)
+    lists = [results[it]["rows"] for it, _, _ in items_meta if it in results]
+    pool = _round_robin_dedupe(lists, int(f["candidates"]))
+    ctx.put_stage_result("s1", {"pool": pool, "n_slices": len(items_meta)})
+    return pool
+
+
+def expand_pool(ctx, existing_ids: set[str], extra_target: int = 10) -> list[dict]:
+    """Lấy thêm trang kế tiếp mỗi lát cắt khi Planner/Governor duyệt mở rộng ứng viên."""
+    f = ctx.cfg.funnel
+    items_meta = [
+        (f"expand_slice{i}_page{int(sl.get('pages', 1)) + 1}", sl, int(sl.get("pages", 1)) + 1)
+        for i, sl in enumerate(f["slices"])
+    ]
+    results = _fetch_slices(ctx, "s1_expand", items_meta)
+    lists = [results[it]["rows"] for it, _, _ in items_meta if it in results]
+    return _round_robin_dedupe(lists, extra_target, existing_ids=existing_ids)
 
 
 def load_pool(ctx) -> list[dict]:

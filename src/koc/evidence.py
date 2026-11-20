@@ -79,9 +79,9 @@ def _num_in_pool(val: float, pool: set[float]) -> bool:
 
 def audit_numeric_claims(db: Database, run_id: str, reasons: list[dict],
                          details: dict | None = None) -> dict:
-    """Dry-run audit (chỉ đo, KHÔNG kích hoạt retry S5): đối chiếu mọi con số trong
-    strengths.claim với payload của evidence_ids được trích (và kho evidence/hồ sơ
-    của cùng creator). Trả về số đo thật cho benchmark."""
+    """Đối chiếu mọi con số trong strengths.claim với payload của evidence_ids
+    được trích (và kho evidence/hồ sơ của cùng creator) để phát hiện số không
+    truy nguyên được (dùng cả cho vòng retry S5 và đo lường trong benchmark)."""
     total, in_cited, in_creator = 0, 0, 0
     unmatched: list[dict] = []
     details = details or {}

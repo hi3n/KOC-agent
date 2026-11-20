@@ -12,7 +12,7 @@ import random
 
 from ..evidence import record
 from ..llm import LLMUnavailable
-from ..prompts import S3_SYSTEM, ScreenBatch
+from ..prompts import S3_SYSTEM, ScreenBatch, sanitize_untrusted
 from ..scoring import ScoreCard, content_score_text
 from . import s2_metrics
 
@@ -28,8 +28,8 @@ def _state_for(ctx, cid, res_a, details, videos_limit=8):
         "creator_id": cid,
         "name": d.get("name") or r.get("name", ""),
         "followers": d.get("followers") or r.get("followers", 0),
-        "bio": (d.get("bio") or "")[:300],
-        "video_titles": [v.get("title", "")[:120] for v in vids],
+        "bio": sanitize_untrusted((d.get("bio") or "")[:300]),
+        "video_titles": [sanitize_untrusted(v.get("title", "")[:120]) for v in vids],
         "metrics": {k: m.get(k) for k in ("median_views", "median_er", "ad_ratio",
                                           "posts_per_week", "view_follower_ratio", "n_videos")},
         "niche_keyword_ratio": round(r.get("niche_ratio", 0), 3),

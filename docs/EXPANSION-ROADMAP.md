@@ -178,9 +178,9 @@ S1–S3 (Kalodata + LLM nhỏ): Sàng lọc 500 ứng viên ──► giữ lạ
 2. **Tối ưu thêm 50–70% chi phí AI ở môi trường Production:**
    - **Batch API (−50% chi phí):** Các tác vụ chấm điểm hàng loạt ở tầng S3 và phân tích video ở tầng S4 không đòi hỏi phản hồi tức thì dưới 1 giây, rất phù hợp để gửi qua Batch API của Anthropic / Gemini nhằm giảm một nửa đơn giá token.
    - **Native Prompt Caching:** Bổ sung adapter gọi trực tiếp SDK của provider kèm cờ `cache_control` tường minh cho phần rubric cố định ở đầu system prompt.
-3. **Kiến trúc Autonomous Agent 2 tầng (Supervisor + Per-KOC Investigator):**
-   - Giữ khung phễu có chặn (`Bounded Agentic Funnel`) làm xương sống để đảm bảo chi phí và tính tất định, nhưng bổ sung:
-     - **Supervisor Agent:** Tự động quay lại tầng S1 mở rộng thêm lát cắt tìm kiếm hoặc lấy thêm trang nếu sau tầng S2a số lượng KOC đạt chuẩn theo phân khúc (ví dụ phân khúc `nano` hoặc `mid`) chưa đủ chỉ tiêu.
-     - **Per-KOC Investigator Sub-agent:** Với riêng top 7–15 KOC ở vòng cuối có cờ nghi vấn (như `er_unusually_high` hoặc nghi ngờ tương tác ảo), khởi chạy một sub-agent có ngữ cảnh cô lập (isolated context window) để gọi thêm các endpoint chuyên sâu (như phân tích bình luận `comment/insight` hoặc lịch sử sản phẩm `product/detail`) mà không làm phình ngữ cảnh chung của toàn pipeline.
+3. **Kiến trúc Autonomous Agent 2 tầng & Nền tảng Điều phối (Supervisor + Per-KOC Investigator / Agent SDK / LangGraph / Temporal):**
+   - Trong bản hiện tại, hàng đợi `tasks` SQLite + `Governor` + `Bounded Planner` đã đủ gọn nhẹ, tất định và chịu lỗi tốt cho 1 tiến trình đơn. Khi chuyển sang quy mô phân tán đa máy chủ hoặc tác vụ điều tra dài ngày:
+     - **Supervisor & Workflow Orchestrator (LangGraph / Temporal):** Tự động quay lại tầng S1 mở rộng thêm lát cắt tìm kiếm nếu thiếu ứng viên hoặc điều phối hàng nghìn chiến dịch song song với durable execution.
+     - **Per-KOC Investigator Sub-agent (Agent SDK):** Với riêng top 7–15 KOC ở vòng cuối có cờ nghi vấn (như `er_unusually_high` hoặc nghi ngờ tương tác ảo), khởi chạy một sub-agent có ngữ cảnh cô lập (isolated context window) để gọi thêm các endpoint chuyên sâu (`comment/insight`, `product/detail`) mà không làm phình ngữ cảnh chung của toàn pipeline.
 4. **Vòng phản hồi sau chiến dịch (Post-Campaign Feedback Loop):**
    - Sau khi chiến dịch kết thúc, nhập dữ liệu hiệu quả thực tế (CPC, CPA, GMV thực đạt được của 5 KOC đã thuê) ngược lại hệ thống để hiệu chỉnh trọng số bộ tiêu chí (`scoring.weights`) theo từng ngành hàng.

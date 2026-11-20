@@ -38,6 +38,10 @@ class LLMUnavailable(Exception):
     """Every configured provider failed for this call — stage must degrade."""
 
 
+class GovernorBlocked(LLMUnavailable):
+    """Governor runtime guardrail blocked live call (budget/tokens/wall-clock)."""
+
+
 def _strict_schema(schema: type[BaseModel]) -> dict:
     """Pydantic JSON schema -> OpenAI strict json_schema (inline $defs,
     additionalProperties=false, all properties required)."""
@@ -77,12 +81,14 @@ def _cost(prices: dict, model: str, tin: int, tout: int, tcached: int) -> float 
 
 class LLMClient:
     def __init__(self, role: LLMRole, db: Database, ledger: Ledger, prices: dict,
-                 stage: str, prompt_version: str = "v1", replay: bool = False):
+                 stage: str, prompt_version: str = "v1", replay: bool = False,
+                 governor: Any = None):
         if not role.model:
             raise ValueError(f"LLM role '{stage}': model chưa cấu hình (env/YAML)")
         self.role, self.db, self.ledger, self.prices = role, db, ledger, prices
         self.stage, self.prompt_version = stage, prompt_version
         self.replay = replay  # offline = cache-only, KHÔNG gọi mạng khi cache miss
+        self.governor = governor
         self.chain = [role] + [f for f in role.fallbacks if f.model and f.api_key]
         self._clients: dict[str, Any] = {}
 
@@ -122,6 +128,11 @@ class LLMClient:
             try:
                 return self._judge_live(member, system, content, schema, entity_id,
                                         state_hash, rubric_version, max_attempts)
+            except GovernorBlocked as e:
+                errors.append(f"{member.model}: {e}")
+                self.ledger.log("llm", self.stage, entity_id=entity_id,
+                                note=f"GOVERNOR_BLOCKED {member.model}: {str(e)[:200]}")
+                raise
             except LLMUnavailable as e:
                 errors.append(f"{member.model}: {e}")
                 self.ledger.log("llm", self.stage, entity_id=entity_id,
@@ -133,8 +144,18 @@ class LLMClient:
             # → khớp theo (prompt_version, rubric_version, state_hash) bất kể tên model.
             row = self.db.one(
                 "SELECT output_json, model FROM judgements WHERE prompt_version=?"
-                " AND rubric_version=? AND state_hash=? ORDER BY created_at DESC LIMIT 1",
+                " AND rubric_version=? AND state_hash=? ORDER BY created_at DESC, rowid DESC LIMIT 1",
                 (self.prompt_version, rubric_version, state_hash))
+            if not row and self.stage == "s4" and state_hash.count(":") >= 4:
+                # Fresh git clone không có thư mục runs/*/transcripts/ (gitignored) →
+                # thash ở đoạn cuối state_hash khác chuỗi rỗng; vẫn khóa chặt theo
+                # (stage, entity_id, prompt_version, rubric_version, file_hash).
+                prefix = ":".join(state_hash.split(":")[:4]) + ":%"
+                row = self.db.one(
+                    "SELECT output_json, model FROM judgements WHERE stage=? AND entity_id=?"
+                    " AND prompt_version=? AND rubric_version=? AND state_hash LIKE ?"
+                    " ORDER BY created_at DESC, rowid DESC LIMIT 1",
+                    (self.stage, entity_id, self.prompt_version, rubric_version, prefix))
             if row:
                 self.ledger.log("llm", self.stage, entity_id=entity_id, cache_hit=True,
                                 note=f"replay:{row['model']}")
@@ -168,6 +189,10 @@ class LLMClient:
                 kw["max_completion_tokens"] = role.max_tokens
             if role.extra:
                 kw["extra_body"] = role.extra
+            if self.governor is not None:
+                ok, gmsg = self.governor.check_llm_call(self.stage, entity_id)
+                if not ok:
+                    raise GovernorBlocked(gmsg)
             t0 = time.perf_counter()
             try:
                 resp = self._sdk(role).chat.completions.create(**kw)

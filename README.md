@@ -19,8 +19,10 @@ uv sync
 #    LLM_BASE_URL=...            (bất kỳ endpoint OpenAI-compatible)
 #    LLM_API_KEY=...
 #    LLM_MODEL_SCREEN/VIDEO/REASON/BRIEF=...   (xem .env.example: Anthropic / Gemini / OpenRouter / local)
+#    Lưu ý: LLM_MODEL_VIDEO cần model hỗ trợ đọc ảnh (vd: gemini-3.8-flash, gemini-4-argon, claude-sonnet-5-5).
 
 # 3. Chạy demo (mặc định 30 ứng viên → 5 KOC + 2 dự phòng)
+#    Nếu trước đó đã chạy offline, truyền --run-id live_test_1 (hoặc xóa runs/demo_sunscreen/) để ép chạy mới hoàn toàn.
 uv run koc run --brief briefs/sunscreen.txt --open
 
 # Kết quả xuất thống nhất tại 1 thư mục: reports/ (dashboard.html · report.md · results.csv · excluded.csv · benchmark.md)
@@ -72,10 +74,11 @@ Repo kèm `fixtures/` (response Kalodata ghi từ chạy thật) + `fixtures/jud
 Mọi lệnh `run`, `resume`, `report` đều **tự động sinh đủ bộ báo cáo** vào `reports/` (`dashboard.html`, `report.md`, `results.csv`, `excluded.csv`, `benchmark.md`); thêm cờ `--open` để mở ngay `reports/dashboard.html` trên trình duyệt:
 
 ```bash
-uv run koc run --offline --open            # chạy lại toàn bộ pipeline từ fixtures, 0 credit, 0 token, mở dashboard.html
-uv run koc resume --offline --open         # tiếp tục run có sẵn ở chế độ offline
-uv run koc report --open                   # chỉ dựng lại toàn bộ report (.html/.md/.csv) từ SQLite DB, không gọi API/LLM
-uv run python scripts/export_test_report.py # xuất/cập nhật thêm TEST-RESULTS.md, kept.csv, measurements.json vào reports/
+uv run koc run --offline --open                         # chạy lại toàn bộ pipeline từ fixtures, 0 credit, 0 token, mở dashboard.html
+uv run koc run --offline --report-dir reports_replay    # gợi ý cho người duyệt: chạy thử từ đầu mà giữ nguyên số đo LIVE trong reports/benchmark.md
+uv run koc resume --offline --open                      # tiếp tục run có sẵn ở chế độ offline
+uv run koc report --open                                # chỉ dựng lại toàn bộ report (.html/.md/.csv) từ SQLite DB, không gọi API/LLM
+uv run python scripts/export_test_report.py             # xuất/cập nhật thêm TEST-RESULTS.md, kept.csv, measurements.json vào reports/
 ```
 
 ### Resume sau gián đoạn
@@ -85,10 +88,11 @@ uv run koc resume                      # mặc định demo_sunscreen (hoặc tr
 uv run python scripts/demo_resume.py   # demo kill cứng giữa chừng → resume → đối chiếu kết quả + chi phí thêm (reports/resume_demo.json)
 ```
 
-### Benchmark
+### Benchmark & Cổng duyệt (Governor + Approval Gate)
 
 ```bash
-uv run koc bench                       # chạy ấm lại toàn pipeline (cache giữ nguyên) → reports/benchmark.md tách LẠNH/ẤM
+uv run koc bench                                     # chạy ấm lại toàn pipeline (cache giữ nguyên) → reports/benchmark.md tách LẠNH/ẤM
+uv run koc approve --choice PA1 --note "Duyệt PA1"   # ghi quyết định phê duyệt vào `decisions`, đổi PA được chọn (PA1/PA2/PA3) và xuất lại toàn bộ reports/
 ```
 
 ## Kiến trúc (tóm tắt — chi tiết + lý do từng quyết định: `docs/ARCHITECTURE.md`)
@@ -98,23 +102,30 @@ brief.txt → [S0] AI phân tích brief (grounded trên cây danh mục Kalodata
           → [S1] creator/rank đa lát cắt + dedupe (INDEPENDENT, bỏ channel hãng)
           → [S2a] video/rank MỌI ứng viên → code chấm ER/median/view-follower/red flags → cắt
           → [S2b] creator/detail survivors (bio, contacts, follower spike)
-          → [S3] LLM nhỏ sàng lọc ngữ nghĩa theo batch + recall audit mẫu bị loại
-          → [S4] 2 video đại diện/creator (top bán + mới nhất, seeded)
-                 → tải ngay (link ký 5 phút) → ffmpeg frames + faster-whisper transcript
-                 → LLM đa phương thức chấm rubric → evidence từng quote/observation
-          → [S5] duyệt tổ hợp C(K,5) code: ngân sách + slot + đa dạng
-                 → LLM viết lý do TỪ evidence → validator từ chối lý do không nguồn
+          → [S3] LLM nhỏ sàng lọc ngữ nghĩa theo batch (chống prompt injection) + recall audit mẫu bị loại
+          → [S4] 2 video đại diện/creator (ưu tiên ngách, seeded) → ffmpeg frames + faster-whisper transcript
+                 → LLM đa phương thức chấm rubric (tự chuyển model vision nếu gateway làm rơi ảnh) → kho `evidence`
+          → [S5] duyệt tổ hợp C(K,5) code: ngân sách + slot + đa dạng + giảm trọng số lệch ngách
+                 → LLM viết lý do TỪ evidence → validator + numeric claim audit
           → reports/: dashboard.html + report.md + results.csv + excluded.csv + benchmark.md
-Ngang: SQLite WAL (runs·tasks·api_cache·judgements·evidence·videos·usage_ledger)
+Ngang: Governor (`governor.py`) + Bounded Planner (`planner.py`, 3 điểm quyết định)
+       SQLite WAL (runs·tasks·api_cache·judgements·evidence·videos·usage_ledger·decisions)
 ```
 
-- **Token efficiency:** phễu giảm ~97% lời gọi video đắt so với làm ngây thơ; rubric cố định đầu
+- **Token efficiency:** phễu giảm ~93–97% chi phí phân tích video so với làm ngây thơ; rubric cố định đầu
   prompt (provider auto-cache); schema đóng; batch S3; ledger đo từng token/credit.
-- **Reliability:** task idempotent theo (run, stage, entity); cache và tiến độ tách riêng;
-  kill -9 → resume chỉ làm lại phần dở; chi phí thêm cho phần đã xong = 0 (demo đo được).
+- **Governor & Bounded Planner khép kín:** 5 chốt cứng trong code (`credit_budget`, `max_ai_usd`, `max_tokens`,
+  `max_wall_seconds`, `max_replans` + anti-loop + allowlist) chặn trực tiếp tại cổng gọi live của
+  `KalodataClient` / `LLMClient`, bền hóa trạng thái qua `resume`, và điều khiển 3 vòng quyết định tự
+  thích nghi thực thi thật của Planner (S2 tự mở rộng trang 2 S1 khi thiếu ứng viên, S4 tự tải & chấm lại
+  video đúng ngách khi được duyệt, S5 chọn/nới ràng buộc + tự retry khi số liệu chưa khớp evidence). Mọi quyết
+  định cho phép hay bị chặn ghi đầy đủ vào bảng `decisions`.
+- **Reliability & An toàn:** task idempotent theo `(run, stage, entity)`; cache và tiến độ tách riêng;
+  `kill -9 → resume` tốn 0 đồng cho phần đã xong; chống Prompt Injection qua `sanitize_untrusted()` +
+  cắt gọn đầu-đuôi; kiểm chứng tiêm lỗi HTTP 429/503, JSON cắt cụt, 1053 và link MP4 hết hạn.
 - **Chất lượng:** điểm hiển thị **đã đo X/65** (khán giả 25đ + hợp tác 10đ không có dữ liệu →
   checklist xác minh, không đoán); mọi lý do trích `evidence_id` truy ngược về API gốc hoặc
-  file video + timestamp; recall audit đo mức bỏ sót của phễu, báo cáo thẳng.
+  file video + timestamp; recall audit đo mức bỏ sót của phễu; test ổn định Top-5 lặp 3 lần (100%).
 
 ## Chi phí demo (đo thật bằng ledger, xem `reports/benchmark.md`)
 
@@ -158,21 +169,21 @@ Kalodata tính theo credit (1 credit ≈ 0,1 USD tham khảo). Demo 30 ứng vi�
 - **Scale 500+:** đổi `funnel.candidates: 500`, `after_2a: 100`, `after_3: max(15, 5%N)`; thêm credit Kalodata. Kiến trúc không đổi: mọi tầng parameterized, cache/resume/ledger giữ nguyên; chi phí ngoại suy từ đơn giá đo được (`reports/benchmark.md`).
 - **Batch API Anthropic (−50%)** cho S3/S4 khi không cần latency; adapter native cho `cache_control` tường minh.
 - **Jev judge** cho S3 closed-set questions (interface `Judge` đã tách; chỉ thêm khi có bộ mẫu kiểm thử tiếng Việt 30–50 nhãn).
-- **Autonomous Agent (2-tier Supervisor + Per-KOC Investigator):** khi cần tự động mở rộng vòng tìm kiếm (S1↔S2) hoặc gọi thêm tool chuyên sâu (`comment/insight`, `product/detail`) theo nghi vấn từng KOC mà không làm nổ context window.
+- **Autonomous Agent & Orchestration (2-tier Supervisor + Per-KOC Investigator / Agent SDK / LangGraph / Temporal):** khi cần điều phối phân tán đa máy chủ, tự động mở rộng vòng tìm kiếm (S1↔S2) hoặc gọi thêm tool chuyên sâu (`comment/insight`, `product/detail`) qua Agent SDK/LangGraph/Temporal thay thế hàng đợi SQLite đơn tiến trình hiện tại.
 - **Vòng phản hồi:** nhập kết quả chiến dịch thật → hiệu chỉnh trọng số rubric.
 - **Hạ tầng:** Postgres khi cần nhiều process ghi; queue ngoài khi cần phân tán.
 
 ## Cấu trúc repo
 
 ```
-src/koc/          # config, db, ledger, kalodata, llm, prompts, evidence, scoring,
-                  # select, video, runner, pipeline, report, dashboard, cli, stages/s0..s5
-config/           # defaults.yaml (mọi tham số), prices.yaml
+src/koc/          # config, db, ledger, governor, planner, kalodata, llm, prompts, evidence,
+                  # scoring, select, video, runner, pipeline, report, dashboard, cli, stages/s0..s5
+config/           # defaults.yaml (mọi tham số & 5 chốt Governor), prices.yaml
 briefs/           # brief ngôn ngữ tự nhiên
 fixtures/         # API responses + judgements bundle (offline replay)
 scripts/          # spike.py, demo_resume.py (kill/resume), export_test_report.py, scrub_fixtures.py
-tests/            # pytest (32 tests): scoring, off-niche damping, selector, runner, cache, schema, evidence, vision self-correction, dashboard
-docs/             # đề bài gốc, bộ tiêu chí KOC, ARCHITECTURE.md (19 quyết định), EXPANSION-ROADMAP.md (API/Admin & S6 Outreach)
+tests/            # pytest (46 tests): scoring, selector, runner, governor/planner closed-loop, fault injection, 3x stability, fresh-clone, dashboard
+docs/             # đề bài gốc, bộ tiêu chí KOC, ARCHITECTURE.md (21 quyết định), EXPANSION-ROADMAP.md
 reports/          # thư mục duy nhất chứa toàn bộ báo cáo & kết quả xuất ra (dashboard.html, report.md, results.csv, benchmark.md...)
 runs/             # lưu trữ ngầm dữ liệu vận hành (koc.db, media/, frames/, transcripts/ — gitignore)
 ```
@@ -180,8 +191,9 @@ runs/             # lưu trữ ngầm dữ liệu vận hành (koc.db, media/, f
 ## Kiểm thử
 
 ```bash
-uv run pytest -q     # 32 tests (~3s): ER/median/red flags, coverage & off-niche damping, selector constraints,
-                     # runner idempotency + backoff, cache pays-once, strict schema,
-                     # judgement cache + offline replay, numeric claim audit, niche-first video planner,
-                     # vision blind-gateway detection, dashboard
+uv run pytest -q     # 46 tests (~11s): ER/median/red flags, coverage & off-niche damping, selector constraints,
+                     # runner idempotency + backoff, cache pays-once, strict schema, offline replay & fresh-clone,
+                     # numeric claim audit retry, niche-first video planner, vision blind-gateway detection,
+                     # Governor 5 ceilings + runtime guard + resume persistence, Bounded Planner closed-loop (S2/S4/S5),
+                     # approve PA switch, Prompt Injection guard, Fault Injection, 3x Top-5 stability, dashboard
 ```

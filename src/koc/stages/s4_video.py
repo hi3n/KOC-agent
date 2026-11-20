@@ -17,9 +17,12 @@ import random
 import time
 from pathlib import Path
 
+import httpx
+
+from .. import planner
 from ..config import canonical_hash
 from ..evidence import record
-from ..prompts import S4_SYSTEM, VideoJudgement, PROMPT_VERSION
+from ..prompts import S4_SYSTEM, VideoJudgement, PROMPT_VERSION, sanitize_untrusted
 from ..scoring import ScoreCard, content_score_text, visual_score
 from .. import video as vid
 from . import s3_screen
@@ -115,11 +118,17 @@ def run(ctx) -> dict:
     new_needed = [p for p in planned if p["video_id"] not in done_ids]
     available = float(limits["credit_budget"]) - ctx.ledger.credits_used()
     cost_needed = 0.5 * len(new_needed)
-    if cost_needed > available:
-        keep_ids = {p["video_id"] for p in new_needed if p["role"] == "top_selling"} | (done_ids & {p["video_id"] for p in planned})
-        dropped = [p for p in planned if p["video_id"] not in keep_ids]
-        planned = [p for p in planned if p["video_id"] in keep_ids]
-        events.append(f"credit guard: còn {available:.1f}cr < cần {cost_needed:.1f}cr cho {len(new_needed)} video MỚI → bỏ {len(dropped)} video 'latest', giữ top_selling + video đã xong")
+    if new_needed:
+        ok, gnote = ctx.governor.authorize(
+            "s4", "fetch_video_urls", target=f"{len(new_needed)}_videos",
+            actor="governor", est_credits=cost_needed,
+            reason=f"Kiểm tra hạn mức cho {len(new_needed)} video mới ({cost_needed:.1f}cr)",
+        )
+        if not ok:
+            keep_ids = {p["video_id"] for p in new_needed if p["role"] == "top_selling"} | (done_ids & {p["video_id"] for p in planned})
+            dropped = [p for p in planned if p["video_id"] not in keep_ids]
+            planned = [p for p in planned if p["video_id"] in keep_ids]
+            events.append(f"credit guard ({gnote}): còn {available:.1f}cr < cần {cost_needed:.1f}cr cho {len(new_needed)} video MỚI → bỏ {len(dropped)} video 'latest', giữ top_selling + video đã xong")
     with ctx.db.transaction() as conn:
         for p in planned:
             conn.execute(
@@ -141,11 +150,20 @@ def run(ctx) -> dict:
         if mp4.exists() and vrow["file_hash"] and vid.file_hash(mp4) == vrow["file_hash"]:
             fh, size = vrow["file_hash"], mp4.stat().st_size
         else:
-            vu = ctx.kd.call("video/url", {"video_id": video_id}, "s4", ttl=0)
-            url = vu.get("video_url") or vu.get("url")
-            if not url:
-                raise RuntimeError(f"video/url không trả link: {vu}")
-            _, fh, size = vid.download(url, mp4)
+            def _fetch_and_download():
+                vu = ctx.kd.call("video/url", {"video_id": video_id}, "s4", ttl=0)
+                url = vu.get("video_url") or vu.get("url")
+                if not url:
+                    raise RuntimeError(f"video/url không trả link: {vu}")
+                return vid.download(url, mp4)
+
+            try:
+                _, fh, size = _fetch_and_download()
+            except httpx.HTTPStatusError as e:
+                if e.response is not None and e.response.status_code in (403, 410):
+                    _, fh, size = _fetch_and_download()
+                else:
+                    raise
         duration = vrow["duration_s"] or vid.probe_duration(mp4)
         vcfg = ctx.cfg.raw["video"]
         frame_paths = vid.extract_frames(
@@ -192,14 +210,14 @@ def run(ctx) -> dict:
         thash = canonical_hash(ttext)[:12]
         text = (
             f"Video {video_id} của creator {cid} (vai trò mẫu: {vrow['role']}).\n"
-            f"Tiêu đề: {meta.get('title', '')[:300]}\n"
+            f"Tiêu đề: {sanitize_untrusted(meta.get('title', '')[:300])}\n"
             f"Đăng: {meta.get('published', '?')} | thời lượng: {vrow['duration_s']:.0f}s | "
             f"views: {meta.get('views', 0)} | like: {meta.get('likes', 0)} | "
             f"comment: {meta.get('comments', 0)} | share: {meta.get('shares', 0)} | "
             f"quảng cáo: {bool(meta.get('is_ad'))}\n"
             f"Khung hình theo thứ tự thời gian (2 khung đầu trong 3s mở đầu).\n"
             + (f"<transcript>\n" + "\n".join(
-                f"[{s['start']:.1f}-{s['end']:.1f}] {s['text']}"
+                f"[{s['start']:.1f}-{s['end']:.1f}] {sanitize_untrusted(s['text'])}"
                 for s in transcript["segments"][:80]) + "\n</transcript>"
                if transcript else
                "[TRANSCRIPT KHÔNG KHẢ DỤNG — ASR lỗi/không nạp được. Chỉ chấm phần hình ảnh; "
@@ -218,6 +236,8 @@ def run(ctx) -> dict:
             fb_role = v_llm.chain[1]
             v_llm.ledger.log("llm", "s4", entity_id=video_id,
                              note=f"AGENT_VISION_REROUTE {v_llm.role.model} (blind gateway) → {fb_role.model}")
+            ctx.governor.record("s4", "agent", "vision_reroute", target=video_id, allowed=True,
+                                reason=f"{v_llm.role.model} làm rơi ảnh → chuyển {fb_role.model}")
             j = v_llm._judge_live(fb_role, S4_SYSTEM, content, VideoJudgement,
                                   video_id, cache_key, "v1", 3)
         fh = vrow["file_hash"]
@@ -281,38 +301,85 @@ def run(ctx) -> dict:
 
     # finalize cards: visual + knowledge
     jrows = ctx.runner.done_results("s4_judge")
+    base_flags = {cid: [dict(fl) for fl in cards[cid].flags] for cid in kept}
     s3j = s3["judgements"]
-    # map video→creator từ bảng videos (VideoStats không có creator_id; gồm cả video thay thế)
-    v2c = {r["video_id"]: r["creator_id"] for r in ctx.db.query(
-        "SELECT video_id, creator_id FROM videos WHERE run_id=?", (ctx.cfg.run_id,))}
-    for cid in kept:
-        vjs = [j for vid_, j in jrows.items() if v2c.get(vid_) == cid]
-        card = cards[cid]
-        vis, vparts = visual_score(vjs, 15.0)
-        card.visual = vis
-        card.visual_measured_max = vparts["measured_max"]
-        knowledge = (sum(j.get("knowledge_accuracy", 0.5) for j in vjs) / len(vjs)) if vjs else None
-        r_a = res_a.get(cid, {})
-        s3jud = s3j.get(cid, {})
-        hits = s3jud.get("competitor_names", []) if s3jud.get("competitor_mention") else []
-        content, cparts = content_score_text(r_a.get("niche_ratio", 0),
-                                             r_a.get("metrics", {}).get("ad_ratio", 0), hits,
-                                             llm_fit=s3jud.get("niche_fit"), knowledge=knowledge)
-        card.content = content
-        card.content_measured_max = cparts["measured_max"]
-        for j in vjs:
-            if j.get("knowledge_issues"):
-                card.flags.append({"flag": "knowledge_issue",
-                                   "detail": "; ".join(j["knowledge_issues"])[:250]})
-            if j.get("exaggerated_claims"):
-                card.flags.append({"flag": "exaggerated_claims",
-                                   "detail": "; ".join(j["exaggerated_claims"])[:250]})
-            if j.get("ad_disclosure_ok") is False:
-                card.flags.append({"flag": "ad_no_disclosure", "detail": "video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý"})
+
+    def _apply_video_scores(cur_jrows: dict[str, dict]):
+        # map video→creator từ bảng videos (VideoStats không có creator_id; gồm cả video thay thế/bổ sung)
+        v2c = {r["video_id"]: r["creator_id"] for r in ctx.db.query(
+            "SELECT video_id, creator_id FROM videos WHERE run_id=?", (ctx.cfg.run_id,))}
+        for cid in kept:
+            vjs = [j for vid_, j in cur_jrows.items() if v2c.get(vid_) == cid]
+            card = cards[cid]
+            card.flags = [dict(fl) for fl in base_flags[cid]]
+            vis, vparts = visual_score(vjs, 15.0)
+            card.visual = vis
+            card.visual_measured_max = vparts["measured_max"]
+            knowledge = (sum(j.get("knowledge_accuracy", 0.5) for j in vjs) / len(vjs)) if vjs else None
+            r_a = res_a.get(cid, {})
+            s3jud = s3j.get(cid, {})
+            hits = s3jud.get("competitor_names", []) if s3jud.get("competitor_mention") else []
+            content, cparts = content_score_text(r_a.get("niche_ratio", 0),
+                                                 r_a.get("metrics", {}).get("ad_ratio", 0), hits,
+                                                 llm_fit=s3jud.get("niche_fit"), knowledge=knowledge)
+            card.content = content
+            card.content_measured_max = cparts["measured_max"]
+            for j in vjs:
+                if j.get("knowledge_issues"):
+                    card.flags.append({"flag": "knowledge_issue",
+                                       "detail": "; ".join(j["knowledge_issues"])[:250]})
+                if j.get("exaggerated_claims"):
+                    card.flags.append({"flag": "exaggerated_claims",
+                                       "detail": "; ".join(j["exaggerated_claims"])[:250]})
+                if j.get("ad_disclosure_ok") is False:
+                    card.flags.append({"flag": "ad_no_disclosure", "detail": "video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý"})
+
+    _apply_video_scores(jrows)
+
+    s4_decisions = planner.decide_after_s4(
+        ctx, kept, res_a, jrows, ctx.campaign.get("niche_keywords", []))
+    approved_extra = []
+    for dec in s4_decisions:
+        if dec.action == "inspect_extra_video" and dec.allowed and ":" in dec.target:
+            cid_t, vid_t = dec.target.split(":", 1)
+            if ctx.mode == "replay":
+                vcheck = ctx.db.one(
+                    "SELECT file_hash FROM videos WHERE run_id=? AND video_id=?",
+                    (ctx.cfg.run_id, vid_t))
+                if not vcheck or not vcheck["file_hash"]:
+                    events.append(f"planner[inspect_extra_video] {dec.target}: bỏ qua khi replay (video chưa có trong bundle)")
+                    continue
+            approved_extra.append({"video_id": vid_t, "creator_id": cid_t, "role": "niche_extra"})
+        elif dec.action != "proceed":
+            events.append(f"planner[{dec.action}] {dec.target}: {dec.governor_note}")
+
+    if approved_extra:
+        with ctx.db.transaction() as conn:
+            for p in approved_extra:
+                conn.execute(
+                    "INSERT OR IGNORE INTO videos (run_id, video_id, creator_id, role, status)"
+                    " VALUES (?,?,?,?,'pending')",
+                    (ctx.cfg.run_id, p["video_id"], p["creator_id"], p["role"]))
+        extra_ids = [p["video_id"] for p in approved_extra]
+        ctx.runner.run("s4_media", extra_ids, media_worker, concurrency=int(limits["io_concurrency"]))
+        placeholders = ",".join("?" * len(extra_ids))
+        ready_extra = [r["video_id"] for r in ctx.db.query(
+            f"SELECT video_id FROM videos WHERE run_id=? AND status='processed_local' AND video_id IN ({placeholders})",
+            (ctx.cfg.run_id, *extra_ids))]
+        if ready_extra:
+            ctx.runner.run("s4_judge", ready_extra, judge_worker, concurrency=int(limits["llm_concurrency"]))
+        jrows = ctx.runner.done_results("s4_judge")
+        _apply_video_scores(jrows)
+        judged_extra = [vid_ for vid_ in extra_ids if vid_ in jrows]
+        events.append(
+            f"planner[inspect_extra_video] thực thi bổ sung {len(judged_extra)}/{len(approved_extra)} video đúng ngách và chấm lại điểm: "
+            + ", ".join(f"{p['creator_id']}:{p['video_id']}" for p in approved_extra)
+        )
 
     out = {"cards": {k: v.model_dump() for k, v in cards.items()},
            "video_judgements": jrows, "events": events,
-           "videos_planned": len(planned)}
+           "videos_planned": len(planned) + len(approved_extra),
+           "plan_decisions": [d.model_dump() for d in s4_decisions]}
     ctx.put_stage_result("s4", out)
     return out
 

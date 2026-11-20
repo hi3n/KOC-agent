@@ -98,9 +98,13 @@ def collect(ctx) -> dict:
     camp = ctx.campaign
     sel = s5.get("selection", {})
     portfolios = sel.get("portfolios", [])
-    p0 = portfolios[0] if portfolios else {}
+    sel_idx = int(sel.get("selected_index", 0)) if portfolios else 0
+    if not (0 <= sel_idx < len(portfolios)):
+        sel_idx = 0
+    p0 = portfolios[sel_idx] if portfolios else {}
     members = p0.get("members", [])
-    backups = sel.get("backups", [])
+    chosen_ids = {m["creator_id"] for m in members}
+    backups = [b for b in sel.get("backups", []) if b["creator_id"] not in chosen_ids]
     details = s2.get("details", {})
     reasons = {r["creator_id"]: r for r in s5.get("reasons", [])}
     cards = {k: ScoreCard(**v) for k, v in s4.get("cards", s3.get("cards", {})).items()}
@@ -171,7 +175,7 @@ def collect(ctx) -> dict:
 
     alts = [{"label": f"PA{i}", "names": ", ".join(m["name"] for m in p["members"]),
              "delta": p["total_score"] - p0["total_score"], "price": p["total_price_vnd"]}
-            for i, p in enumerate(portfolios[1:], 2)]
+            for i, p in enumerate(portfolios, 1) if i - 1 != sel_idx]
     swaps = []
     for cid, sw in (p0.get("swap_options") or {}).items():
         nm = details.get(cid, {}).get("name", cid)

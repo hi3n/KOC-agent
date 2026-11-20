@@ -97,6 +97,33 @@ def bench(run_id: str = typer.Argument("demo_sunscreen"),
     _outputs(ctx)
 
 
+@app.command()
+def approve(run_id: str = typer.Argument("demo_sunscreen"),
+            choice: str = typer.Option("PA1", help="Phương án được chọn: PA1 | PA2 | PA3 | REJECT"),
+            note: str = typer.Option("", help="Ghi chú phê duyệt của người dùng"),
+            report_dir: str = typer.Option(None, help="Thư mục xuất báo cáo (mặc định: reports)")):
+    """Cổng duyệt của người dùng: ghi quyết định vào `decisions`, cập nhật PA được chọn và xuất lại báo cáo."""
+    ch = choice.strip().upper()
+    if ch not in ("PA1", "PA2", "PA3", "REJECT"):
+        raise typer.BadParameter("choice phải là một trong: PA1, PA2, PA3, REJECT")
+    ctx = create_ctx(None, mode="replay", run_id=run_id, report_dir=report_dir)
+    reason = note.strip() or f"Người duyệt chốt phương án {ch}"
+    ctx.governor.record("approval", "human", "human_approval", target=ch,
+                        allowed=True, reason=reason)
+    s5 = ctx.stage_result("s5")
+    if s5:
+        s5["approval"] = {"choice": ch, "note": reason}
+        portfolios = s5.get("selection", {}).get("portfolios", [])
+        if ch in ("PA1", "PA2", "PA3"):
+            idx = int(ch[2]) - 1
+            if 0 <= idx < len(portfolios):
+                s5["selection"]["selected_index"] = idx
+        ctx.put_stage_result("s5", s5)
+    report_mod.write_all(ctx)
+    print(f"Đã ghi quyết định phê duyệt cho run={run_id}: choice={ch} ({reason})")
+    print(f"Đã cập nhật toàn bộ báo cáo tại: {ctx.report_dir}")
+
+
 @app.command(name="export-bundle")
 def export_bundle(run_id: str = typer.Argument("demo_sunscreen")):
     from .db import Database

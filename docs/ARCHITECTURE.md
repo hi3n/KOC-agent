@@ -1,6 +1,6 @@
 # Kiến trúc Hệ thống AI KOC Discovery
 
-Tài liệu này trình bày sơ đồ kiến trúc, cấu trúc module, giao thức đảm bảo độ tin cậy (Reliability) và giải thích chi tiết **19 quyết định thiết kế cốt lõi (D1–D19)** của hệ thống **AI KOC Discovery**.
+Tài liệu này trình bày sơ đồ kiến trúc, cấu trúc module, giao thức đảm bảo độ tin cậy (Reliability) và giải thích chi tiết **21 quyết định thiết kế cốt lõi (D1–D21)** của hệ thống **AI KOC Discovery**.
 
 **Nguyên tắc thiết kế chủ đạo:** *Chất lượng giải pháp, hiệu quả chi phí và tư duy kiến trúc được ưu tiên hơn độ phức tạp của hệ thống.*
 - **Phân định rõ trách nhiệm Code vs. AI:** Code xử lý các phép tính thống kê, kiểm tra ràng buộc ngân sách và duyệt tổ hợp tất định; AI chỉ được gọi ở những bước đòi hỏi phán đoán ngữ nghĩa, thị giác và tổng hợp lập luận dựa trên bằng chứng.
@@ -40,14 +40,19 @@ brief.txt (ngôn ngữ tự nhiên)
      → LLM (role=reason) viết lý do từ kho evidence → validator + numeric claim audit
    ▼
 report.md + results.csv + excluded.csv + benchmark.md (+ dashboard.html)
+   │
+   ▼
+[Approval Gate] `uv run koc approve --choice PA1 --note "..."` → ghi quyết định vào bảng `decisions`
 
-Tầng lưu trữ ngang: SQLite WAL (runs · tasks · api_cache · judgements · evidence · videos · usage_ledger)
-                    Disk: runs/<run_id>/media/, frames/, transcripts/ (content-addressed)
+Tầng kiểm soát ngang:
+  - Governor (`governor.py`) + Bounded Planner (`planner.py`): kiểm soát 5 chốt cứng (credit, AI USD, token, wall-clock, max_replans + anti-loop + allowlist) ở 3 điểm quyết định S2/S4/S5
+  - SQLite WAL (runs · tasks · api_cache · judgements · evidence · videos · usage_ledger · decisions)
+  - Disk: runs/<run_id>/media/, frames/, transcripts/ (content-addressed)
 ```
 
 ---
 
-## 2. Các Quyết định Thiết kế Chính (D1–D19)
+## 2. Các Quyết định Thiết kế Chính (D1–D21)
 
 | # | Quyết định | Lý do cụ thể | Đánh đổi chấp nhận |
 |---|---|---|---|
@@ -69,7 +74,9 @@ Tầng lưu trữ ngang: SQLite WAL (runs · tasks · api_cache · judgements ·
 | **D16** | **Giới hạn phạm vi có chủ đích (Scope Discipline)** | Chủ động không đưa vào các thành phần làm tăng độ phức tạp nhưng ít đóng góp cho mục tiêu cốt lõi của bài toán: không dùng bộ phân loại đóng Jev (vì chi phí tầng S3 với model nhỏ đã rất thấp và cần linh hoạt ngữ nghĩa tiếng Việt), không tích hợp Google Sheets OAuth, không tự cào trực tiếp TikTok ngoài Kalodata. | Mọi hạng mục chưa triển khai đều được giải thích rõ lý do và hướng mở rộng trong tài liệu. |
 | **D17** | **Cơ chế Record / Replay (`fixtures/` + `judgements_bundle.json`) cho phép chạy `--offline`** | Toàn bộ phản hồi Kalodata (đã ẩn thông tin liên hệ cá nhân nhạy cảm) và kết quả đánh giá LLM được đóng gói kèm repo. Người chấm bài có thể chạy `uv run koc run --offline` để kiểm tra toàn bộ luồng xử lý từ S0 đến S5 mà **không cần API key và tốn 0 credit/token**. | Cần bước `scrub_fixtures.py` để làm sạch dữ liệu liên hệ cá nhân trước khi lưu vào kho mã nguồn công khai. |
 | **D18** | **Cơ chế Failover tường minh & Hạ cấp an toàn (Graceful Degradation), không dùng Dynamic Model Router** | Không dùng bộ định tuyến tự động đổi model ngẫu nhiên theo độ khó vì sẽ làm vỡ khóa cache `judgements`, mất tính tất định khi `resume` và làm sai lệch số liệu quy thuộc trong benchmark. Thay vào đó, hệ thống dùng chuỗi dự phòng tường minh (`primary → fallback`) chỉ kích hoạt khi gặp lỗi thực sự, và nếu mọi provider đều lỗi thì hạ cấp an toàn theo từng tầng (đánh dấu `DEGRADED` trung thực trong báo cáo). | Khi chuyển sang model dự phòng, thang chấm có thể chênh lệch nhẹ — sổ cái `usage_ledger` luôn ghi rõ model thực tế đã sử dụng cho từng tác vụ. |
-| **D19** | **Kiến trúc Bounded Agentic Funnel thay vì Unbounded ReAct Loop** | Ở quy mô hàng trăm KOC, một vòng lặp ReAct tự do dễ làm phình ngữ cảnh (context bloat), không đảm bảo tính tất định khi khôi phục sau sự cố (`kill -9 / resume`) và gây mất hiệu lực cache dây chuyền. Hệ thống sử dụng luồng điều phối có cấu trúc `S0 → S5` kết hợp các vòng tự sửa lỗi có giới hạn chặt (schema validation retry ≤ 2, evidence validator retry ≤ 1). | Khi cần tự động quay lại mở rộng vùng tìm kiếm hoặc đào sâu thêm bình luận cho riêng một số KOC nghi vấn, có thể nâng cấp theo mô hình 2 tầng (Supervisor + Per-KOC Investigator) ở phần hướng mở rộng. |
+| **D19** | **Kiến trúc Bounded Agentic Funnel thay vì Unbounded ReAct Loop / LangGraph / Temporal** | Ở quy mô hàng trăm KOC, một vòng lặp ReAct tự do dễ làm phình ngữ cảnh, không tất định khi `kill -9 / resume` và làm vỡ cache. Hệ thống cũng chủ động không đưa vào các framework điều phối nặng như LangGraph, Temporal, Agent SDK hay LLM Critic riêng vì bảng `tasks` SQLite WAL + kiểm tra số liệu bằng code đã đáp ứng trọn vẹn độ tin cậy mà ít chi phí và phụ thuộc nhất. | Khi mở rộng đa máy chủ phân tán hoặc multi-agent phức tạp hơn, lộ trình nâng cấp sang LangGraph/Temporal/Agent SDK đã được nêu rõ trong `docs/EXPANSION-ROADMAP.md`. |
+| **D20** | **Governor tập trung bằng Code (`governor.py`) + Chốt runtime & Bền hóa trạng thái (`decisions`)** | Mọi lời gọi live tới `KalodataClient` / `LLMClient` và mọi hành động thích nghi của Agent đều bị kiểm tra bởi 5 chốt chặn cứng của `Governor`: trần `credit_budget`, trần `max_ai_usd`, trần `max_tokens`, trần `max_wall_seconds`, giới hạn `max_replans` kèm cơ chế chống lặp (`anti-loop`) và danh sách hành động được phép (`ALLOWED_ACTIONS`). Trạng thái `_replans`/`_seen_actions` được khôi phục từ bảng `decisions` khi `koc resume`; cả cho phép và bị chặn đều ghi log vào `decisions` và in trong `benchmark.md`. | Thiết kế chốt chặn chặt nên có thể từ chối mở rộng video nếu ngân sách còn lại không đủ hoặc ngắt call live ngay khi chạm trần — đổi lại loại bỏ hoàn toàn nguy cơ vòng lặp đốt tiền ngoài kiểm soát. |
+| **D21** | **Bounded Planner khép kín tại 3 điểm quyết định + Numeric Audit Retry + Approval Gate thực thi** | `planner.py` đóng gói 3 điểm tự thích nghi thực thi thật (`Plan → Authorize → Act → Re-evaluate`): thiếu ứng viên sau S2a → `s1_candidates.expand_pool` lấy trang 2 và chấm bổ sung; video mẫu lạc ngách ở S4 → tải & chấm bổ sung `niche_extra` và cập nhật lại `cards[cid]` nếu Governor duyệt; chọn/nới ràng buộc S5 + đưa `audit_numeric_claims` vào vòng `portfolio_retry` tự sửa con số không khớp. Cổng `koc approve --choice PA2` ghi `decisions` đồng thời cập nhật phương án thực xuất trên `report.md`/`results.csv`/`dashboard.html`. Lớp `sanitize_untrusted()` + `bound_tool_output()` chống Prompt Injection; `test_faults.py` & `test_governor_planner.py` kiểm chứng toàn bộ vòng khép kín trên mock tất định. | Bộ kiểm thử tiêm lỗi và vòng lặp thích nghi chạy trên mock deterministically để chạy nhanh (~11s) và không tốn credit; nhánh S2/S4 mở rộng tự động tôn trọng khóa an toàn khi chạy `--offline` replay. |
 
 ---
 
@@ -78,20 +85,22 @@ Tầng lưu trữ ngang: SQLite WAL (runs · tasks · api_cache · judgements ·
 ```
 src/koc/
   config.py      # Nội suy biến môi trường ${VAR:-default}, Pydantic RunConfig, merge YAML + BriefAnalysis, config_hash
-  db.py          # SQLite WAL schema (7 bảng), RLock, transaction context, khôi phục stale running → pending
+  db.py          # SQLite WAL schema (8 bảng gồm `decisions`), RLock, transaction context, khôi phục stale running → pending
   ledger.py      # Ghi nhận usage_ledger (credits, tokens, cost_usd, latency_ms) và tổng hợp số liệu benchmark
-  kalodata.py    # Kalodata Open API client: persistent cache, token-bucket rate limiter, retry backoff mã 2017, record/replay
+  governor.py    # Governor tập trung (5 trần cứng: credit, AI USD, token, wall-clock, max_replans + anti-loop + allowlist) & log `decisions`
+  planner.py     # Bounded Planner (PlanDecision) tại 3 điểm quyết định (sau S2, sau S4, sau S5) đi qua Governor
+  kalodata.py    # Kalodata Open API client: persistent cache, token-bucket rate limiter, retry backoff mã 2017/429/503, record/replay
   llm.py         # OpenAI-compatible client theo từng role, json_schema → json_object fallback, judgement cache, failover chain
-  prompts.py     # Hệ thống prompt và rubric cố định đầu prefix (tối ưu auto prompt-caching), chống prompt injection từ dữ liệu KOC
+  prompts.py     # Hệ thống prompt/rubric cố định đầu prefix, sanitize_untrusted() chống prompt injection & bound_tool_output() cắt gọn đầu-đuôi
   evidence.py    # Kho lưu trữ bằng chứng content-addressed, bộ kiểm tra validate_reason và audit_numeric_claims
-  scoring.py     # Tính toán ER, median/mean view, view/follower, độ ổn định, cờ đỏ (red flags) và điểm thành phần bằng code
+  scoring.py     # Tính toán ER, median/mean view, view/follower, độ ổn định, cờ đỏ (red flags) và off-niche damping bằng code
   select.py      # Duyệt tổ hợp C(K,5) theo ràng buộc ngân sách + phân khúc + đa dạng, phân tích độ nhạy giá và giá trần
   video.py       # Tải video MP4, băm SHA-256, trích xuất khung hình qua ffmpeg, bóc băng tiếng Việt qua faster-whisper
   runner.py      # StageRunner đa luồng, đảm bảo tính idempotent theo (run_id, stage, entity_id) và xử lý backoff
-  pipeline.py    # Khởi tạo ngữ cảnh Ctx, khôi phục cấu hình khi resume và điều phối luồng S0 → S5
-  report.py      # Xuất báo cáo Markdown, CSV (results.csv, excluded.csv), benchmark.md và gọi sinh dashboard.html
+  pipeline.py    # Khởi tạo ngữ cảnh Ctx (kèm Governor), khôi phục cấu hình khi resume và điều phối luồng S0 → S5
+  report.py      # Xuất báo cáo Markdown, CSV, benchmark.md (kèm sai số N=500 & bảng decisions) và gọi sinh dashboard.html
   dashboard.py   # Tự sinh giao diện báo cáo trực quan reports/dashboard.html (biểu đồ phễu, điểm số, độ nhạy ngân sách)
-  cli.py         # Giao diện dòng lệnh Typer: run, resume, report, bench, export-bundle (hỗ trợ --open mở dashboard)
+  cli.py         # Giao diện dòng lệnh Typer: run, resume, report, bench, approve, export-bundle (hỗ trợ --open)
   stages/        # 6 tầng xử lý độc lập: s0_brief, s1_candidates, s2_metrics, s3_screen, s4_video, s5_select
 ```
 

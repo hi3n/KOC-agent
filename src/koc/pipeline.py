@@ -12,6 +12,7 @@ from pathlib import Path
 
 from .config import BriefAnalysis, RunConfig, build_config, load_prices
 from .db import Database
+from .governor import Governor
 from .kalodata import KalodataClient
 from .ledger import Ledger
 from .llm import LLMClient
@@ -26,6 +27,8 @@ class Ctx:
         self.cfg, self.db, self.ledger, self.kd = cfg, db, ledger, kd
         self.mode = mode
         self.runner = StageRunner(db, ledger, cfg.run_id)
+        self.governor = Governor(db, ledger, cfg.run_id, cfg.raw.get("limits", {}))
+        self.kd.governor = self.governor
         self.prices = load_prices()
         self.run_dir = Path(run_dir) if run_dir else (Path("runs") / cfg.run_id)
         self.run_dir.mkdir(parents=True, exist_ok=True)
@@ -36,7 +39,8 @@ class Ctx:
     def llm(self, role: str, stage: str) -> LLMClient:
         if role not in self._llm:
             self._llm[role] = LLMClient(self.cfg.llm_role(role), self.db, self.ledger,
-                                        self.prices, stage, replay=(self.mode == "replay"))
+                                        self.prices, stage, replay=(self.mode == "replay"),
+                                        governor=self.governor)
         return self._llm[role]
 
     @property

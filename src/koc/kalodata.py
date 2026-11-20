@@ -73,9 +73,10 @@ class _Bucket:
 class KalodataClient:
     def __init__(self, db: Database, ledger: Ledger, cfg: dict, api_key: str,
                  mode: str = "rw", fixtures_dir: str | Path = "fixtures",
-                 date_range: str = ""):
+                 date_range: str = "", governor=None):
         self.db, self.ledger, self.cfg = db, ledger, cfg
         self.mode = mode
+        self.governor = governor
         self.fixtures = Path(fixtures_dir)
         self.fixtures.mkdir(parents=True, exist_ok=True)
         self.date_range = date_range
@@ -113,6 +114,11 @@ class KalodataClient:
             return self.call(endpoint, params, stage, ttl)  # now a cache hit
 
         try:
+            if self.governor is not None:
+                est_cr = CREDITS.get(endpoint, 0.1)
+                ok, gmsg = self.governor.check_kalodata_call(stage, endpoint, est_credits=est_cr)
+                if not ok:
+                    raise KalodataError("GOVERNOR_BLOCKED", gmsg)
             t0 = time.perf_counter()
             envelope = self._fetch(endpoint, params)
             latency = int((time.perf_counter() - t0) * 1000)

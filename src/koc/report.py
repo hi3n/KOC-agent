@@ -37,11 +37,21 @@ def write_all(ctx):
     dashboard.render(ctx)
 
 
+def _active_portfolio(sel: dict) -> tuple[int, dict, list[dict]]:
+    portfolios = sel.get("portfolios", [])
+    sel_idx = int(sel.get("selected_index", 0)) if portfolios else 0
+    if not (0 <= sel_idx < len(portfolios)):
+        sel_idx = 0
+    p0 = portfolios[sel_idx] if portfolios else {}
+    chosen_ids = {m["creator_id"] for m in p0.get("members", [])}
+    backups = [b for b in sel.get("backups", []) if b["creator_id"] not in chosen_ids]
+    return sel_idx, p0, backups
+
+
 def _csv_results(out, sel, reasons, cards, details):
     rows = []
-    portfolios = sel.get("portfolios", [])
-    p0 = portfolios[0] if portfolios else {}
-    members = p0.get("members", []) + sel.get("backups", [])
+    _, p0, backups = _active_portfolio(sel)
+    members = p0.get("members", []) + backups
     for m in members:
         cid = m["creator_id"]
         d = details.get(cid, {})
@@ -109,6 +119,9 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
     models = {r: (actual.get(r) or cfg.llm_role(r).model).removeprefix("ag/")
               for r in ("brief", "screen", "video", "reason")}
     L.append(f"Models (cấu hình được, không fix cứng): `{json.dumps(models)}`\n")
+    app_info = s5.get("approval")
+    if app_info:
+        L.append(f"> **Trạng thái phê duyệt (Human Approval Gate):** `{app_info.get('choice')}` — {app_info.get('note')}\n")
 
     L.append("\n## 1. Brief và phân tích của AI (S0)\n")
     L.append(f"> {cfg.brief_text.strip()[:600]}\n")
@@ -142,14 +155,14 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
     if not sel.get("feasible"):
         L.append(f"**KHÔNG khả thi**: {sel.get('infeasible_reason')}\n")
     portfolios = sel.get("portfolios", [])
+    sel_idx, p0, backups = _active_portfolio(sel)
     if portfolios:
-        p0 = portfolios[0]
-        for m in p0["members"] + sel.get("backups", []):
+        for m in p0["members"] + backups:
             cid = m["creator_id"]
             d = details.get(cid, {})
             card = cards.get(cid)
             r = reasons.get(cid, {})
-            is_backup = m in sel.get("backups", [])
+            is_backup = m in backups
             L.append(f"\n### {'[DỰ PHÒNG] ' if is_backup else ''}{m.get('name', cid)} (@{str(d.get('handle', '?')).lstrip('@')}) — {r.get('role_in_campaign', m.get('tier'))}\n")
             if card:
                 L.append(f"**Điểm đã đo: {card.measured}/{card.measured_max}** "
@@ -184,20 +197,20 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
                     val = "[redacted]" if key in ("email", "zalo") and v else v
                     c_items.append(f"{key}={val}")
                 L.append("- Liên hệ: " + ", ".join(c_items))
-        if len(portfolios) > 1:
-            L.append("\n**Phương án thay thế** (chênh lệch điểm so với phương án 1):")
-            for i, p in enumerate(portfolios[1:], 2):
+        alts = [(i, p) for i, p in enumerate(portfolios, 1) if i - 1 != sel_idx]
+        if alts:
+            L.append(f"\n**Phương án thay thế** (chênh lệch điểm so với phương án {sel_idx + 1}):")
+            for i, p in alts:
                 L.append(f"- PA{i}: {', '.join(m['name'] for m in p['members'])} · điểm {p['total_score']} (Δ {p['total_score'] - p0['total_score']:+.4f}) · giá {_fmt_money(p['total_price_vnd'])}")
             swaps = p0.get("swap_options", {})
             if swaps:
-                L.append("\nHoán đổi 1 người (phương án 1): " + "; ".join(
+                L.append(f"\nHoán đổi 1 người (phương án {sel_idx + 1}): " + "; ".join(
                     f"{details.get(cid, {}).get('name', cid)} → {sw['name']} (Δ điểm {sw['score_delta']:+.4f})"
                     if sw else f"{details.get(cid, {}).get('name', cid)} → không có phương án tốt hơn"
                     for cid, sw in swaps.items()))
 
     L.append("\n## 4. Ngân sách (GIẢ ĐỊNH — không phải báo giá)\n")
     if portfolios:
-        p0 = portfolios[0]
         L.append(f"- Tổng giá giả định bộ 5: **{_fmt_money(p0['total_price_vnd'])} VNĐ** / ngân sách {_fmt_money(cfg.raw['budget']['total_vnd'])}")
         L.append(f"- **Hệ số giá tối đa còn khả thi: {p0['max_price_scale']}** (giá thật cao hơn mức này → vượt ngân sách, dùng phương án thay thế)")
         L.append("- Bảng giá theo tier là minh họa; chỉ tỷ lệ tương đối có ý nghĩa. Điểm chất lượng KHÔNG dùng giá.")
@@ -266,12 +279,19 @@ def write_benchmark(ctx):
     if v and v["n"]:
         video_unit_usd = (v["c"] or 0) + 0.5 * CREDIT_USD
         n500_naive = 500 * 5 * video_unit_usd + 500 * 0.2 * CREDIT_USD
-        n500_funnel = (500 * 0.1 + 100 * 0.1 + 75 * 0.5) * CREDIT_USD + 75 * (v["c"] or 0) + 0.1
+        def _funnel_cost(n_vid: int) -> float:
+            return (500 * 0.1 + 100 * 0.1 + n_vid * 0.5) * CREDIT_USD + n_vid * (v["c"] or 0) + 0.1
+        n500_low, n500_funnel, n500_high = _funnel_cost(60), _funnel_cost(75), _funnel_cost(100)
+        sav_low = 100 * (1 - n500_high / n500_naive)
+        sav_mid = 100 * (1 - n500_funnel / n500_naive)
+        sav_high = 100 * (1 - n500_low / n500_naive)
         L.append("\n## Ngoại suy N=500 (đơn giá ĐO được, giả định ghi rõ)\n")
         L.append(f"- Đơn giá phân tích 1 video (đo): LLM ${v['c'] or 0:.4f} + video/url 0.5cr = **${video_unit_usd:.4f}**")
         L.append(f"- Ngây thơ (500 KOC × 5 video, không phễu): ≈ **${n500_naive:.2f}** + Kalodata")
-        L.append(f"- Phễu (500→100→20→5, 75 video, tỷ lệ theo plan): ≈ **${n500_funnel:.2f}**")
-        L.append(f"- **Giảm ≈ {100 * (1 - n500_funnel / n500_naive):.0f}%** chi phí phân tích video. Giả định: tỷ lệ sống sót 500→100→20, 3 video/KOC top-20; đo lại khi chạy 500 thật.")
+        L.append(f"- Phễu (500→100→20→5, 75 video, tỷ lệ theo plan): ≈ **${n500_funnel:.2f}** "
+                 f"(khoảng sai số theo tỷ lệ sống sót 60–100 video: **${n500_low:.2f} – ${n500_high:.2f}**)")
+        L.append(f"- **Giảm ≈ {sav_mid:.0f}%** (khoảng **{sav_low:.0f}%–{sav_high:.0f}%**) chi phí phân tích video. "
+                 "Giả định: tỷ lệ sống sót 500→100→20..25, 3 video/KOC; đo lại khi chạy 500 thật.")
     L.append("\n## Phục hồi (resume)\n")
     L.append("- Warm ở trên = toàn bộ pipeline chạy lại với cache giữ nguyên: credit/token/cost thêm phải = 0 cho phần đã xong.")
     L.append("- Kill -9 demo: xem `resume_demo.json` (nếu có) — script chạy, kill giữa chừng, resume, so kết quả + chi phí thêm.")
@@ -292,4 +312,15 @@ def write_benchmark(ctx):
         L.append(f"  - Khớp trực tiếp trong `evidence_id` được trích tại dòng đó: **{num_audit['in_cited_evidence']}/{num_audit['total_numbers']}** ({num_audit['cited_match_rate'] * 100:.1f}%)")
         L.append(f"  - Khớp trong bản ghi evidence/hồ sơ khác của cùng creator: **{num_audit['in_creator_other_evidence']}/{num_audit['total_numbers']}**")
         L.append(f"  - Tổng số liệu truy nguyên được về dữ liệu gốc: **{num_audit['verified_total']}/{num_audit['total_numbers']}** ({num_audit['verified_rate'] * 100:.1f}% · số không khớp: {len(num_audit['unmatched'])})")
+
+    decs = ctx.governor.decisions()
+    if decs:
+        L.append("\n## Nhật ký Governor & Quyết định Agent (decisions)\n")
+        L.append("| Stage | Actor | Action | Target | Kết quả | Lý do |")
+        L.append("|---|---|---|---|---|---|")
+        for dc in decs:
+            verdict = "✓ Cho phép" if dc["allowed"] else "✗ Governor chặn"
+            tgt = (dc.get("target") or "—").replace("|", "/")
+            rsn = (dc.get("reason") or "—").replace("|", "/").replace("\n", " ")
+            L.append(f"| {dc['stage']} | {dc['actor']} | `{dc['action']}` | {tgt} | {verdict} | {rsn} |")
     (out / "benchmark.md").write_text("\n".join(L), encoding="utf-8")

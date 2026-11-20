@@ -10,7 +10,8 @@ from __future__ import annotations
 import json
 from dataclasses import asdict
 
-from ..evidence import for_creator, validate_reason
+from .. import planner
+from ..evidence import audit_numeric_claims, for_creator, validate_reason
 from ..llm import LLMUnavailable
 from ..prompts import S5_SYSTEM, ReasonSet, ReasonItem, Strength, VideosWatched
 from ..scoring import ScoreCard
@@ -90,9 +91,11 @@ def run(ctx) -> dict:
 
     sel = select_portfolio(cands, total_vnd=float(bcfg["total_vnd"]), slots=scfg["slots"],
                            size=5, max_per_cluster=int(scfg["max_per_niche_cluster"]))
+    s5_decision = planner.decide_after_s5(ctx, sel)
     if not sel["feasible"]:
         out = {"selection": {"feasible": False, "infeasible_reason": sel["infeasible_reason"]},
-               "reasons": [], "validation": {}, "sensitivity": []}
+               "reasons": [], "validation": {}, "sensitivity": [],
+               "plan_decision": s5_decision.model_dump()}
         ctx.put_stage_result("s5", out)
         return out
 
@@ -136,26 +139,35 @@ def run(ctx) -> dict:
         f"hệ số giá tối đa {portfolio['max_price_scale']}, giá trần từng người trong block.\n"
         f"<portfolio_and_evidence>\n{json.dumps(blocks, ensure_ascii=False, default=str)}\n</portfolio_and_evidence>\n"
         "Viết ReasonSet cho đúng 7 creator (5 chính + 2 dự phòng), theo schema.")
+    def _full_validate(reasons_list: list[ReasonItem]) -> dict[str, list[str]]:
+        r_dicts = [r.model_dump() for r in reasons_list]
+        val = {r["creator_id"]: validate_reason(ctx.db, ctx.cfg.run_id, r) for r in r_dicts}
+        num_res = audit_numeric_claims(ctx.db, ctx.cfg.run_id, r_dicts, details)
+        for um in num_res.get("unmatched", []):
+            cid_u = um["creator_id"]
+            val.setdefault(cid_u, []).append(
+                f"strength[{um['strength_idx']}] nêu con số {um['number']:g} không khớp dữ liệu gốc"
+            )
+        return val
+
     reason_llm = ctx.llm("reason", "s5")
     degraded = None
     try:
         rs: ReasonSet = reason_llm.judge(S5_SYSTEM, user, ReasonSet, entity_id="portfolio")
-        validation = {r.creator_id: validate_reason(ctx.db, ctx.cfg.run_id, r.model_dump())
-                      for r in rs.reasons}
+        validation = _full_validate(rs.reasons)
         bad = {cid: iss for cid, iss in validation.items() if iss}
         if bad:
             user2 = user + ("\n\nLẦN TRƯỚC VI PHẠM KIỂM CHỨNG — sửa đúng các lỗi sau, "
                             "chỉ trích evidence_ids có thật trong kho của từng creator:\n"
                             + json.dumps(bad, ensure_ascii=False))
             rs2: ReasonSet = reason_llm.judge(S5_SYSTEM, user2, ReasonSet, entity_id="portfolio_retry")
-            v2 = {r.creator_id: validate_reason(ctx.db, ctx.cfg.run_id, r.model_dump()) for r in rs2.reasons}
+            v2 = _full_validate(rs2.reasons)
             merged = {r.creator_id: r for r in rs.reasons}
             for r in rs2.reasons:
                 if not v2.get(r.creator_id):
                     merged[r.creator_id] = r
             rs = ReasonSet(reasons=list(merged.values()))
-            validation = {r.creator_id: validate_reason(ctx.db, ctx.cfg.run_id, r.model_dump())
-                          for r in rs.reasons}
+            validation = _full_validate(rs.reasons)
     except LLMUnavailable as e:
         # DEGRADE, DON'T STOP: lý do sinh bằng CODE từ evidence thật (vẫn pass
         # validator), đánh dấu rõ để người viết lại trước khi gửi khách
@@ -181,6 +193,7 @@ def run(ctx) -> dict:
         "reasons_degraded": degraded,
         "validation": validation,
         "sensitivity": sensitivity,
+        "plan_decision": s5_decision.model_dump(),
     }
     ctx.put_stage_result("s5", out)
     return out
