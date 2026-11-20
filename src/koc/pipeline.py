@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
 
 from .config import BriefAnalysis, RunConfig, build_config, load_prices
@@ -34,6 +35,7 @@ class Ctx:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self.report_dir = Path(report_dir) if report_dir else Path("reports")
         self.report_dir.mkdir(parents=True, exist_ok=True)
+        self.last_elapsed_s: float = 0.0
         self._llm: dict[str, LLMClient] = {}
 
     def llm(self, role: str, stage: str) -> LLMClient:
@@ -125,16 +127,64 @@ def save_brief_analysis(ctx: Ctx, analysis: BriefAnalysis):
                                ensure_ascii=False), ctx.cfg.run_id))
 
 
-def run_pipeline(ctx: Ctx):
+def fmt_elapsed(seconds: float) -> str:
+    seconds = max(0.0, float(seconds))
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    m, s = divmod(seconds, 60)
+    if m < 60:
+        return f"{int(m)}m {s:.1f}s"
+    h, m = divmod(int(m), 60)
+    return f"{h}h {m:02d}m {int(round(s)):02d}s"
+
+
+def _fmt_clock(seconds: float) -> str:
+    total = max(0, int(seconds))
+    h, rem = divmod(total, 3600)
+    m, s = divmod(rem, 60)
+    return f"[{h:02d}:{m:02d}:{s:02d}]" if h else f"[{m:02d}:{s:02d}]"
+
+
+def run_pipeline(ctx: Ctx, progress: bool = False):
     from .stages import s0_brief, s1_candidates, s2_metrics, s3_screen, s4_video, s5_select
     from . import report
-    s0_brief.run(ctx)
-    s1_candidates.run(ctx)
-    s2_metrics.run(ctx)
-    s3_screen.run(ctx)
-    s4_video.run(ctx)
-    s5_select.run(ctx)
-    report.write_all(ctx)
+
+    t_start = time.perf_counter()
+    steps = [
+        ("S0 phân tích brief", "Đang phân tích brief & khớp danh mục Kalodata...", lambda: s0_brief.run(ctx)),
+        ("S1 tìm ứng viên", "Đang lấy danh sách KOC từ các lát cắt Kalodata...", lambda: s1_candidates.run(ctx)),
+        ("S2 chấm số liệu & lọc thô", "Đang tải stats video + detail từng KOC & tính điểm số liệu...", lambda: s2_metrics.run(ctx)),
+        ("S3 sàng lọc ngữ nghĩa", "Đang chấm ngữ nghĩa & đối thủ qua LLM theo batch...", lambda: s3_screen.run(ctx)),
+        ("S4 phân tích video đa phương thức", "Đang tải MP4, trích frames, bóc băng ASR & chấm video (bước lâu nhất, vui lòng chờ)...", lambda: s4_video.run(ctx)),
+        ("S5 chọn bộ & viết lý do", "Đang tối ưu tổ hợp trong ngân sách & tổng hợp lý do có bằng chứng...", lambda: s5_select.run(ctx)),
+        ("Xuất báo cáo & Dashboard", "Đang dựng dashboard.html, report.md, CSV & benchmark.md...", lambda: report.write_all(ctx)),
+    ]
+    if progress:
+        print(f"[00:00] Bắt đầu chạy KOC Discovery (run_id={ctx.cfg.run_id}, mode={ctx.mode}, reports={ctx.report_dir})", flush=True)
+        print(f"        Vui lòng chờ — đang xử lý tuần tự {len(steps)} bước (S0 -> S5 + xuất báo cáo)...", flush=True)
+
+        def _on_prog(stage: str, done: int, total: int, status: str):
+            clk = _fmt_clock(time.perf_counter() - t_start)
+            print(f"{clk}   ... {stage}: {done}/{total} xong", flush=True)
+
+        ctx.runner.on_progress = _on_prog
+
+    try:
+        for idx, (label, desc, fn) in enumerate(steps, 1):
+            if progress:
+                clk = _fmt_clock(time.perf_counter() - t_start)
+                print(f"{clk} [{idx}/{len(steps)}] {label}: {desc}", flush=True)
+            t_step = time.perf_counter()
+            fn()
+            if progress:
+                dt = time.perf_counter() - t_step
+                clk = _fmt_clock(time.perf_counter() - t_start)
+                print(f"{clk} [OK] {label} xong ({fmt_elapsed(dt)})", flush=True)
+    finally:
+        if progress:
+            ctx.runner.on_progress = None
+
     ctx.db.execute("UPDATE runs SET status='done', finished_at=datetime('now') WHERE run_id=?",
                    (ctx.cfg.run_id,))
+    ctx.last_elapsed_s = time.perf_counter() - t_start
     return ctx

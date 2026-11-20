@@ -153,9 +153,14 @@ Kalodata tính theo credit (1 credit ≈ 0,1 USD tham khảo). Demo 30 ứng vi�
    Batch API (−50%), human baseline, LLM-as-judge, vòng phản hồi sau chiến dịch,
    đo chồng lấn khán giả thật. Chưa dựng Web Server / Admin Backend đa người dùng (hệ thống đã tự sinh `reports/dashboard.html` trực quan cho từng lần chạy; thiết kế mở rộng FastAPI + Admin Panel xem tại `docs/ARCHITECTURE.md` mục 6), không tự cào TikTok, không đoán tuổi/giới tính từ mặt,
    không kết luận pháp lý (chỉ gắn cờ cho người duyệt).
+8. **Chưa làm mở rộng ra ngành hàng khác, sản phẩm khác hay tệp thông số tùy biến hoàn toàn:**
+   - Tuy tầng S0 đọc brief tự do và tầng S1/S2 lấy dữ liệu Kalodata + ngân sách động, các prompt đánh giá (`prompts.py` S3/S4/S5) hiện vẫn tối ưu riêng cho ngành **mỹ phẩm / kem chống nắng** (`demo_quality` thoa da, `knowledge_accuracy` SPF/PA, nhóm `style_cluster` skincare/beauty/lifestyle, ngữ cảnh "thương hiệu mỹ phẩm / nữ 18-30").
+   - Một số chi tiết đầu ra vẫn gắn mẫu chống nắng (`dashboard.html` mục checklist SPF/PA & nhãn `"Lỗ hổng kiến thức chống nắng"`, fallback S0 `campaign_defaults`, `save_brief_analysis` chưa ghi đè trường `campaign.product` trong bản demo để giữ nguyên hash cache).
+   - Quy mô tuyển mặc định cố định `size=5` KOC ở S5, danh mục S0 chỉ tra top 100 danh mục cấp 3 theo doanh thu của VN, và bộ bảng giá theo tier (`price_tiers_vnd`) đang chỉnh theo mặt bằng 30 triệu VNĐ.
 
 ## Hướng mở rộng (chi tiết thiết kế: `docs/EXPANSION-ROADMAP.md`)
 
+- **Mở rộng đa ngành hàng, đa tệp & đa thông số chiến dịch (`Domain Profiles`):** tách rubric chấm video (`knowledge_rubric`, `demo_rubric`), bộ `style_cluster`, cờ ngành và checklist hợp đồng thành hồ sơ cấu hình theo ngành (Mỹ phẩm, F&B, Gia dụng, Thời trang, Điện tử) hoặc do S0 sinh động từ brief; tham số hóa `target_kocs` (`size`), khu vực/ngôn ngữ (`region`, `language`, `currency`, Whisper model), bảng giá tier theo ngành và mở rộng tra cứu danh mục Kalodata ngoài top 100.
 - **REST API & Web Admin Dashboard (Dual-Interface: CLI + FastAPI + Web UI):** bọc mỏng FastAPI (`src/koc/api.py`) trên cùng Core Engine và SQLite WAL; hỗ trợ chạy/tạm dừng (`cancel_event`)/resume trực tiếp trên trình duyệt, xem thanh tiến độ thời gian thực, mở drawer xem 6 frame ảnh + transcript từng KOC (xem chi tiết các endpoint trong `docs/EXPANSION-ROADMAP.md` Phần 1).
 - **Tầng S6 — Tự động hóa liên hệ KOC & khép vòng chấm điểm 100/100 (Automated Outreach & Auto-Reselect Loop):**
   1. *Cá nhân hóa lời mời từ bằng chứng:* dùng `contacts` (S2b) + `verify_before_contract` (S5) + `evidence` video (S4) để sinh bản nháp Email/Zalo cá nhân hóa cho từng KOC.

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import sys
+import time
 import webbrowser
 from pathlib import Path
 
@@ -21,7 +22,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from .pipeline import create_ctx, run_pipeline
+from .pipeline import create_ctx, fmt_elapsed, run_pipeline
 from . import report as report_mod
 
 app = typer.Typer(add_completion=False, help="AI KOC Discovery — evidence-based, resumable, provider-neutral")
@@ -29,20 +30,23 @@ app = typer.Typer(add_completion=False, help="AI KOC Discovery — evidence-base
 _OPEN_HELP = "Mở dashboard.html trong browser ngay khi xong"
 
 
-def _outputs(ctx, open_browser: bool = False):
+def _outputs(ctx, open_browser: bool = False, elapsed_s: float | None = None):
     """In đủ bộ kết quả trong thư mục reports/ — dashboard đầu tiên cho người xem/duyệt nhanh."""
-    print(f"Xong run {ctx.cfg.run_id}. Bộ kết quả ({ctx.report_dir}):")
+    dur = f" trong {fmt_elapsed(elapsed_s)} ({elapsed_s:.1f}s)" if elapsed_s is not None else ""
+    print(f"Xong run {ctx.cfg.run_id}{dur}. Bộ kết quả ({ctx.report_dir}):", flush=True)
     dash = None
     for f in ("dashboard.html", "report.md", "results.csv", "excluded.csv", "benchmark.md"):
         p = ctx.report_dir / f
         if p.exists():
-            print(f"  {p}")
+            print(f"  {p}", flush=True)
             if f == "dashboard.html":
                 dash = p
     t = ctx.ledger.totals()
-    print(f"  Chi phí tích lũy của run (ledger đo thật): {t['credits']:.1f} credit Kalodata + ${t['cost']:.2f} AI")
+    print(f"  Chi phí tích lũy của run (ledger đo thật): {t['credits']:.1f} credit Kalodata + ${t['cost']:.2f} AI", flush=True)
+    if elapsed_s is not None:
+        print(f"  Tổng thời gian chạy (wall-clock): {fmt_elapsed(elapsed_s)}", flush=True)
     if dash:
-        print(f"  Mở nhanh dashboard: {dash}")
+        print(f"  Mở nhanh dashboard: {dash}", flush=True)
         if open_browser:
             webbrowser.open(dash.resolve().as_uri())
 
@@ -54,12 +58,12 @@ def run(brief: str = typer.Option("briefs/sunscreen.txt", help="Brief ngôn ng�
         report_dir: str = typer.Option(None, help="Thư mục xuất báo cáo (mặc định: reports)"),
         offline: bool = typer.Option(False, help="Replay từ fixtures, không gọi mạng, không cần key"),
         open: bool = typer.Option(False, "--open", help=_OPEN_HELP)):
+    t0 = time.perf_counter()
     overrides = {"funnel": {"candidates": candidates}} if candidates else None
     ctx = create_ctx(brief, mode="replay" if offline else "rw", run_id=run_id,
                      overrides=overrides, report_dir=report_dir)
-    print(f"run_id={ctx.cfg.run_id} mode={ctx.mode} reports={ctx.report_dir}")
-    run_pipeline(ctx)
-    _outputs(ctx, open)
+    run_pipeline(ctx, progress=True)
+    _outputs(ctx, open, elapsed_s=time.perf_counter() - t0)
 
 
 @app.command()
@@ -67,21 +71,23 @@ def resume(run_id: str = typer.Argument("demo_sunscreen"),
            report_dir: str = typer.Option(None, help="Thư mục xuất báo cáo (mặc định: reports)"),
            offline: bool = typer.Option(False),
            open: bool = typer.Option(False, "--open", help=_OPEN_HELP)):
+    t0 = time.perf_counter()
     ctx = create_ctx(None, mode="replay" if offline else "rw", run_id=run_id, report_dir=report_dir)
     stale = ctx.db.reset_stale_running(run_id)
     retryable = ctx.db.reset_retryable_failed(run_id)
-    print(f"resume {run_id}: reset {stale} task stale 'running', {retryable} failed-retryable")
-    run_pipeline(ctx)
-    _outputs(ctx, open)
+    print(f"resume {run_id}: reset {stale} task stale 'running', {retryable} failed-retryable", flush=True)
+    run_pipeline(ctx, progress=True)
+    _outputs(ctx, open, elapsed_s=time.perf_counter() - t0)
 
 
 @app.command()
 def report(run_id: str = typer.Argument("demo_sunscreen"),
            report_dir: str = typer.Option(None, help="Thư mục xuất báo cáo (mặc định: reports)"),
            open: bool = typer.Option(False, "--open", help=_OPEN_HELP)):
+    t0 = time.perf_counter()
     ctx = create_ctx(None, mode="replay", run_id=run_id, report_dir=report_dir)
     report_mod.write_all(ctx)
-    _outputs(ctx, open)
+    _outputs(ctx, open, elapsed_s=time.perf_counter() - t0)
 
 
 @app.command()
@@ -89,12 +95,13 @@ def bench(run_id: str = typer.Argument("demo_sunscreen"),
           report_dir: str = typer.Option(None, help="Thư mục xuất báo cáo (mặc định: reports)")):
     """Warm re-run: reset tasks to pending, keep caches -> every call is a hit.
     Proves resume/warm cost = 0 with the real call flow, then splits the ledger."""
+    t0 = time.perf_counter()
     ctx = create_ctx(None, mode="rw", run_id=run_id, report_dir=report_dir)
     ctx.db.execute("UPDATE tasks SET status='pending' WHERE run_id=? AND stage NOT LIKE '%cut%'",
                    (run_id,))
-    run_pipeline(ctx)
+    run_pipeline(ctx, progress=True)
     report_mod.write_benchmark(ctx)
-    _outputs(ctx)
+    _outputs(ctx, elapsed_s=time.perf_counter() - t0)
 
 
 @app.command()

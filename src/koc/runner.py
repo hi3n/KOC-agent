@@ -16,6 +16,7 @@ import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
+from typing import Callable
 
 from .db import Database
 from .kalodata import VideoMissing, WaitingKalodata
@@ -42,6 +43,7 @@ def _eligible(row: dict) -> bool:
 class StageRunner:
     def __init__(self, db: Database, ledger: Ledger, run_id: str):
         self.db, self.ledger, self.run_id = db, ledger, run_id
+        self.on_progress: Callable[[str, int, int, str], None] | None = None
 
     def ensure_tasks(self, stage: str, items: list[str]):
         with self.db.transaction() as conn:
@@ -77,6 +79,16 @@ class StageRunner:
         self.ensure_tasks(stage, items)
         self.reset_stale(stage)
         summary = {"done": 0, "failed": 0, "waiting": 0, "skipped": 0}
+        unique_items = list(dict.fromkeys(items))
+        total = len(unique_items)
+        done_count = 0
+        if total and self.on_progress:
+            ph = ",".join("?" * total)
+            done_row = self.db.one(
+                f"SELECT COUNT(*) n FROM tasks WHERE run_id=? AND stage=? AND status='done' AND entity_id IN ({ph})",
+                (self.run_id, stage, *unique_items),
+            )
+            done_count = done_row["n"] if done_row else 0
         lock = threading.Lock()
         while True:
             eligible = self.pending_items(stage)
@@ -100,8 +112,19 @@ class StageRunner:
                 for fut in as_completed(futures):
                     it = futures[fut]
                     status, result = fut.result()
+                    emit = None
                     with lock:
                         summary[status] = summary.get(status, 0) + 1
+                        if status == "done":
+                            done_count += 1
+                        if status == "done" and self.on_progress and total > 0 and (
+                            stage in ("s4_media", "s4_judge")
+                            or done_count == total
+                            or done_count % 5 == 0
+                        ):
+                            emit = (stage, done_count, total, status)
+                    if emit:
+                        self.on_progress(*emit)
                     if status == "done" and on_done:
                         on_done(it, result)
         return summary

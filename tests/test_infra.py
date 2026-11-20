@@ -119,3 +119,27 @@ def test_llm_judgement_cache_hit_needs_no_key(db):
                " ('j1','r1','s3','v','m','v1','v1',?,?)", (sh, out.model_dump_json()))
     got = llm.judge("sys", "user", _Out, "v")
     assert got.video_id == "v" and got.quotes[0].quote == "q"
+
+
+def test_progress_logging_and_elapsed_timing(tmp_path, capsys):
+    from koc.pipeline import create_ctx, fmt_elapsed, run_pipeline
+
+    assert fmt_elapsed(4.2) == "4.2s"
+    assert fmt_elapsed(311.2) == "5m 11.2s"
+    assert fmt_elapsed(3735) == "1h 02m 15s"
+
+    rep_dir = tmp_path / "out"
+    ctx = create_ctx("briefs/sunscreen.txt", mode="replay", run_id="prog_test",
+                     db_path=tmp_path / "koc.db", report_dir=rep_dir)
+    try:
+        run_pipeline(ctx, progress=True)
+        out = capsys.readouterr().out
+        assert "Bắt đầu chạy KOC Discovery" in out
+        assert "[1/7]" in out and "[7/7]" in out
+        assert "[OK]" in out
+        assert "... s4_judge: 14/14 xong" in out
+        assert ctx.last_elapsed_s > 0
+        assert ctx.runner.on_progress is None
+    finally:
+        ctx.kd.close()
+        ctx.db.close()
