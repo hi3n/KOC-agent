@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-19 13:05 UTC",
+ "generated_at": "2026-11-20 01:36 UTC",
  "run_id": "demo_sunscreen",
  "source": "usage_ledger/tasks/evidence (SQLite, đo thật)",
  "status": "full_pipeline_done",
@@ -83,9 +83,9 @@
     "n": 18
    },
    {
-    "stage": "s4",
+    "stage": "s5",
     "provider": "llm",
-    "n": 14
+    "n": 1
    }
   ],
   "totals": {
@@ -228,29 +228,29 @@
   {
    "stage": "s4",
    "kind": "transcript_quote",
-   "n": 40
+   "n": 37
   }
  ],
  "unit_tests": {
-  "summary": "30 passed in 2.90s",
+  "summary": "32 passed in 3.18s",
   "passed": true
  },
  "ai_calls": {
-  "calls": 31,
-  "tokens_in": 303908,
-  "tokens_out": 87469,
+  "calls": 45,
+  "tokens_in": 472678,
+  "tokens_out": 44154,
   "tokens_cached": 0,
-  "cost_usd": 1.869,
+  "cost_usd": 0.8241,
   "asr_videos": 28,
   "asr_total_ms": 2826788,
   "validator_passed": "7/7",
   "numeric_claim_audit": {
-   "total_numbers": 57,
-   "in_cited_evidence": 54,
+   "total_numbers": 38,
+   "in_cited_evidence": 35,
    "in_creator_other_evidence": 3,
-   "verified_total": 57,
+   "verified_total": 38,
    "unmatched": [],
-   "cited_match_rate": 0.9474,
+   "cited_match_rate": 0.9211,
    "verified_rate": 1.0
   }
  }

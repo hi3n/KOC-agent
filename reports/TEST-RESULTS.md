@@ -1,8 +1,8 @@
 # Kết quả test — AI KOC Discovery
 
-*Xuất 2026-11-19 13:05 UTC từ run `demo_sunscreen` · mọi số truy được về `usage_ledger`/`tasks`/`evidence` trong SQLite · báo cáo 5 KOC chi tiết: `report.md`, `results.csv` · benchmark: `benchmark.md`, `resume_demo.json` · máy đọc: `measurements.json` · bảng S2: `kept.csv`, `excluded.csv`*
+*Xuất 2026-11-20 01:36 UTC từ run `demo_sunscreen` · mọi số truy được về `usage_ledger`/`tasks`/`evidence` trong SQLite · báo cáo 5 KOC chi tiết: `report.md`, `results.csv` · benchmark: `benchmark.md`, `resume_demo.json` · máy đọc: `measurements.json` · bảng S2: `kept.csv`, `excluded.csv`*
 
-**Trạng thái:** ✅ FULL PIPELINE hoàn tất (S0→S5). Unit tests: **30 passed in 2.90s**.
+**Trạng thái:** ✅ FULL PIPELINE hoàn tất (S0→S5). Unit tests: **32 passed in 3.18s**.
 
 
 ---
@@ -16,7 +16,7 @@
   - 10 red flag ER < 0,5% (ngưỡng bộ tiêu chí; đo từ video thật, không dùng thang ER Kalodata)
   - 3 vượt trần followers giả định 1M (ngoài tầm ngân sách 30tr — giả định ghi rõ)
   - 0 lỗi khác; 5 dưới ngưỡng cắt điểm
-- **273 bản ghi evidence** đã lưu (metric/niche_signal/transcript_quote/frame_obs từng creator, truy ngược về khóa api_cache gốc hoặc file video + timestamp).
+- **270 bản ghi evidence** đã lưu (metric/niche_signal/transcript_quote/frame_obs từng creator, truy ngược về khóa api_cache gốc hoặc file video + timestamp).
 - Điểm hiển thị **đã đo/chưa đo**: hiệu suất /25 + nội dung /25 + hình ảnh /15 = tối đa **65đ đo được**; khán giả 25đ + hợp tác 10đ KHÔNG tự chấm (không có dữ liệu) → checklist xác minh, không đoán.
 - Chuỗi bằng chứng S4→S5: video → frames + transcript timestamp → LLM chấm rubric → `transcript_quote`/`frame_obs` evidence → lý do S5 trích `evidence_id`, validator kiểm tra đối chiếu nguồn.
 - Recall audit: mẫu ~10% bị loại ở S2a chấm lại S3 để đo mức bỏ sót của phễu.
@@ -25,13 +25,13 @@
 
 | Vai trò | KOC | Handle | Followers | Tier | Điểm đã đo | Giá giả định (VNĐ) |
 |---|---|---|---|---|---|---|
-| Chính thức | Công chúa cam thường | @vanhmakeupcute | 210,500 | anchor | **35.28/65.0** | 7,000,000 |
-| Chính thức | Phương Sena | @phuongsena | 261,900 | anchor | **39.43/65.0** | 7,000,000 |
-| Chính thức | Chang Chăm Chỉ | @changaffiliate | 85,500 | mid | **33.52/65.0** | 6,000,000 |
-| Chính thức | Cẩm Linh | @calinle | 49,700 | micro | **32.93/65.0** | 5,000,000 |
-| Chính thức | Khoa Alpha 💪 🇻🇳 | @khoaalpha99 | 49,900 | micro | **31.4/65.0** | 5,000,000 |
-| [DỰ PHÒNG] | Kiều Oanh Mê Làm Đẹp | @kieu_oanh_cosmetic | 119,000 | mid | **33.52/65.0** | 6,000,000 |
-| [DỰ PHÒNG] | Mỏ hỗn là tao | @mykimmohon | 350,900 | anchor | **32.1/65.0** | 7,000,000 |
+| Chính thức | Công chúa cam thường | @vanhmakeupcute | 210,500 | anchor | **40.0/65.0** | 7,000,000 |
+| Chính thức | Phương Sena | @phuongsena | 261,900 | anchor | **41.2/65.0** | 7,000,000 |
+| Chính thức | Kiều Oanh Mê Làm Đẹp | @kieu_oanh_cosmetic | 119,000 | mid | **37.85/65.0** | 6,000,000 |
+| Chính thức | Cẩm Linh | @calinle | 49,700 | micro | **36.12/65.0** | 5,000,000 |
+| Chính thức | Khoa Alpha 💪 🇻🇳 | @khoaalpha99 | 49,900 | micro | **33.88/65.0** | 5,000,000 |
+| [DỰ PHÒNG] | Chang Chăm Chỉ | @changaffiliate | 85,500 | mid | **38.11/65.0** | 6,000,000 |
+| [DỰ PHÒNG] | Mỏ hỗn là tao | @mykimmohon | 350,900 | anchor | **34.26/65.0** | 7,000,000 |
 
 **Top ứng viên qua vòng S2** (điểm code trước khi vào LLM S3/S4 — chi tiết `kept.csv`):
 
@@ -48,7 +48,7 @@
 | Vàng Thị Solai | 756,100 | 16.03 | 4.2/16 | 0.0109 | 0.238 | ad_saturated |
 | Mần đẹp 💅 | 785,700 | 13.68 | 5.37/16 | 0.0058 | 0.097 | ad_saturated |
 
-**Đã đo bằng AI (live):** 14 video phân tích (frames + transcript ASR → LLM rubric, evidence từng quote/observation); lý do đề xuất **7/7 pass validator** bằng chứng; **dry-run numeric audit: 54/57 con số khớp trực tiếp trong `evidence_id` trích dẫn** (+3 khớp hồ sơ/evidence khác của cùng creator = **57/57** truy nguyên được, 0 số bịa); recall audit: 2 mẫu bị loại chấm lại → **0 miss**.
+**Đã đo bằng AI (live):** 14 video phân tích (frames + transcript ASR → LLM rubric, evidence từng quote/observation); lý do đề xuất **7/7 pass validator** bằng chứng; **dry-run numeric audit: 35/38 con số khớp trực tiếp trong `evidence_id` trích dẫn** (+3 khớp hồ sơ/evidence khác của cùng creator = **38/38** truy nguyên được, 0 số bịa); recall audit: 2 mẫu bị loại chấm lại → **0 miss**.
 
 ## 2. Token efficiency — chi phí đo thật
 
@@ -64,11 +64,11 @@
 | s3 | llm | 9 | 0.0 | 67,804 | 19,435 | $0.3300 | 66698 | 0 |
 | s4 | asr | 28 | 0.0 | 0 | 0 | $0.0000 | 100957 | 0 |
 | s4 | kalodata | 15 | 7.5 | 0 | 0 | $0.0000 | 239 | 0 |
-| s4 | llm | 14 | 0.0 | 89,749 | 20,702 | $0.7730 | 29903 | 14 |
-| s5 | llm | 7 | 0.0 | 139,902 | 46,826 | $0.7481 | 100015 | 0 |
-| **Tổng lạnh** | **all** | **127** | **12.8** | **303,908** | **87,469** | **$1.8690** | | |
+| s4 | llm | 34 | 0.0 | 375,951 | 14,860 | $0.3377 | 29630 | 0 |
+| s5 | llm | 1 | 0.0 | 22,470 | 9,353 | $0.1385 | 194620 | 1 |
+| **Tổng lạnh** | **all** | **141** | **12.8** | **472,678** | **44,154** | **$0.8241** | | |
 
-- **AI (đo thật):** 31 call · 303,908 token in / 87,469 out (cache 0) · **$1.869** · avg 60244ms/call. S3 batch 10–15/call, S4 chỉ top-K × 2 video, rubric cố định đầu prompt, schema đóng, mọi call ghi ledger.
+- **AI (đo thật):** 45 call · 472,678 token in / 44,154 out (cache 0) · **$0.824** · avg 43352ms/call. S3 batch 10–15/call, S4 chỉ top-K × 2 video, rubric cố định đầu prompt, schema đóng, mọi call ghi ledger.
 - **Calibration đo bằng credit/balance trước/sau:** 6 call spike = đúng 1,0cr; call lỗi (501, 2017) không mất credit; balance 15,0 → 8,6 sau spike + 2 lần smoke (trace trong measurements.json).
 - Đòn bẩy đã cài: phễu giảm ~97% call video đắt (500×5=2.500 → ~75); page_size 100 cùng giá 0,1cr; video/detail bỏ (ffprobe free); cache dùng lại S2a→S4; credit guard tự giảm video khi sắp vượt hạn mức.
 - Failover thật đã kích hoạt: S5 sonnet timeout → fallback chain ghi ledger `UNAVAILABLE → fallback` (xem benchmark.md); prompt trim + timeout tăng → retry thành công, lý do LLM thật.
@@ -85,7 +85,7 @@
 
 ## 4. Reliability — lưu tiến độ, phục hồi đo được
 
-**Unit tests: 30 passed in 2.90s** — gồm: runner idempotent (item done không chạy lại), retry 3 lần rồi fail không chặn item khác, waiting backoff, stale-running reset, cache pays-once, judgement cache hit không cần key, strict schema, selector constraints.
+**Unit tests: 32 passed in 3.18s** — gồm: runner idempotent (item done không chạy lại), retry 3 lần rồi fail không chặn item khác, waiting backoff, stale-running reset, cache pays-once, judgement cache hit không cần key, strict schema, selector constraints.
 
 **Sự cố thật đã phục hồi (không diễn tập):** smoke lần 1 dính rate limit 2017 → 20/30 task S2a fail. `reset_retryable_failed` + resume → 20 task chạy lại thành công. Bằng chứng không trả tiền hai lần: S2a lạnh = **30 call / 3.0 credit cho đúng 30 creator** (mỗi creator trả đúng 1 lần 0,1cr; các attempt fail không bị tính tiền).
 
@@ -118,10 +118,10 @@
 - s3 (`llm`): 9 call × avg 66698ms = 600.3s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
 - s4 (`asr`): 28 call × avg 100957ms = 2826.8s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
 - s4 (`kalodata`): 15 call × avg 239ms = 3.6s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
-- s4 (`llm`): 14 call × avg 29903ms = 418.6s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
-- s5 (`llm`): 7 call × avg 100015ms = 700.1s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
+- s4 (`llm`): 34 call × avg 29630ms = 1007.4s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
+- s5 (`llm`): 1 call × avg 194620ms = 194.6s tổng thời gian tác vụ (chạy song song nên wall-clock nhỏ hơn).
 - ASR local: 28 video, tổng 2827s (0 USD, faster-whisper small int8).
-- LLM: 31 call, tổng 1868s task-time (song song nên wall-clock nhỏ hơn).
+- LLM: 45 call, tổng 1951s task-time (song song nên wall-clock nhỏ hơn).
 
 
 ## 6. Trạng thái hoàn thành

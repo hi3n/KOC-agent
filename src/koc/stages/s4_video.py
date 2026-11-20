@@ -25,6 +25,15 @@ from .. import video as vid
 from . import s3_screen
 
 
+_BLIND_PHRASES = ("không kèm khung hình", "không có khung hình", "không nhận được khung hình",
+                  "không thấy ảnh", "input không có ảnh")
+
+
+def _is_blind_obs(obs_list: list[str]) -> bool:
+    txt = " ".join(obs_list or []).lower()
+    return any(p in txt for p in _BLIND_PHRASES)
+
+
 def _niche_hits(title: str, keywords: list[str]) -> int:
     if not title or not keywords:
         return 0
@@ -199,8 +208,18 @@ def run(ctx) -> dict:
         frame_paths = [Path(p) for p in json.loads(vrow["frames_json"] or "[]") if Path(p).exists()]
         content += vid.frames_to_blocks(frame_paths)
         cache_key = f"s4:{PROMPT_VERSION}:{video_id}:{vrow['file_hash']}:{thash}"
-        j = ctx.llm("video", "s4").judge(S4_SYSTEM, content, VideoJudgement,
-                                         entity_id=video_id, cache_key=cache_key)
+        v_llm = ctx.llm("video", "s4")
+        j = v_llm.judge(S4_SYSTEM, content, VideoJudgement,
+                        entity_id=video_id, cache_key=cache_key)
+        # Agentic Self-Correction: nếu đã gửi frame_paths thật nhưng gateway của model
+        # chính làm rơi block ảnh (model báo "không có khung hình") và có cấu hình
+        # vision fallback trong chain → tự động chuyển sang model vision dự phòng.
+        if frame_paths and _is_blind_obs(j.frame_observations) and not v_llm.replay and len(v_llm.chain) > 1:
+            fb_role = v_llm.chain[1]
+            v_llm.ledger.log("llm", "s4", entity_id=video_id,
+                             note=f"AGENT_VISION_REROUTE {v_llm.role.model} (blind gateway) → {fb_role.model}")
+            j = v_llm._judge_live(fb_role, S4_SYSTEM, content, VideoJudgement,
+                                  video_id, cache_key, "v1", 3)
         fh = vrow["file_hash"]
         for q in j.transcript_quotes:
             record(ctx.db, ctx.cfg.run_id, "s4", "transcript_quote",

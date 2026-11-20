@@ -226,10 +226,16 @@ class ScoreCard(BaseModel):
         return round(25.0 + self.content_measured_max + self.visual_measured_max, 2)
 
     def internal_rank_score(self, coverage_penalty: float = 0.15) -> float:
-        """Chuẩn hóa nội bộ để xếp hạng/chọn tổ hợp; phạt coverage thấp.
+        """Chuẩn hóa nội bộ để xếp hạng/chọn tổ hợp; phạt coverage thấp và giảm
+        trọng số hiệu suất ở vòng chọn S5 đối với kênh lệch ngách/bão hòa quảng cáo
+        sau khi đã đo đủ nội dung + video (content_measured_max >= 25, content_ratio < 35%).
         KHÔNG hiển thị ra ngoài như điểm tuyệt đối."""
         if self.measured_max <= 0:
             return 0.0
-        norm = self.measured / self.measured_max
+        content_ratio = (self.content / self.content_measured_max) if self.content_measured_max > 0 else 1.0
+        eff_perf = (self.performance * 0.80
+                    if self.content_measured_max >= 25.0 and content_ratio < 0.35
+                    else self.performance)
+        norm = (eff_perf + self.content + self.visual) / self.measured_max
         coverage = self.measured_max / 65.0
         return round(norm * (1 - coverage_penalty * (1 - coverage)), 4)

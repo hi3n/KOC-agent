@@ -85,6 +85,8 @@ def create_ctx(brief_path: str | Path | None = None, mode: str = "rw",
                 fresh["funnel"][k] = sf[k]
         if snap["raw"].get("budget", {}).get("total_vnd"):
             fresh["budget"]["total_vnd"] = snap["raw"]["budget"]["total_vnd"]
+        if overrides:
+            _deep_merge(fresh, overrides)
         cfg = RunConfig(raw=fresh, brief_text=snap.get("brief_text", brief_text),
                         brief_analysis=BriefAnalysis(**snap["brief_analysis"]) if snap.get("brief_analysis") else None,
                         as_of=snap["as_of"], seed=snap["seed"], run_id=cfg.run_id)

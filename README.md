@@ -171,7 +171,7 @@ config/           # defaults.yaml (mọi tham số), prices.yaml
 briefs/           # brief ngôn ngữ tự nhiên
 fixtures/         # API responses + judgements bundle (offline replay)
 scripts/          # spike.py, demo_resume.py (kill/resume), export_test_report.py, scrub_fixtures.py
-tests/            # pytest (30 tests): scoring, selector, runner, cache, schema, evidence, dashboard
+tests/            # pytest (32 tests): scoring, off-niche damping, selector, runner, cache, schema, evidence, vision self-correction, dashboard
 docs/             # đề bài gốc, bộ tiêu chí KOC, ARCHITECTURE.md (19 quyết định), EXPANSION-ROADMAP.md (API/Admin & S6 Outreach)
 reports/          # thư mục duy nhất chứa toàn bộ báo cáo & kết quả xuất ra (dashboard.html, report.md, results.csv, benchmark.md...)
 runs/             # lưu trữ ngầm dữ liệu vận hành (koc.db, media/, frames/, transcripts/ — gitignore)
@@ -180,7 +180,8 @@ runs/             # lưu trữ ngầm dữ liệu vận hành (koc.db, media/, f
 ## Kiểm thử
 
 ```bash
-uv run pytest -q     # 30 tests (~3s): ER/median/red flags, coverage, selector constraints,
+uv run pytest -q     # 32 tests (~3s): ER/median/red flags, coverage & off-niche damping, selector constraints,
                      # runner idempotency + backoff, cache pays-once, strict schema,
-                     # judgement cache + offline replay, numeric claim audit, niche-first video planner, dashboard
+                     # judgement cache + offline replay, numeric claim audit, niche-first video planner,
+                     # vision blind-gateway detection, dashboard
 ```

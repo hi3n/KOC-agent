@@ -164,3 +164,9 @@ def test_plan_videos_niche_first_and_preserves_existing(db):
                " ('r_plan','v_sun1','c1','latest','h2','processed')")
     planned_cached = _plan_videos(ctx, ["c1"], res_a, random.Random(42))
     assert {p["video_id"] for p in planned_cached} == {"v_dress", "v_sun1"}
+
+
+def test_s4_blind_vision_detection():
+    from koc.stages.s4_video import _is_blind_obs
+    assert _is_blind_obs(["Input không kèm khung hình nào, không đánh giá được ánh sáng."]) is True
+    assert _is_blind_obs(["Khung hình cận cảnh, ánh sáng tự nhiên rõ nét, thoa kem lên da."]) is False

@@ -2,7 +2,7 @@
 
 `run_id=demo_sunscreen` · as_of=2026-11-18 · date_range=2026-10-20~2026-11-18 · seed=42
 
-Models (cấu hình được, không fix cứng): `{"brief": "claude-sonnet-5-5", "screen": "claude-sonnet-5-5", "video": "claude-opus-5-5", "reason": "claude-sonnet-5-5"}`
+Models (cấu hình được, không fix cứng): `{"brief": "claude-sonnet-5-5", "screen": "claude-sonnet-5-5", "video": "gemini-3.8-flash", "reason": "claude-sonnet-5-5"}`
 
 
 ## 1. Brief và phân tích của AI (S0)
@@ -36,155 +36,150 @@ Kết quả cần có lý do đề xuất và bằng chứng cụ thể.
 *Lưu ý chất lượng đọc đúng: điểm hiệu suất đo trên TOÀN bộ video lấy được (tối đa 100), nhưng phân tích nội dung AI chỉ trên 2 video đại diện/creator. Nếu video mẫu lạc ngách chống nắng, lý do sẽ nói thẳng và checklist yêu cầu xem thêm video đúng ngách trước khi chốt — hệ thống không giấu khoảng trống bằng chứng. Ngách fit hiện là trọng số mềm, chưa gate cứng (hướng mở rộng: tăng trọng số semantic fit + thêm credit cho video analysis).*
 
 
-### Công chúa cam thường (@vanhmakeupcute) — Chủ lực. Số liệu bán hàng đo được mạnh nhất nhóm kênh này, nhưng kênh nguội nên cần theo dõi sát.
+### Công chúa cam thường (@vanhmakeupcute) — Chủ lực. Điểm đo được cao nhất nhóm chính (40.0/65.0), demo thật, video_gpm cao. Kênh nguội nên cần kiểm chứng.
 
-**Điểm đã đo: 35.28/65.0** (hiệu suất 9.56/25 · nội dung 17.0/25 [phần đo 25.0/25] · hình ảnh 8.72/15)
+**Điểm đã đo: 40.0/65.0** (hiệu suất 9.56/25 · nội dung 17.6/25 [phần đo 25.0/25] · hình ảnh 12.84/15)
 **Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `cold_channel` view/follower 0.015 thấp — kênh nguội hoặc follower ảo; `competitor_recent` nhắc đối thủ: Anessa, Cocoon, Neutrogena; `knowledge_issue` Không nêu chỉ số SPF/PA, lượng dùng hay việc thoa lại; video chỉ có kể trải nghiệm và giới thiệu sản phẩm.; Câu về công nghệ nano bị transcript làm méo ('giúp giảm tới 10% áp được lê làn ra'), không rõ giảm 10% chỉ số gì nên không kiểm chứng được.; K; `exaggerated_claims` hoàn toàn không gây bết dính chăng lố hay là bí bách gì luôn; an toàn cho da nhạy cảm, da mụn, thậm chí là brain có thông tin là da em bé từ 6 tháng tuổi cũng dùng được; khả năng chống nước và chống bụi mịn thì an toàn luôn đỉnh từ trước đến nay rồi;; `knowledge_issue` Video review cushion trang điểm, không nói về chống nắng (SPF/PA, thoa lại, lượng dùng); chấm trung tính 0.5.; `exaggerated_claims` đảm bảo là ai làm theo cũng sẽ thành công; Mọi người có thấy là mồ hôi chảy ra ướt tóc mà lớp nền nó vẫn bám trên da; Mình đang dùng cái màu 1.5 thì thấy tiệp ra cực kỳ tự nhiên; đặc biệt là bên màu sốt cả ngày dài thì em này xứng đáng bỏ vào giỏ hàn; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
+Cờ: `cold_channel` view/follower 0.015 thấp — kênh nguội hoặc follower ảo; `competitor_recent` nhắc đối thủ: Anessa, Cocoon, Neutrogena; `exaggerated_claims` khả năng chống nước và chống bụi mịn thì an toàn luôn đỉnh từ trước đến nay rồi; `exaggerated_claims` mồ hôi chảy ra ướt tóc mà lớp nền nó vẫn bám trên da; chất lượng em này gần như là 2 n mà giá lại cực kỳ là hợp lý; bên màu sốt cả ngày dài
 
-Có tín hiệu bán hàng đo được (GPM, doanh thu shop) và đã có video demo da chỉ thoa kem chống nắng. Rủi ro: view/follower thấp, nhắc đối thủ, claim phóng đại về an toàn. Chỉ xem 2/43 video nên kết luận còn mỏng.
+Review có demo thật trên da, kể cả cảnh kiểm tra UV. Cả hai video xem đều chấm demo và hình ảnh 0.85. Ngược lại view/follower thấp và có claim phóng đại, cần duyệt kịch bản.
 
-- video_gpm 558148.92, doanh thu shop 95421697.39. Số đo được, liên quan trực tiếp mục tiêu conversion.  
+- Demo trực tiếp: bơm kem lên mặt, chèn màn hình camera UV kiểm tra độ che phủ, so sánh da sau khi thoa kem chống nắng.  
+  ↳ bằng chứng: `ev_58b7ef8b12de`
+- Hai video xem đều có visual_quality 0.85 và demo_quality 0.85; ad_disclosure_ok true ở cả hai.  
+  ↳ bằng chứng: `ev_2af60673ec02, ev_7689c4c849e2`
+- video_gpm 558148.92, mức cao nhất trong 5 KOC chính (số đo, chưa kiểm chứng nguồn).  
   ↳ bằng chứng: `ev_564adbe64d4f`
-- Theo transcript có cảnh 'da mình chỉ có kem chống nắng' (70.5-72.4s) rồi đánh lớp nền lên (72.4-78.1s). Chưa xác minh bằng hình.  
-  ↳ bằng chứng: `ev_1b2a862b7ddf, ev_3ae9cb6dbe8d`
-- Mẫu 43 video: đăng 10.03 bài/tuần, ad_ratio 0.256. Kênh hoạt động đều, không bão hòa quảng cáo.  
-  ↳ bằng chứng: `ev_f4b1fb258777`
-- Một video chấm hook_strength 0.7, demo_quality 0.6 (AI chấm, confidence 0.45). Chỉ là tham khảo.  
-  ↳ bằng chứng: `ev_63350c0d78fe`
 - Đã xem **2/43** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: view_follower_ratio 0.015 (cờ kênh nguội). median_views 3153 so với mean_views 32326.5: phân phối lệch, vài video kéo trung bình.; Nhắc đối thủ Anessa, Cocoon, Neutrogena. Tiêu đề có #HoptaccungAnessa, caption có #hoptaccungmaybelline. Cần kiểm tra ràng buộc hợp tác với đối thủ.; Claim tuyệt đối 'an toàn cho da nhạy cảm... da em bé từ 6 tháng tuổi' (ev_d11ca4169153) và 'chống nước, chống bụi mịn an toàn luôn' (ev_74eda293ce7a) không có dẫn chứng. Không nêu SPF/PA, lượng dùng, thoa lại. Cờ ad_no_disclosure cho người duyệt.
+- Lưu ý: Cờ cold_channel: view/follower 0.015. Median views 3153 nhưng mean 32326.5, phân phối lệch, vài video viral kéo mean.; Claim phóng đại: 'khả năng chống nước và chống bụi mịn thì an toàn luôn đỉnh từ trước đến nay rồi'. Knowledge_accuracy 0.5 và 0.8. Nhắc đối thủ Anessa, Cocoon, Neutrogena.; Mẫu xem 2/43 video. Doanh thu lệch giữa hai nguồn: 95421697.39 và 138628201.44, chưa rõ nguồn nào đúng.
 - Giá giả định: 7,000,000 VNĐ · giá trần: **7,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
-- Xác minh trước chốt: Ảnh Analytics khán giả: tỷ lệ nữ 18-30, VN. Chưa đo được.; Báo giá thật so với giá trần 7,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Hỏi có hợp đồng/độc quyền đang chạy với Anessa hoặc Maybelline không.; Yêu cầu kịch bản bỏ claim tuyệt đối về an toàn; gắn nhãn quảng cáo rõ.; Hỏi nguyên nhân view/follower thấp (kênh nguội hay follower ảo).
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với giá trần 7,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Xung đột đối thủ: từng nhắc Anessa, Cocoon, Neutrogena. Hỏi điều khoản độc quyền.; Giải thích chênh lệch doanh thu giữa hai nguồn số liệu.; Duyệt kịch bản trước, tránh claim chống nước tuyệt đối.
 - Liên hệ: email=[redacted], tiktok=vanhmakeupcute, zalo=[redacted]
 
-### Phương Sena (@phuongsena) — Chủ lực. Kênh bán hàng quy mô lớn, median views cao hơn kênh anchor còn lại trong bộ, nhưng nội dung mẫu lệch ngành.
+### Phương Sena (@phuongsena) — Chủ lực. Follower cao nhất bộ (261900), đúng ngách chống nắng. Rủi ro nội dung cao nhất, cần kiểm soát kịch bản chặt.
 
-**Điểm đã đo: 39.43/65.0** (hiệu suất 11.91/25 · nội dung 21.9/25 [phần đo 25.0/25] · hình ảnh 5.62/15)
+**Điểm đã đo: 41.2/65.0** (hiệu suất 11.91/25 · nội dung 21.6/25 [phần đo 25.0/25] · hình ảnh 7.69/15)
 **Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `knowledge_issue` Video không nói về chống nắng. knowledge_accuracy để trung tính 0.5.; Cờ skincare (ngoài rubric chống nắng): 'kích thước phân tử nhỏ bằng tế bào' là so sánh mơ hồ, không có cơ sở rõ.; Cờ skincare: số liệu thành phần không khớp. Tổng hoạt chất nói 77%; `exaggerated_claims` khả năng hấp thụ của nó so với những cái dọc này nó là gấp 300%; Nên đế là lý do tại sao nó cực hiệu quả luôn vì nó cực mạnh các chị ạ; 30% thành phần vitamin C L-ascorbic Acid tinh khiết vào cao cấm nhất trên thế giới của Anh Quốc; Thứ 2, siêu căng ; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Video nói về tẩy trang, không về chống nắng; chỉ nhắc thành phần 'dùng trong kem chống nắng hàng đầu' như mồi quảng cáo, không có kiến thức SPF/PA/thoa lại.; 'không cần dựa (rửa) mặt cũng được luôn' sau tẩy trang: lời khuyên bỏ bước rửa mặt cần người; `exaggerated_claims` Thành phần tẩy trang chống lão hóa x, ... siêu cao cấp và chỉ dùng trong những dòng kem chống nắng hàng đầu của thế giới.; Mà cứ 1, 2 triệu, 1 hút ấy.; tẩy xong không khô, không giác, không cần dựa mặt cũng được luôn.; không kim loại nặng, không huỳn; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
+Cờ: `exaggerated_claims` Và con này nó là dòng kích trắng luôn; Nó chất nhỏ bằng kích thức vân tử tế bào Nên là khả năng hấp thụ của nó so với những cái dọc này nó là gấp 300%; làm trắng cực kì nhanh luôn Con này có kích trắng mà mọi người; `knowledge_issue` Khuyên tẩy trang xong không cần rửa mặt lại dễ gây bít tắc lỗ chân lông và kích ứng da; Gắn ghép sai lệch hoạt chất chống lão hóa trong kem chống nắng đắt tiền vào công dụng nước tẩy trang; `exaggerated_claims` chỉ dùng trong những rồng kem trồng nắng hàng đầu của thế giới; không cần dựa mặt cũng được luôn
 
-Có lịch sử bán hàng lớn và phong cách chốt đơn kiểu livestream, hợp mục tiêu conversion. Hai video xem được đều không về chống nắng và có claim thiếu căn cứ. Cần brief chặt và duyệt kịch bản.
+Tần suất đăng đều, thu hút follower mới, ngách chống nắng khớp (niche_fit 0.8). Hai video xem không có demo thoa lên da, có sai kiến thức và claim phóng đại. Chọn được chỉ khi duyệt kịch bản và ép demo thật.
 
-- Doanh thu shop 1579381679.89, new_follower_ratio 0.0332. Số đo được. Mẫu video_gpm 25522.85.  
-  ↳ bằng chứng: `ev_306cb9dcfab1`
-- Mẫu 65 video: median_views 6996, đăng 15.17 bài/tuần, stability 0.535.  
+- niche_fit 0.8, style_cluster skincare_science, đúng ngách chống nắng.  
+  ↳ bằng chứng: `ev_0740a363cba3`
+- Median views 6996, 15.17 bài/tuần, stability 0.535.  
   ↳ bằng chứng: `ev_9c76d173fcc2`
-- Một video là đoạn cắt livestream bán hàng, nói kiểu tư vấn chốt đơn. Phong cách gần mục tiêu conversion (theo transcript).  
-  ↳ bằng chứng: `ev_fc587af2cb0e`
+- new_follower_ratio 0.0332; ad_disclosure_ok true ở cả hai video xem.  
+  ↳ bằng chứng: `ev_306cb9dcfab1, ev_c1ce67d1dce9, ev_e0e4e6948586`
 - Đã xem **2/65** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: Cả 2 video xem đều không về chống nắng; demo_quality 0.2. Chưa có bằng chứng về nội dung chống nắng.; Claim thiếu căn cứ: 'hấp thụ gấp 300%' (ev_52281be14e81); tổng hoạt chất nói 77% nhưng 30%+12%+33% = 75% (ev_79a891631325); 'không có chất hoạt động bề mặt' ở sản phẩm tẩy trang đáng ngờ (ev_4f0d0884d672). Lời khuyên bỏ bước rửa mặt cần duyệt.; ad_ratio 0.323, cờ ad_no_disclosure. Hai số doanh thu trong kho lệch nhau (1579381679.89 và total_revenue 72923449.64), chưa rõ cách tính. Chỉ xem 2/65 video.
+- Lưu ý: Demo yếu: demo_quality 0.1 và 0.0. Khung hình cho thấy chỉ cầm giơ sản phẩm, không thoa thử lên da.; Kiến thức: knowledge_accuracy 0.3 ở một video. Khuyên tẩy trang xong không cần rửa mặt lại; gắn sai hoạt chất chống lão hóa vào nước tẩy trang. Claim phóng đại: 'gấp 300%', 'làm trắng cực kì nhanh'.; Quảng cáo toàn một nhãn Lubylab (đối thủ gián tiếp theo niche_signal); ad_ratio 0.323; median ER 0.00775. Mẫu 2/65. Doanh thu lệch giữa hai nguồn: 1579381679.89 và 72923449.64.
 - Giá giả định: 7,000,000 VNĐ · giá trần: **7,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật so với giá trần 7,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Hỏi nguồn và cách tính doanh thu; đối chiếu hai con số lệch nhau.; Duyệt kịch bản trước đăng; cấm claim số liệu không nguồn.; Xem thêm video thuộc nhóm chống nắng/trang điểm nếu có.
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với giá trần 7,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Xung đột với Lubylab: đang quảng cáo kem chống nắng đối thủ gián tiếp. Hỏi lịch hợp đồng hiện tại.; Yêu cầu quay demo thoa lên da; cấm claim 'gấp 300%', 'làm trắng nhanh'. Thái độ nhận chỉnh sửa kịch bản.; Giải thích chênh lệch doanh thu giữa hai nguồn.
 - Liên hệ: tiktok=phuongsena
 
-### Chang Chăm Chỉ (@changaffiliate) — Tầm trung. Hiệu suất và quy mô bán hàng cao nhất bộ, nhưng ad_ratio 0.99 làm giảm độ tin cậy.
+### Kiều Oanh Mê Làm Đẹp (@kieu_oanh_cosmetic) — Tầm trung. Demo thoa mút tán kem thấy rõ, video_gpm cao. Lỗi kiến thức và thiếu nhãn quảng cáo là điểm cần xử lý.
 
-**Điểm đã đo: 33.52/65.0** (hiệu suất 18.09/25 · nội dung 7.46/25 [phần đo 25.0/25] · hình ảnh 7.97/15)
+**Điểm đã đo: 37.85/65.0** (hiệu suất 11.03/25 · nội dung 16.7/25 [phần đo 25.0/25] · hình ảnh 10.12/15)
 **Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `ad_saturated` tỷ lệ video quảng cáo 0.99 — uy tín thấp; `knowledge_issue` Video về kem nền thỏi, không nói về chống nắng (SPF/PA, thoa lại, lượng dùng); chấm trung tính 0.5.; Thông tin thương hiệu cần duyệt: creator nói hãng 'rất nổi tiếng bên Hàn', trong khi Obagi thường được biết là thương hiệu Mỹ.; `exaggerated_claims` Nói chung là đỉnh á; rất là tự nhiên... như da thật luôn; vẫn che được những cái nốt mụn thâm này; Con này nâng tông rất đẹp luôn; Bà nào thấy giá hời lụm sớm nhé (gây khẩn cấp, so sánh giá hơn 800k và gần 400k chưa kiểm chứng); `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Video không nói về chống nắng (sáp tẩy tế bào chết/mụn đầu đen); chấm trung tính 0.5.; Ngoài phạm vi chống nắng, cần người duyệt kiểm tra: video cho rằng hạt vón ra khi chà là tế bào chết/bụi bẩn ('những hạt tảy ra chết'). Với sản phẩm dạng gel/sáp t; `exaggerated_claims` làm sạch sâu thông tháng lỗ cho lông hút sạch những bự bẩn; Chối lần đầu tiên thôi mọi người sờ vào phần mũi Mọi người cảm thấy nó miễn tức thi luôn; nó sẽ hỗ trợ thu hẹp lỗ cho lông rất là tốt; Mọi người sợ sạch cho mọi người làm sáng vùng mũi hơn; ; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
+Cờ: `cold_channel` view/follower 0.019 thấp — kênh nguội hoặc follower ảo; `knowledge_issue` Đọc sai tên hoạt chất PDRN thành BDI, Niacinamide thành lia-sinh-a-mai; Dùng bông mút tán kem chống nắng dễ hút bớt sản phẩm làm giảm độ che phủ thực tế; `exaggerated_claims` kem trống nắng mà đẹp hơn cả Kewchon thì chỉ có xeo lắc mới làm được; kiềm dầu cực kì mạnh luôn; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Khẳng định mỹ phẩm bôi dạng xịt thấm tới tầng hạ bì là sai cơ chế sinh lý da và sai quy định quảng cáo mỹ phẩm; Tuyên bố sản phẩm bôi ngoài lấp đầy lỗ chân lông vĩnh viễn là phi thực tế; `exaggerated_claims` Dựng chất này nó sẽ đi được đến tầng Ha Bì là tầng thứ 3; Nó lấp đầy đổ chân đông mà nó không cần tái tạo; Hỗ trọ lớp đầy lỗ chân đông luôn; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
 
-Kênh tầm trung có reach lớn so với số follower và GPM cao, thiên về chốt giá và kênh mua. Gần như toàn video quảng cáo nên cần kiểm soát cách lồng ghép. Chưa có video chống nắng trong mẫu xem.
+Có video thoa mút tán kem chống nắng trực tiếp trên da, demo_quality 0.85 ở một video. Kênh nhỏ (119000), mẫu chỉ 10 video. Có lỗi kiến thức và hai video chưa gắn nhãn quảng cáo.
 
-- Mẫu 100 video: median_views 289953.0, view_follower_ratio 3.3913, stability 0.587. Reach vượt xa số follower 85500.  
-  ↳ bằng chứng: `ev_0be6f3121801`
-- video_gpm 381977.67, doanh thu shop 924150661.77, new_follower_ratio 0.083. Số đo được.  
-  ↳ bằng chứng: `ev_8f71b2a358b7`
-- Theo transcript, có thoa sáp lên mũi, massage 2-3 phút rồi lau/rửa. Có nêu kênh mua chính hãng trên sàn. Chưa xác minh bằng hình.  
-  ↳ bằng chứng: `ev_249ec5c14f64, ev_084f181afda9`
-- Video nêu giá trực tiếp (hơn 8 lít so với gần 4 lít) để chốt đơn. Phong cách thúc mua phù hợp conversion, nhưng so sánh giá chưa kiểm chứng.  
-  ↳ bằng chứng: `ev_ed6a30dba9e9`
-- Đã xem **2/100** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: ad_ratio 0.99 (cờ bão hòa quảng cáo). Khán giả có thể đã quen nội dung bán hàng. Cờ ad_no_disclosure ở cả 2 video xem.; Không video nào về chống nắng (kem nền thỏi, sáp tẩy mụn đầu đen). Nói hãng Obagi 'nổi tiếng bên Hàn', cần duyệt thông tin thương hiệu (ev_bb848d2f26f2). Claim 'thu hẹp lỗ chân lông', 'làm sạch sâu' không có căn cứ.; Chỉ xem 2/100 video. ER trung vị 0.00536 thấp.
-- Giá giả định: 6,000,000 VNĐ · giá trần: **6,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật so với giá trần 6,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Cách gắn nhãn quảng cáo trong video; cam kết disclosure.; Xem thêm video review chống nắng/skincare trước khi chốt brief.; Thái độ hợp tác với tần suất đăng 23.33 bài/tuần: có nhận brief riêng không.
-- Liên hệ: tiktok=changaffiliate
-
-### Cẩm Linh (@calinle) — Tầm trung nhỏ, thử nghiệm. Kênh ít bão hòa quảng cáo nhưng chưa có bằng chứng ngành làm đẹp hay chống nắng.
-
-**Điểm đã đo: 32.93/65.0** (hiệu suất 13.38/25 · nội dung 13.46/25 [phần đo 25.0/25] · hình ảnh 6.09/15)
-**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `knowledge_issue` Video không nói về chống nắng/skincare; đây là try-on váy dự tiệc. Điểm kiến thức để trung tính 0.5.; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Video không nói về chống nắng/skincare; nội dung là nước xả vải Downy Luxe, ngoài ngành nên chấm trung tính 0.5.; `exaggerated_claims` Hương thơm được phát triển từ các nhà điều hương hàng đầu mà sắc thái tương tự như các gióng Edity; mang lại cảm giác hương thơm đậm không hề kém cạnh mấy trai nước khoa nổi tiếng luôn nha; hương được ướp sâu và từng sởi vãi, giúp lưu hương xuất ngày
-
-Kênh nhỏ, ad_ratio thấp, median views ổn so với 49700 follower. Hai video xem là try-on váy và nước xả vải, không liên quan skincare. Số liệu bán hàng thấp nên chỉ nên là vị trí thử nghiệm.
-
-- Mẫu 26 video: median_views 5819.5, ad_ratio 0.115, đăng 6.07 bài/tuần. Kênh ít bão hòa quảng cáo.  
-  ↳ bằng chứng: `ev_44931eb1aaca`
-- Video nước xả vải có ad_disclosure_ok true: gắn nhãn quảng cáo rõ ở 1 video đã xem.  
-  ↳ bằng chứng: `ev_39ab8a3466f8`
-- Hook một video chấm 0.6, audio_clarity 0.6 (AI chấm, confidence 0.35). Chỉ tham khảo.  
-  ↳ bằng chứng: `ev_eef530cd0cb8`
-- Đã xem **2/26** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: Không có nội dung skincare hay chống nắng trong mẫu; demo_quality 0.1 ở cả 2 video. Chưa có bằng chứng bán hàng làm đẹp.; video_gpm 0.0, doanh thu shop 3275081.24: tín hiệu conversion yếu.; Có claim phóng đại ở video nước xả vải ('hương thơm không kém nước hoa nổi tiếng'). Cờ ad_no_disclosure ở video try-on. Chỉ xem 2/26 video.
-- Giá giả định: 5,000,000 VNĐ · giá trần: **5,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật so với giá trần 5,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Xin thêm video skincare/làm đẹp trước đó nếu có.; Thái độ hợp tác; có sẵn sàng quay demo thoa kem lên da, texture, bệt trắng không.
-- Liên hệ: email=[redacted], tiktok=calinle
-
-### Khoa Alpha 💪 🇻🇳 (@khoaalpha99) — Tầm trung nhỏ, thử nghiệm. GPM đo được khá nhưng mẫu nội dung lệch ngành, độ tin cậy phân tích thấp.
-
-**Điểm đã đo: 31.4/65.0** (hiệu suất 14.56/25 · nội dung 11.78/25 [phần đo 25.0/25] · hình ảnh 5.06/15)
-**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `er_unusually_high` ER trung vị 0.49 cao bất thường — có thể kênh nhỏ/viral hoặc view ước tính thấp; kiểm tra mẫu video; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Video chủ yếu nói về serum niacinamide 20%, không phải kem chống nắng. Chống nắng chỉ được nhắc lướt ('vẫn phải chống nắng'), không có SPF/PA, lượng dùng hay thoa lại.; Nhắc da 'bị cháy nắng cần dưỡng sáng lại' bằng serum nhưng không nêu biện pháp ch; `exaggerated_claims` ưu điểm đầu tiên của em nó là hỗ trợ kiềm dầu cực tốt; hầu như là nó sẽ khô ngay lập tức sau khi thoa; 100 ngày từ cha tài xế thành cha ơn wô; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
-
-Kênh nhỏ có video_gpm đáng chú ý và nhịp đăng ổn định. Nội dung là series đổi ngoại hình, serum niacinamide, chống nắng chỉ nhắc lướt. Dữ liệu video xem được yếu nên đây là vị trí thử nghiệm rủi ro cao.
-
-- video_gpm 308586.78, new_follower_ratio 0.008. Số đo được; doanh thu shop 2517142.38 thấp.  
-  ↳ bằng chứng: `ev_eca1f6c4eb5a`
-- Mẫu 22 video: median_views 3974.0, stability 0.602, đăng 5.13 bài/tuần.  
-  ↳ bằng chứng: `ev_53854d61880e`
-- Video skincare có lời khuyên 'vẫn phải chống nắng, dưỡng ẩm' và nhắc test vùng da nhỏ. Có ý thức an toàn cơ bản, nhưng chống nắng chỉ nhắc lướt.  
-  ↳ bằng chứng: `ev_3633e5eb183a, ev_7bfc469a3500`
-- Đã xem **2/22** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: niche_fit 0.12, brand_risk 0.25; niche_keyword_ratio 0.091. Nội dung chủ yếu thay đổi ngoại hình, nhiều sản phẩm không liên quan.; ER trung vị 0.49021 cao bất thường (cờ). Transcript một video có thể là ảo giác ASR (confidence 0.15), không đánh giá được demo. ad_ratio 0.455, cờ ad_no_disclosure.; Không có SPF/PA, lượng dùng, thoa lại trong video xem. Transcript '200% acetyl glucosamine' cần nghe lại. Chỉ xem 2/22 video.
-- Giá giả định: 5,000,000 VNĐ · giá trần: **5,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật so với giá trần 5,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Xem lại video gốc trực tiếp vì dữ liệu transcript/khung hình kém.; Kiểm tra ER bất thường và cách gắn nhãn quảng cáo.; Thái độ hợp tác; có chịu quay riêng nội dung chống nắng không.
-- Liên hệ: tiktok=khoaalpha99
-
-### [DỰ PHÒNG] Kiều Oanh Mê Làm Đẹp (@kieu_oanh_cosmetic) — Dự phòng. Thay vị trí tầm trung nếu một người rút. Có nội dung kem chống nắng duy nhất trong mẫu xem, nhưng kiến thức yếu.
-
-**Điểm đã đo: 33.52/65.0** (hiệu suất 11.03/25 · nội dung 16.4/25 [phần đo 25.0/25] · hình ảnh 6.09/15)
-**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `cold_channel` view/follower 0.019 thấp — kênh nguội hoặc follower ảo; `knowledge_issue` Ngụ ý 1 lớp mỏng buổi sáng là đủ bảo vệ ('sáng mọi người chỉ cần dặm cho em 1 lớp này thôi'). Không nói lượng dùng chuẩn, không nhắc thoa lại trong ngày.; Không nêu chỉ số SPF/PA, chỉ nói chung chung '6 màng lọc phổ rộng'.; Hiệu ứng nâng tông ('bật t; `exaggerated_claims` Lớp finish còn là đẹp hơn cả mọi người makeup luôn; kiềm dầu cực kì mạnh luôn; đẹp và lên da trắng hồng trắng sứ; kem trống nắng mà đẹp hơn cả Kewchon thì chỉ có xeo lắc mới làm được; mọi người đều có thể tham khảo trống nắng này cực kì tốt nha; dạc ; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý; `knowledge_issue` Không nói về chống nắng; chấm trung tính 0.5.; Skincare ngoài chống nắng (cần người duyệt): claim xịt khoáng/serum 'đi được đến tầng Hạ bì là tầng thứ 3' thiếu cơ sở; mỹ phẩm bôi ngoài da không được quảng cáo thấm tới hạ bì.; Claim 'lấp đầy lỗ chân l; `exaggerated_claims` Dưỡng chất này nó sẽ đi được đến tầng Hạ Bì là tầng thứ 3; Nó lấp đầy lỗ chân lông mà nó không cần tái tạo; nó dịu ngay lập tức sau khi mọi người xịt nha; Dưỡng chất nó đi nem nó vào từng cái lỗ chân lông, vì kích thước phân tử nó rất là nhỏ; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
-
-Kênh tầm trung 119000 follower, GPM đo được và ad_ratio 0.0. Là creator duy nhất trong danh sách có video nói trực tiếp về kem chống nắng. View thấp và kiến thức chống nắng có lỗ hổng.
-
-- video_gpm 336493.24, doanh thu shop 813202301.55. Số đo được.  
+- Video thoa kem chống nắng: dùng mút đệm tán đều trên da, thấy rõ quá trình tán và nâng tone; demo_quality 0.85.  
+  ↳ bằng chứng: `ev_06788d1e38cf, ev_ec7c53b44293`
+- video_gpm 336493.24, new_follower_ratio 0.0084.  
   ↳ bằng chứng: `ev_7257c9aca60e`
-- Có video nói trực tiếp về kem chống nắng ('một lớp kem chống nắng là sáng đủ ra ngoài'), thoa 2-3 lớp theo transcript; nhắc 6 màng lọc phổ rộng. Chưa xác minh bằng hình.  
-  ↳ bằng chứng: `ev_12b0ab8a22d3, ev_e63ea8a98c0d`
-- Mẫu 10 video: ad_ratio 0.0, stability 1.044.  
+- Median views 2211.0, stability 1.044, mean views 2118.1 (mẫu 10 video).  
   ↳ bằng chứng: `ev_7c3ceafec190`
 - Đã xem **2/10** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: median_views 2211.0, view_follower_ratio 0.0186 (cờ kênh nguội). Mẫu chỉ 10 video, kết luận yếu.; knowledge_accuracy 0.35: ngụ ý 1 lớp mỏng buổi sáng là đủ, không nêu SPF/PA, lượng dùng, thoa lại (ev_e777372fcc3a). Claim thấm 'tầng hạ bì' thiếu căn cứ (ev_889f67048d3e).; Metadata ghi không quảng cáo nhưng có kêu gọi inbox tư vấn (ev_7f85f2b64ca8); cờ ad_no_disclosure. Chỉ xem 2/10 video. Chưa có giá trần trong block.
-- Giá giả định: 6,000,000 VNĐ · giá trần: áp trần của slot thay thế (dự phòng không nằm trong phân bổ ngân sách hiện tại)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật; block chưa có giá trần, giá giả định 6,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Duyệt kịch bản: bỏ claim 'một lớp là đủ', phải nêu lượng dùng và thoa lại.; Cách gắn nhãn khi bán/tư vấn qua inbox.; Thái độ hợp tác.
+- Lưu ý: Lỗi kiến thức: đọc sai tên PDRN, Niacinamide; nói xịt thấm tới hạ bì, lấp đầy lỗ chân lông. Claim 'đẹp hơn cả Kewchon', 'kiềm dầu cực kì mạnh'. Knowledge_accuracy 0.4 và 0.6.; ad_disclosure_ok false ở cả hai video xem (cờ cho người duyệt, không kết luận pháp lý). Số ad_ratio 0.0 trong chỉ số kênh mâu thuẫn với kết quả này.; Cờ cold_channel: view/follower 0.0186. Mẫu 10 video nhỏ. Doanh thu lệch giữa hai nguồn: 813202301.55 và 2968330.56.
+- Giá giả định: 6,000,000 VNĐ · giá trần: **6,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với giá trần 6,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Cam kết gắn nhãn quảng cáo rõ trong hợp đồng.; Duyệt kịch bản: bỏ claim thẩm thấu hạ bì, lấp lỗ chân lông; kiểm tra tên hoạt chất.; Giải thích chênh lệch doanh thu.
 - Liên hệ: tiktok=kieu_oanh_cosmetic
 
-### [DỰ PHÒNG] Mỏ hỗn là tao (@mykimmohon) — Dự phòng. Thay vị trí chủ lực nếu cần reach lớn, nhưng lệch ngành và bão hòa quảng cáo.
+### Cẩm Linh (@calinle) — Tầm trung nhỏ (micro), thử nghiệm. Số đo hiệu suất tốt, sạch cờ, nhưng nội dung chủ yếu thời trang/vlog, chưa có chống nắng.
 
-**Điểm đã đo: 32.1/65.0** (hiệu suất 18.38/25 · nội dung 6.6/25 [phần đo 25.0/25] · hình ảnh 7.12/15)
+**Điểm đã đo: 36.12/65.0** (hiệu suất 13.38/25 · nội dung 13.46/25 [phần đo 25.0/25] · hình ảnh 9.28/15)
 **Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
-Cờ: `ad_saturated` tỷ lệ video quảng cáo 0.91 — uy tín thấp; `knowledge_issue` Video không nói về chống nắng (sản phẩm là miếng dán mụn/hydrocolloid); chấm trung tính 0.5.; Cờ cho người duyệt (ngoài phạm vi chống nắng): câu 'Cái miếng dán mụn nhỏ là miếng nào cũng sẽ đều có thành phần này' không nêu thành phần cụ thể, mơ hồ, kh; `exaggerated_claims` Nó hút cái cục ngụng luôn, một lỗ xa quấy luôn; video không cáp nha; lá hết trơn nhân mụn luôn nè; Lá hết trơn luôn nè, cái miếng này dán hay thiệt; Lò này, lò này là cụ tổ của mấy cái miếng dán mụn luôn trời ơi; Gê chưa, kinh; `knowledge_issue` Video không nói về chống nắng/skincare; nội dung là tóc giả/mái giả che trán bò liếm, hói. Chấm trung tính 0.5.; Lạc ngành: không phù hợp đánh giá nội dung kem chống nắng.; `exaggerated_claims` nhìn kiểu nó khác hẳn luôn á; Cho nên bắt buộc là phải có cái mái để mà che lại.; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
 
-Reach rất lớn: median views cao so với 350900 follower. Nội dung xem được là miếng dán mụn và tóc giả, không liên quan chống nắng. ad_ratio 0.91 và tín hiệu bán hàng shop gần như bằng 0.
+Không có cờ đỏ. View/follower 0.1171, hình ảnh sạch, không claim phóng đại. Bằng chứng ngách chống nắng không có và demo yếu, nên là ứng viên thử nghiệm, không phải chủ lực.
 
-- Mẫu 100 video: median_views 268389.5, view_follower_ratio 0.7649, đăng 23.33 bài/tuần.  
-  ↳ bằng chứng: `ev_8bec59221450`
-- Theo transcript có demo gỡ miếng dán trên da, chỉ vào thứ lấy ra. Có kỹ năng demo cận cảnh, chưa xác minh bằng hình.  
-  ↳ bằng chứng: `ev_744b695df104`
-- new_follower_ratio 0.0325. Số đo được.  
-  ↳ bằng chứng: `ev_89bd98b6461a`
+- View/follower 0.1171, median views 5819.5 trên kênh 49700 follower.  
+  ↳ bằng chứng: `ev_44931eb1aaca`
+- Hai video xem không có claim phóng đại hay lỗi kiến thức; ad_disclosure_ok true; visual_quality 0.85.  
+  ↳ bằng chứng: `ev_92d26b713492, ev_ac0fd89c389d`
+- Không có cờ nào từ thuật toán; ad_ratio 0.115, 6.07 bài/tuần.  
+  ↳ bằng chứng: `ev_44931eb1aaca`
+- Đã xem **2/26** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
+- Lưu ý: Lệch ngách: niche_fit 0.2, chủ yếu thời trang/vlog; không thấy nội dung chống nắng. niche_keyword_ratio 0.154.; Demo_quality 0.0 và 0.2 ở hai video xem; chưa có bằng chứng demo mỹ phẩm.; video_gpm 0.0, doanh thu 3275081.24: tín hiệu chuyển đổi mỹ phẩm yếu cho mục tiêu conversion. Mẫu 2/26.
+- Giá giả định: 5,000,000 VNĐ · giá trần: **5,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với giá trần 5,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Yêu cầu video mẫu/test demo chống nắng trước khi chốt.; Thái độ hợp tác, kinh nghiệm bán mỹ phẩm.
+- Liên hệ: email=[redacted], tiktok=calinle
+
+### Khoa Alpha 💪 🇻🇳 (@khoaalpha99) — Tầm trung nhỏ (micro), thử nghiệm. Điểm đo được thấp nhất nhóm chính (33.88/65.0), lệch ngách. Giữ vì view/follower và gpm tốt.
+
+**Điểm đã đo: 33.88/65.0** (hiệu suất 14.56/25 · nội dung 12.38/25 [phần đo 25.0/25] · hình ảnh 6.94/15)
+**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
+Cờ: `er_unusually_high` ER trung vị 0.49 cao bất thường — có thể kênh nhỏ/viral hoặc view ước tính thấp; kiểm tra mẫu video; `ad_no_disclosure` video quảng cáo không gắn nhãn rõ — cờ cho người duyệt, không kết luận pháp lý
+
+Kênh nhỏ có view/follower 0.0796 và video_gpm đáng chú ý. Nội dung chủ đạo là gym/thay đổi ngoại hình, không có chống nắng. Cần test nhỏ.
+
+- Median views 3974.0, view/follower 0.0796 trên kênh 49900 follower.  
+  ↳ bằng chứng: `ev_53854d61880e`
+- Một video xem có knowledge_accuracy 0.85, hook 0.8, audio 0.9; nhắc test thử vùng da nhỏ lần đầu và vẫn phải chống nắng.  
+  ↳ bằng chứng: `ev_3a76ecdacd8d, ev_2dc63e059121, ev_1f6f78b149eb`
+- video_gpm 308586.78.  
+  ↳ bằng chứng: `ev_eca1f6c4eb5a`
+- Đã xem **2/22** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
+- Lưu ý: Lệch ngách: niche_fit 0.12, chủ đạo thay đổi ngoại hình, không review chống nắng. niche_keyword_ratio 0.091.; Cờ er_unusually_high (median ER 0.49021); ad_ratio 0.455; ad_disclosure_ok false ở video skincare (không kết luận pháp lý). Một video visual 0.4, audio 0.2, demo 0.0.; Mẫu 2/22. Doanh thu 2517142.38 thấp.
+- Giá giả định: 5,000,000 VNĐ · giá trần: **5,000,000 VNĐ** (báo giá vượt trần → chuyển dự phòng)
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo, không suy từ nội dung kênh.; Báo giá thật so với giá trần 5,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Kiểm tra ER bất thường (0.49021) và mẫu video.; Cam kết gắn nhãn quảng cáo; xin video thử chống nắng.
+- Liên hệ: tiktok=khoaalpha99
+
+### [DỰ PHÒNG] Chang Chăm Chỉ (@changaffiliate) — Dự phòng. Reach và demo mạnh nhất nhóm dự phòng; ad_ratio 0.99 và lệch ngách là rủi ro.
+
+**Điểm đã đo: 38.11/65.0** (hiệu suất 18.09/25 · nội dung 7.46/25 [phần đo 25.0/25] · hình ảnh 12.56/15)
+**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
+Cờ: `ad_saturated` tỷ lệ video quảng cáo 0.99 — uy tín thấp; `exaggerated_claims` hút sạch những bự bẩn sợi bã nhỏ nó muối đi; sờ vào phần mũi Mọi người cảm thấy nó miễn tức thi luôn
+
+Reach lớn: median views 289953.0, view/follower 3.3913, demo_quality 0.85. Video xem là kem nền thỏi và sáp mụn đầu đen, chưa có chống nắng. Dùng thay khi cần reach.
+
+- Median views 289953.0, view/follower 3.3913 trên 100 video.  
+  ↳ bằng chứng: `ev_0be6f3121801`
+- Demo trực tiếp trên mặt: thoa kem nền thỏi, tán đầu cọ, so sánh nửa mặt; demo_quality 0.85.  
+  ↳ bằng chứng: `ev_50ceb83a95d1, ev_49ee22d4990e`
+- new_follower_ratio 0.083, video_gpm 381977.67.  
+  ↳ bằng chứng: `ev_8f71b2a358b7`
 - Đã xem **2/100** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
-- Lưu ý: video_gpm 0.0, doanh thu shop 426499.66: tín hiệu conversion yếu so với reach. ad_ratio 0.91 (cờ bão hòa quảng cáo).; Lạc ngành: video xem là miếng dán mụn và tóc giả, demo_quality 0.1 ở video tóc giả (ev_bb6d789757ac). Không có nội dung chống nắng.; Claim phóng đại ('lấy hết trơn nhân mụn', ev_06649218a931). Cờ ad_no_disclosure. Chỉ xem 2/100 video. Chưa có giá trần trong block.
+- Lưu ý: Cờ ad_saturated: ad_ratio 0.99, uy tín thấp. Claim phóng đại ở một video: 'hút sạch', 'miễn tức thì'.; Không có niche_signal trong kho; video xem là kem nền và sáp mụn, chưa chứng minh ngách chống nắng. Median ER 0.00536.; Đăng 23.33 bài/tuần, mẫu 2/100 video. Không có giá trần trong block, cần kiểm tra ngân sách khi thay.
+- Giá giả định: 6,000,000 VNĐ · giá trần: áp trần của slot thay thế (dự phòng không nằm trong phân bổ ngân sách hiện tại)
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với 6,000,000 VNĐ giả định và ngân sách 30,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Cách xử lý lịch quảng cáo dày: có xung đột nhãn hàng cạnh tranh không.; Xin video demo chống nắng.
+- Liên hệ: tiktok=changaffiliate
+
+### [DỰ PHÒNG] Mỏ hỗn là tao (@mykimmohon) — Dự phòng. Follower cao nhất (350900), reach lớn. Rủi ro cao nhất: quảng cáo dày, video xem là miếng dán mụn/tóc giả, chuyển đổi chưa chứng minh.
+
+**Điểm đã đo: 34.26/65.0** (hiệu suất 18.38/25 · nội dung 6.6/25 [phần đo 25.0/25] · hình ảnh 9.28/15)
+**Chưa đo**: khán giả 25đ (cần ảnh Analytics thật), hợp tác 10đ (giá thật, thái độ, quyền nội dung). Không suy đoán.
+Cờ: `ad_saturated` tỷ lệ video quảng cáo 0.91 — uy tín thấp; `exaggerated_claims` Nó hút cái cục ngụng luôn, một lỗ xa quấy luôn; Lò này, lò này là cụ tổ của mấy cái miếng dán mụn luôn trời ơi
+
+Reach lớn (median views 268389.5) và có cảnh demo cận cảnh miếng dán. Quảng cáo chiếm 0.91, nội dung xem không phải chống nắng. Chỉ thay khi cần reach.
+
+- Median views 268389.5, view/follower 0.7649.  
+  ↳ bằng chứng: `ev_8bec59221450`
+- Demo cận cảnh lột miếng dán hydrocolloid, soi nhân mụn; demo_quality 0.85 ở một video.  
+  ↳ bằng chứng: `ev_5a8f3bbae4a3, ev_eac0b669efc7`
+- new_follower_ratio 0.0325; ad_disclosure_ok true ở cả hai video xem.  
+  ↳ bằng chứng: `ev_89bd98b6461a, ev_3898bdeb5f06, ev_eac0b669efc7`
+- Đã xem **2/100** video của KOC (mẫu nhỏ — kết luận hình ảnh/nội dung là chỉ báo).
+- Lưu ý: Cờ ad_saturated: ad_ratio 0.91, uy tín thấp. Claim phóng đại: 'cụ tổ của mấy cái miếng dán mụn'.; Video xem là miếng dán mụn và tóc giả, không có chống nắng; không có niche_signal. Một video visual 0.4, demo 0.0.; video_gpm 0.0, doanh thu 426499.66 theo một nguồn; nguồn khác total_revenue 4227559371.92, mâu thuẫn. Mẫu 2/100.
 - Giá giả định: 7,000,000 VNĐ · giá trần: áp trần của slot thay thế (dự phòng không nằm trong phân bổ ngân sách hiện tại)
-- Xác minh trước chốt: Ảnh Analytics khán giả: nữ 18-30, VN.; Báo giá thật; block chưa có giá trần, giá giả định 7,000,000 VNĐ.; Quyền dùng nội dung và Spark Ads.; Hỏi lý do doanh thu shop thấp dù reach lớn.; Cách gắn nhãn quảng cáo; xem thêm video skincare/chống nắng.; Thái độ hợp tác.
+- Xác minh trước chốt: Ảnh Analytics khán giả nữ 18-30 VN. Chưa đo.; Báo giá thật so với 7,000,000 VNĐ giả định và ngân sách 30,000,000 VNĐ.; Quyền sử dụng nội dung và Spark Ads.; Giải thích chênh lệch doanh thu và video_gpm 0.0.; Xin video demo chống nắng; thái độ hợp tác.
 - Liên hệ: tiktok=mykimmohon
 
 **Phương án thay thế** (chênh lệch điểm so với phương án 1):
-- PA2: Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 · điểm 2.6277 (Δ -0.0271) · giá 29,000,000
-- PA3: Mỏ hỗn là tao, Phương Sena, Kiều Oanh Mê Làm Đẹp, Cẩm Linh, Khoa Alpha 💪 🇻🇳 · điểm 2.6058 (Δ -0.0490) · giá 30,000,000
+- PA2: Công chúa cam thường, Phương Sena, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 · điểm 2.8567 (Δ -0.0517) · giá 30,000,000
+- PA3: Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 · điểm 2.8236 (Δ -0.0848) · giá 29,000,000
 
-Hoán đổi 1 người (phương án 1): Công chúa cam thường → Kiều Oanh Mê Làm Đẹp (Δ điểm -0.0271); Phương Sena → Kiều Oanh Mê Làm Đẹp (Δ điểm -0.0909); Chang Chăm Chỉ → không có phương án tốt hơn; Cẩm Linh → không có phương án tốt hơn; Khoa Alpha 💪 🇻🇳 → không có phương án tốt hơn
+Hoán đổi 1 người (phương án 1): Công chúa cam thường → Chang Chăm Chỉ (Δ điểm -0.0848); Phương Sena → Chang Chăm Chỉ (Δ điểm -0.1032); Kiều Oanh Mê Làm Đẹp → Chang Chăm Chỉ (Δ điểm -0.0517); Cẩm Linh → không có phương án tốt hơn; Khoa Alpha 💪 🇻🇳 → không có phương án tốt hơn
 
 ## 4. Ngân sách (GIẢ ĐỊNH — không phải báo giá)
 
@@ -194,9 +189,9 @@ Hoán đổi 1 người (phương án 1): Công chúa cam thường → Kiều O
 
 | price_scale | khả thi | tổng giá (VNĐ) | bộ 5 tối ưu / ghi chú |
 |---|---|---|---|
-| 0.7x | ✓ | 21,000,000 | Công chúa cam thường, Phương Sena, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 |
-| 0.85x | ✓ | 25,500,000 | Công chúa cam thường, Phương Sena, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 |
-| 1.0x | ✓ | 30,000,000 | Công chúa cam thường, Phương Sena, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 |
+| 0.7x | ✓ | 21,700,000 | Công chúa cam thường, Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh |
+| 0.85x | ✓ | 26,350,000 | Công chúa cam thường, Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh |
+| 1.0x | ✓ | 30,000,000 | Công chúa cam thường, Phương Sena, Kiều Oanh Mê Làm Đẹp, Cẩm Linh, Khoa Alpha 💪 🇻🇳 |
 | 1.03x | ✓ | 29,870,000 | Phương Sena, Kiều Oanh Mê Làm Đẹp, Chang Chăm Chỉ, Cẩm Linh, Khoa Alpha 💪 🇻🇳 |
 | 1.15x | ✗ | — | không bộ 5 nào <= 30,000,000 VNĐ; rẻ nhất có thể: 33,350,000 VNĐ. Giảm slot hoặc tăng ngân sách — hệ thống không âm thầm vượt. |
 | 1.3x | ✗ | — | không bộ 5 nào <= 30,000,000 VNĐ; rẻ nhất có thể: 37,700,000 VNĐ. Giảm slot hoặc tăng ngân sách — hệ thống không âm thầm vượt. |
@@ -211,7 +206,7 @@ Hoán đổi 1 người (phương án 1): Công chúa cam thường → Kiều O
 ## 6. Chi phí & hiệu năng
 Xem `benchmark.md` (ledger đo thật, lạnh/ấm tách riêng).
 
-- Tổng: 12.8 credit Kalodata · 303,908 token in / 87,469 out (cache 0) · AI $1.8690 · 194 lời gọi ghi ledger.
+- Tổng: 12.8 credit Kalodata · 472,678 token in / 44,154 out (cache 0) · AI $0.8241 · 194 lời gọi ghi ledger.
 
 ## 7. Giới hạn & hướng mở rộng
 

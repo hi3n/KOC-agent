@@ -96,7 +96,18 @@ def _report_md(ctx, out, s1, s2, s3, s4, s5, cards, reasons, details):
     L = []
     L.append(f"# Báo cáo đề xuất KOC — {camp.get('product', 'kem chống nắng')}\n")
     L.append(f"`run_id={cfg.run_id}` · as_of={cfg.as_of} · date_range={cfg.date_range} · seed={cfg.seed}\n")
-    models = {r: cfg.llm_role(r).model.removeprefix("ag/") for r in ("brief", "screen", "video", "reason")}
+    stage_to_role = {"s0": "brief", "s3": "screen", "s4": "video", "s5": "reason"}
+    actual = {}
+    for row in ctx.db.query(
+        "SELECT stage, model FROM judgements WHERE run_id=?"
+        " AND rowid IN (SELECT MAX(rowid) FROM judgements WHERE run_id=? GROUP BY stage)",
+        (cfg.run_id, cfg.run_id),
+    ):
+        role = stage_to_role.get(row["stage"])
+        if role and row.get("model"):
+            actual[role] = row["model"]
+    models = {r: (actual.get(r) or cfg.llm_role(r).model).removeprefix("ag/")
+              for r in ("brief", "screen", "video", "reason")}
     L.append(f"Models (cấu hình được, không fix cứng): `{json.dumps(models)}`\n")
 
     L.append("\n## 1. Brief và phân tích của AI (S0)\n")

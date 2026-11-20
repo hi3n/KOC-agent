@@ -99,12 +99,14 @@ def bench(run_id: str = typer.Argument("demo_sunscreen"),
 
 @app.command(name="export-bundle")
 def export_bundle(run_id: str = typer.Argument("demo_sunscreen")):
-    ctx = create_ctx(None, mode="replay", run_id=run_id)
-    js = ctx.db.query(
+    from .db import Database
+    db = Database(Path("runs") / run_id / "koc.db")
+    js = db.query(
         "SELECT * FROM judgements WHERE run_id=? AND rowid IN"
         " (SELECT MAX(rowid) FROM judgements WHERE run_id=? GROUP BY stage, entity_id)"
         " ORDER BY stage, entity_id", (run_id, run_id))
-    vs = ctx.db.query("SELECT * FROM videos WHERE run_id=? ORDER BY video_id", (run_id,))
+    vs = db.query("SELECT * FROM videos WHERE run_id=? ORDER BY video_id", (run_id,))
+    db.close()
     out = Path("fixtures") / "judgements_bundle.json"
     out.write_text(json.dumps({"judgements": js, "videos": vs}, ensure_ascii=False),
                    encoding="utf-8")

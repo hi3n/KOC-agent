@@ -24,9 +24,9 @@ Thư mục này chứa toàn bộ kết quả chạy test THẬT (`S0 → S5`) v
   - `S3`: LLM sàng lọc ngữ nghĩa theo batch + Recall Audit mẫu bị loại (2 mẫu, 0 miss) → giữ 7 KOC vào vòng video.
   - `S4`: Tải 14 video đại diện (2 video/KOC) → trích 6 frames + transcript `faster-whisper` tiếng Việt có timestamp → LLM đa phương thức chấm rubric.
   - `S5`: Duyệt tổ hợp chọn 5 KOC + 2 dự phòng trong ngân sách 30 triệu → LLM viết lý do từ kho bằng chứng → **7/7 KOC pass `validate_reason`**.
-- 💰 **Tổng chi phí chạy lạnh (đo từ `usage_ledger`):** **12.8 Kalodata credits** + **$1.869 AI** (391,377 tokens). Chạy ấm / resume phần đã xong = **0 credit, $0.0000**.
+- 💰 **Tổng chi phí chạy lạnh (đo từ `usage_ledger`):** **12.8 Kalodata credits** + **$0.824 AI** (516,832 tokens · 14/14 video phân tích hình ảnh thật qua gemini-3.8-flash + transcript tiếng Việt). Chạy ấm / resume phần đã xong = **0 credit, $0.0000**.
 - 🛡️ **Reliability:** Đã phục hồi tự động qua sự cố rate-limit thật (mã `2017`) không mất tiền 2 lần, và pass bài test `kill -9` giữa chừng (`verdict: PASS`).
-- 🧪 **Unit tests:** 30 passed (~3s).
+- 🧪 **Unit tests:** 32 passed (~3s).
 
 ## Tái lập / cập nhật
 

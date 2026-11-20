@@ -56,3 +56,18 @@ def test_scorecard_no_fake_100():
     v, parts = visual_score([{"visual_quality": 0.8, "demo_quality": 0.6,
                               "hook_strength": 0.7, "audio_clarity": 0.9}])
     assert parts["measured_max"] == 15.0 and 0 < v < 15
+
+
+def test_off_niche_performance_damping():
+    off = ScoreCard(creator_id="off", performance=18.0, content=7.0,
+                    content_measured_max=25.0, visual=10.0, visual_measured_max=15.0)
+    assert off.internal_rank_score() < round((18.0 + 7.0 + 10.0) / 65.0, 4)
+
+    on = ScoreCard(creator_id="on", performance=18.0, content=17.0,
+                   content_measured_max=25.0, visual=10.0, visual_measured_max=15.0)
+    assert on.internal_rank_score() == round((18.0 + 17.0 + 10.0) / 65.0, 4)
+
+    s2a = ScoreCard(creator_id="s2a", performance=18.0, content=4.0, content_measured_max=16.0)
+    cov = 41.0 / 65.0
+    expected_s2a = round((22.0 / 41.0) * (1 - 0.15 * (1 - cov)), 4)
+    assert s2a.internal_rank_score() == expected_s2a
